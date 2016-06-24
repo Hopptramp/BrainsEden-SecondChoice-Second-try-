@@ -13,6 +13,7 @@ public class Player_Movement : MonoBehaviour
     public int jumpForce = 100;
     private float moveX, moveY, moveZ;
     private bool justJumped = false;
+    private bool nullifyMovement = false;
 
     void Awake()
     {
@@ -24,7 +25,11 @@ public class Player_Movement : MonoBehaviour
     void FixedUpdate()
     {       
         justJumped = false;
-        Movement();
+        if (!nullifyMovement)        
+            Movement();
+        else
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+
         grounded = false;
     }
 
@@ -53,6 +58,7 @@ public class Player_Movement : MonoBehaviour
         rb.velocity = new Vector3(moveX, moveY, moveZ);
 
     }
+
     public void SetGrounded(bool _val)
     {
         grounded = _val;
@@ -60,5 +66,10 @@ public class Player_Movement : MonoBehaviour
         {            
             jumpCount = jumpMax;
         }
+    }
+
+    public void DisableInput(bool _set = true)
+    {
+        nullifyMovement = _set;
     }
 }
