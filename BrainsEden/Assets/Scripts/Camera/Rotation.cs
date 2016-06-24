@@ -11,7 +11,10 @@ public class Rotation : MonoBehaviour
 	//time taken for rotation
 	private float rotateTime = 0.5f;
 
+    CameraState currentState;
+
 	private GameObject origin;
+    public GameObject player;
 
 	[SerializeField]
 	private bool clear = true;
@@ -29,6 +32,8 @@ public class Rotation : MonoBehaviour
 
 		transform.parent = origin.transform;
 		transform.position = transform.parent.position - new Vector3 (0f, 0f, cameraDist);
+
+        currentState = GameManager.instance.m_CameraState;
 	}
 
 	void Update ()
@@ -37,6 +42,7 @@ public class Rotation : MonoBehaviour
 		{
 			clear = false;
 			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+
 		}
 
 		else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
@@ -58,8 +64,15 @@ public class Rotation : MonoBehaviour
 		}
 	}
 
-	void ClearToRotate()
+    void FixedUpdate()
+    {
+        origin.transform.position = player.transform.position;
+    }
+
+    void ClearToRotate()
 	{
-		clear = true;
+        origin.transform.position = player.transform.position;
+        GameManager.instance.UpdateCameraState();
+        clear = true;
 	}
 }

@@ -7,7 +7,7 @@ public class BlockData : MonoBehaviour
     VisibleState currentVisibleState { get { return currentVisibleState; } set { currentVisibleState = value; } }
 
     public CameraState myBasePerspective;
-    [SerializeField] CameraState[] compatibleStates;
+    public CameraState[] compatibleStates;
 
 
 	// Use this for initialization

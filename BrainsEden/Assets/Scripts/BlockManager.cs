@@ -6,99 +6,44 @@ public class BlockManager : MonoBehaviour
     static BlockManager m_instance;
     static public BlockManager instance { get { return m_instance; } }
 
-    List<BlockData> aboveBlocks;
-    List<BlockData> belowBlocks;
-    List<BlockData> leftBlocks;
-    List<BlockData> rightBlocks;
-    List<BlockData> frontBlocks;
-    List<BlockData> behindBlocks;
+    List<BlockData> blockList;
 
 
     // called by the block object, will add itself to it's respective list
     public void AddToBlockList(BlockData bData)
     {
-        switch(bData.myBasePerspective)
-        {
-            case CameraState.Above:
-                aboveBlocks.Add(bData);
-                break;
-            case CameraState.Below:
-                belowBlocks.Add(bData);
-                break;
-            case CameraState.Front:
-                frontBlocks.Add(bData);
-                break;
-            case CameraState.Behind:
-                behindBlocks.Add(bData);
-                break;
-            case CameraState.Left:
-                leftBlocks.Add(bData);
-                break;
-            case CameraState.Right:
-                rightBlocks.Add(bData);
-                break;
-        }
+        blockList.Add(bData);
     }
 
     void Awake()
     {
         m_instance = this;
 
-        aboveBlocks = new List<BlockData>();
-        belowBlocks = new List<BlockData>();
-        leftBlocks = new List<BlockData>();
-        rightBlocks = new List<BlockData>();
-        frontBlocks = new List<BlockData>();
-        behindBlocks = new List<BlockData>();
+        blockList = new List<BlockData>();
     }
 
-    public void UpdateActiveBlocks(CameraState previousState, CameraState currentState)
+    public void UpdateActiveBlocks(CameraState currentState)
     {
-        bool current = true;
+        bool remainActive;
 
-        for (int j = 0; j < 2; j++)
+       for(int i = 0; i < blockList.Count; ++i)
         {
-            switch (current ? currentState : previousState)
+            remainActive = false;
+            //loop through the blocks compatible
+            for (int j = 0; j < blockList[i].compatibleStates.Length; ++j)
             {
-                case CameraState.Above:
-                    for (int i = 0; i < aboveBlocks.Count; ++i)
-                    {
-                        aboveBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
-                case CameraState.Below:
-                    for (int i = 0; i < belowBlocks.Count; ++i)
-                    {
-                        belowBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
-                case CameraState.Front:
-                    for (int i = 0; i < frontBlocks.Count; ++i)
-                    {
-                        frontBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
-                case CameraState.Behind:
-                    for (int i = 0; i < behindBlocks.Count; ++i)
-                    {
-                        behindBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
-                case CameraState.Left:
-                    for (int i = 0; i < leftBlocks.Count; ++i)
-                    {
-                        leftBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
-                case CameraState.Right:
-                    for (int i = 0; i < rightBlocks.Count; ++i)
-                    {
-                        rightBlocks[i].enabled = current ? true : false;
-                    }
-                    break;
+                if(currentState == blockList[i].compatibleStates[j])
+                {
+                    blockList[i].gameObject.SetActive(true);
+                    remainActive = true;
+                }
             }
-
-            current = false;
+            // if no blocks are compatible
+            if (remainActive == false)
+            {
+                // set it to inactive
+                blockList[i].gameObject.SetActive(false);
+            }
         }
     }
 
