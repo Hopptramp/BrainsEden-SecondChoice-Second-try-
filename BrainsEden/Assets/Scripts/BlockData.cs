@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlockData : MonoBehaviour
 {
-    CameraState currentCameraState { get { return currentCameraState; } set { currentCameraState = value; } }
+    CameraState currentCameraState;
     VisibleState currentVisibleState { get { return currentVisibleState; } set { currentVisibleState = value; } }
 
     public CameraState myBasePerspective;
@@ -17,7 +17,8 @@ public class BlockData : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+        currentCameraState = GameManager.instance.m_CameraState;
 	}
 }

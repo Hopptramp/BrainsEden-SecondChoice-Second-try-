@@ -52,6 +52,56 @@ public class BlockManager : MonoBehaviour
         behindBlocks = new List<BlockData>();
     }
 
+    public void UpdateActiveBlocks(CameraState previousState, CameraState currentState)
+    {
+        bool current = true;
+
+        for (int j = 0; j < 2; j++)
+        {
+            switch (current ? currentState : previousState)
+            {
+                case CameraState.Above:
+                    for (int i = 0; i < aboveBlocks.Count; ++i)
+                    {
+                        aboveBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+                case CameraState.Below:
+                    for (int i = 0; i < belowBlocks.Count; ++i)
+                    {
+                        belowBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+                case CameraState.Front:
+                    for (int i = 0; i < frontBlocks.Count; ++i)
+                    {
+                        frontBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+                case CameraState.Behind:
+                    for (int i = 0; i < behindBlocks.Count; ++i)
+                    {
+                        behindBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+                case CameraState.Left:
+                    for (int i = 0; i < leftBlocks.Count; ++i)
+                    {
+                        leftBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+                case CameraState.Right:
+                    for (int i = 0; i < rightBlocks.Count; ++i)
+                    {
+                        rightBlocks[i].enabled = current ? true : false;
+                    }
+                    break;
+            }
+
+            current = false;
+        }
+    }
+
     // Use this for initialization
     void Start ()
     {
