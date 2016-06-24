@@ -13,6 +13,9 @@ public class Rotation : MonoBehaviour
 
 	private GameObject origin;
 
+	[SerializeField]
+	private bool clear = true;
+
 	//set the camera to start facing the origin at cameraDist distance
 	void Start ()
 	{
@@ -30,24 +33,33 @@ public class Rotation : MonoBehaviour
 
 	void Update ()
 	{
-		if (Input.GetKeyUp(KeyCode.UpArrow))
+		if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
 		{
-			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc));
+			clear = false;
+			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
 		}
 
-		else if (Input.GetKeyUp(KeyCode.DownArrow))
+		else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
 		{
-			iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc));
+			clear = false;
+			iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
 		}
 
-		else if (Input.GetKeyUp(KeyCode.RightArrow))
+		else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
 		{
-			iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc));
+			clear = false;
+			iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
 		}
 
-		else if (Input.GetKeyUp(KeyCode.LeftArrow))
+		else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
 		{
-			iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc));
+			clear = false;
+			iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
 		}
+	}
+
+	void ClearToRotate()
+	{
+		clear = true;
 	}
 }
