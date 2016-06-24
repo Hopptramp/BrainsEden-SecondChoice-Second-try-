@@ -31,9 +31,15 @@ public class GameManager : MonoBehaviour
         m_instance = this;
         m_CameraState = CameraState.Above;
 
-
-
 	}
+
+    public void ChangePerspective(CameraState newPerspective)
+    {
+        // update the active blocks
+        BlockManager.instance.UpdateActiveBlocks(m_CameraState, newPerspective);
+        // update the new perspective
+        m_CameraState = newPerspective;
+    }
 	
 	// Update is called once per frame
 	void Update ()
