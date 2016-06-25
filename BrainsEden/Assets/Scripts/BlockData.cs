@@ -15,7 +15,9 @@ public class BlockData : MonoBehaviour
 	void Start ()
     {
         BlockManager.instance.AddToBlockList(this);
-	}
+        //if(m_blockType == BlockType.Fake)
+        //    gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -27,9 +29,10 @@ public class BlockData : MonoBehaviour
     {
         if(coll.gameObject == GameManager.instance.player)
         {
-            BlockManager.instance.BlockCollided(this);
+            BlockManager.instance.BlockCollided(this, coll);
             if (m_blockType == BlockType.Fake)
                 Invoke("DestroyBlock", 3);
+            
         }
     }
 
