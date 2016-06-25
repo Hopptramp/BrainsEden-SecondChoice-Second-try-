@@ -31,8 +31,8 @@ public class GameManager : MonoBehaviour
 
     public float killHeight = -5;
     [SerializeField] bool ResetLevel = true;
+    [SerializeField] GameObject pauseMenu;
 
-    int currentLevel = 0;
 
     
     
@@ -87,7 +87,12 @@ public class GameManager : MonoBehaviour
         {
             EndLevel(null);
         }
-	}
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            pauseMenu.SetActive(true);
+        }
+    }
 
 
     public void EndLevel(bool? overwriteReset)
@@ -96,17 +101,17 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
 #if UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene(currentLevel);
+            SceneManager.LoadScene(DataHolder.instance.currentLevel);
 #else
-            Application.LoadLevel(currentLevel);
+            Application.LoadLevel(DataHolder.instance.currentLevel);
 #endif
         }
         else
         {
 #if UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene(++currentLevel);
+            SceneManager.LoadScene(++DataHolder.instance.currentLevel);
 #else
-            Application.LoadLevel(currentLevel);
+            Application.LoadLevel(++DataHolder.instance.currentLevel);
 #endif
             InitGame();
         }

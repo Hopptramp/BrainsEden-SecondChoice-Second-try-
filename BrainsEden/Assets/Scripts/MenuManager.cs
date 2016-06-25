@@ -7,6 +7,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject levelMenu;
     [SerializeField] GameObject optionsMenu;
+    [SerializeField] DataHolder dHolder;
 
     GameObject activeMenu = null;
 
@@ -21,7 +22,7 @@ public class MenuManager : MonoBehaviour
     // main menu buttons
     public void StartGame()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(++DataHolder.instance.currentLevel);
     }
     public void ActivateLevelMenu()
     {
