@@ -5,7 +5,8 @@ public enum BlockType
 {
     Default,
     Fake,
-    End
+    End,
+	Mobile
 }
 
 public class BlockManager : MonoBehaviour
@@ -66,6 +67,14 @@ public class BlockManager : MonoBehaviour
     {
         switch (bData.tag)
         {
+		case "Mobile":
+			break;
+        case "Fake":
+            FakeBlockCollided(bData);
+        	break;
+        case "End":
+       		EndBlockCollided();
+        	break;
             case "Fake":
                 if(coll.gameObject.tag == "Player")
                     FakeBlockCollided(bData);

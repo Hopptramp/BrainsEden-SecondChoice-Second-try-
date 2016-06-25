@@ -10,11 +10,29 @@ public class BlockData : MonoBehaviour
     public CameraState myBasePerspective;
     public CameraState[] compatibleStates;
 
+	[SerializeField]
+	private Vector3	firstPos, // starting pos
+		secondPos; // end pos
+
+	[SerializeField]
+	private bool useSpeed; //use moveSpeed instead of moveTime
+
+	[SerializeField]
+	private float moveTime = 2f, moveSpeed = 2f;
+
+	private bool moving;
 
 	// Use this for initialization
 	void Start ()
     {
         BlockManager.instance.AddToBlockList(this);
+
+		//if a movile block, set the staring position the be the firstPos
+		if (m_blockType == BlockType.Mobile) 
+		{
+			transform.position = firstPos;
+		}
+	}
         //if(m_blockType == BlockType.Fake)
         //    gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
@@ -22,6 +40,12 @@ public class BlockData : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+		if (m_blockType == BlockType.Mobile && !moving)
+		{
+			MoveToSecond();
+			moving = true;
+		}
+
         currentCameraState = GameManager.instance.m_CameraState;
 	}
 
@@ -35,6 +59,30 @@ public class BlockData : MonoBehaviour
             
         }
     }
+
+	void MoveToSecond ()
+	{
+		if (useSpeed)
+		{
+			iTween.MoveTo (gameObject, iTween.Hash ("position", secondPos, "speed", moveSpeed, "easetype", iTween.EaseType.linear, "oncompletetarget", gameObject, "oncomplete", "MoveToFirst"));
+		}
+		else
+		{
+			iTween.MoveTo (gameObject, iTween.Hash ("position", secondPos, "time", moveTime, "easetype", iTween.EaseType.linear, "oncompletetarget", gameObject, "oncomplete", "MoveToFirst"));
+		}
+	}
+
+	void MoveToFirst ()
+	{
+		if (useSpeed)
+		{
+			iTween.MoveTo (gameObject, iTween.Hash ("position", firstPos, "speed", moveSpeed, "easetype", iTween.EaseType.linear, "oncompletetarget", gameObject, "oncomplete", "MoveToSecond"));
+		}
+		else
+		{
+			iTween.MoveTo (gameObject, iTween.Hash ("position", firstPos, "time", moveTime, "easetype", iTween.EaseType.linear, "oncompletetarget", gameObject, "oncomplete", "MoveToSecond"));
+		}
+	}
 
     void DestroyBlock()
     {
