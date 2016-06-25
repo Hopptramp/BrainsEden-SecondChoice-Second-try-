@@ -40,29 +40,49 @@ public class Rotation : MonoBehaviour
 	{
 		if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
 		{
-			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
-
+			RotateUp ();
 		}
 
 		else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
 		{
-			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+			RotateDown ();
 		}
 
 		else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
 		{
-			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+			RotateRight();
 		}
 
 		else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
 		{
-			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+			RotateLeft();
 		}
 	}
+
+	public void RotateUp ()
+	{
+		clear = false;
+		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+	}
+
+	public void RotateDown ()
+	{
+		clear = false;
+		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+	}
+
+	public void RotateLeft ()
+	{
+		clear = false;
+		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+	}
+
+	public void RotateRight ()
+	{
+		clear = false;
+		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+	}
+
 
     void FixedUpdate()
     {
