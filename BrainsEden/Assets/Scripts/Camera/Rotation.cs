@@ -41,7 +41,7 @@ public class Rotation : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
 		{
 			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+			iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
 
 		}
 
@@ -54,13 +54,13 @@ public class Rotation : MonoBehaviour
 		else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
 		{
 			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+			iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
 		}
 
 		else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
 		{
 			clear = false;
-			iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+			iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
 		}
 	}
 
@@ -68,6 +68,33 @@ public class Rotation : MonoBehaviour
     {
         origin.transform.position = player.transform.position;
     }
+
+	/// <summary>
+	/// Checks the rotation of the camera and rites it if at a stupid orientation
+	/// </summary>
+	void CheckRotation()
+	{
+		//if not looking up or down and the camera is off orientation
+		if (transform.right == Vector3.up || (-1 * transform.right) == Vector3.up || transform.up == Vector3.down)
+		{
+			StartCoroutine (CorrectRotation ());
+		}
+		else
+		{
+			ClearToRotate ();
+		}
+	}
+
+	IEnumerator CorrectRotation()
+	{
+		//pause for a little while?
+		//yield return new WaitForSeconds (0.25f)
+
+		//correct the camera rotation
+		iTween.RotateTo (origin, iTween.Hash ("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+
+		yield return null;
+	}
 
     void ClearToRotate()
 	{
