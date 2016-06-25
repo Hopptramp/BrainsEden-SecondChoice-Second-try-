@@ -8,14 +8,15 @@ public class PlayerOcclusionDetection : MonoBehaviour
 	//the points that the raycast will happen from
 	private Transform[] raycastPoints;
 
-	[SerializeField]
-	private Transform mainCam;
+    [SerializeField]
+    private Transform m_mainCam;
+    public Transform mainCam { get { return m_mainCam; } set { m_mainCam = value; } }
 
 	private List<GameObject> objectsHit = new List<GameObject>();
 
 	void Start ()
 	{
-		if (!mainCam)
+		if (!m_mainCam)
 		{
 			GameObject.FindGameObjectWithTag ("MainCamera");
 		}
@@ -42,7 +43,7 @@ public class PlayerOcclusionDetection : MonoBehaviour
 		foreach (Transform _trans in raycastPoints)
 		{
 			Ray r = new Ray ();
-			r.direction = mainCam.forward * -1;
+			r.direction = m_mainCam.forward * -1;
 			r.origin = _trans.position;
 
 			RaycastHit[] hits;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public enum CameraState
@@ -23,8 +24,15 @@ public class GameManager : MonoBehaviour
     static public GameManager instance { get { return m_instance; } }
 
     public CameraState m_CameraState;
-    [SerializeField] GameObject player;
+    [SerializeField] GameObject playerPrefab;
+    [SerializeField] Transform spawnPoint;
+    public GameObject player;
     [SerializeField] GameObject camera;
+
+    public float killHeight = -5;
+    [SerializeField] bool ResetLevel = true;
+
+    
     
     void Awake()
     {
@@ -35,8 +43,12 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-       
+        DontDestroyOnLoad(gameObject);
 
+        player = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity) as GameObject;
+        player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
+        camera.GetComponent<Rotation>().player = player;
+        
 	}
 
     public void UpdateCameraState()
@@ -65,6 +77,20 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-       // UpdateCameraState();
+       if (player.transform.position.y <= killHeight)
+        {
+            EndLevel();
+        }
 	}
+
+
+    void EndLevel()
+    {
+        if (ResetLevel)
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene(0);
+
+        }
+    }
 }

@@ -7,7 +7,7 @@ public class PrefabPlacer : MonoBehaviour
     float addPosY = 0;
     float addPosZ = 0;
 
-    [SerializeField] GameObject prefabToPlace;
+    [SerializeField] GameObject[] prefabsToPlace;
 
 	// Use this for initialization
 	void Start ()
@@ -22,6 +22,7 @@ public class PrefabPlacer : MonoBehaviour
         addPosY = 0;
         addPosZ = 0;
 
+        // movement
         if (Input.GetKeyDown(KeyCode.W))
         {
             ++addPosZ;
@@ -47,11 +48,33 @@ public class PrefabPlacer : MonoBehaviour
             --addPosY;
         }
 
+
+
         transform.position += new Vector3(addPosX, addPosY, addPosZ);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Keypad0))
         {
-            Instantiate(prefabToPlace, transform.position, Quaternion.identity);
+            Instantiate(prefabsToPlace[0], transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            Instantiate(prefabsToPlace[1], transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            Instantiate(prefabsToPlace[2], transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            Instantiate(prefabsToPlace[3], transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            Instantiate(prefabsToPlace[4], transform.position, Quaternion.identity);
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            Instantiate(prefabsToPlace[5], transform.position, Quaternion.identity);
         }
     }
 }

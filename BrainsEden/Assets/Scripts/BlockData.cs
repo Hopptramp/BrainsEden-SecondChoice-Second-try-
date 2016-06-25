@@ -3,6 +3,7 @@ using System.Collections;
 
 public class BlockData : MonoBehaviour
 {
+    public BlockType m_blockType;
     CameraState currentCameraState;
     VisibleState currentVisibleState { get { return currentVisibleState; } set { currentVisibleState = value; } }
 
@@ -21,4 +22,19 @@ public class BlockData : MonoBehaviour
     {
         currentCameraState = GameManager.instance.m_CameraState;
 	}
+
+    void OnCollisionEnter(Collision coll)
+    {
+        if(coll.gameObject == GameManager.instance.player)
+        {
+            BlockManager.instance.BlockCollided(this);
+            if (m_blockType == BlockType.Fake)
+                Invoke("DestroyBlock", 3);
+        }
+    }
+
+    void DestroyBlock()
+    {
+        BlockManager.instance.DestroyBlock(this);
+    }
 }

@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public enum BlockType
+{
+    Default,
+    Fake
+}
+
 public class BlockManager : MonoBehaviour
 {
     static BlockManager m_instance;
@@ -22,6 +28,12 @@ public class BlockManager : MonoBehaviour
         blockList = new List<BlockData>();
     }
 
+    public void DestroyBlock(BlockData bData)
+    {
+        blockList.Remove(bData);
+        Destroy(bData.gameObject);
+    }
+
     public void UpdateActiveBlocks(CameraState currentState)
     {
         bool remainActive;
@@ -32,10 +44,12 @@ public class BlockManager : MonoBehaviour
             //loop through the blocks compatible
             for (int j = 0; j < blockList[i].compatibleStates.Length; ++j)
             {
-                if(currentState == blockList[i].compatibleStates[j])
+                if(currentState == blockList[i].compatibleStates[j] || blockList[i].myBasePerspective == currentState)
                 {
                     blockList[i].gameObject.SetActive(true);
                     remainActive = true;
+
+                    break;
                 }
             }
             // if no blocks are compatible
@@ -47,14 +61,21 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-    // Use this for initialization
-    void Start ()
+    public void BlockCollided(BlockData bData)
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+        switch (bData.tag)
+        {
+            case "Fake":
+                FakeBlockCollided(bData);
+            break;
+
+        }
+    }
+
+	void FakeBlockCollided(BlockData bData)
+    {
+        bData.gameObject.GetComponent<Rigidbody>().useGravity = true;
+
+    }
+
 }
