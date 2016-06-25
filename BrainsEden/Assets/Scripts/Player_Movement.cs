@@ -55,7 +55,28 @@ public class Player_Movement : MonoBehaviour
                 justJumped = true;             
             }
         }
-        rb.velocity = new Vector3(moveX, moveY, moveZ);
+		switch (GameManager.instance.m_CameraState) 
+		{
+		case CameraState.Above:
+			rb.velocity = new Vector3(moveX, moveY, moveZ);
+			break;
+		case CameraState.Below:
+			rb.velocity = new Vector3(moveX, moveY, -moveZ);
+			break;
+		case CameraState.Front:
+			rb.velocity = new Vector3(-moveX, moveY, 0);
+			break;
+		case CameraState.Behind:
+			rb.velocity = new Vector3(moveX, moveY, 0);
+			break;
+		case CameraState.Left:
+			rb.velocity = new Vector3(0, moveY, -moveX);
+			break;
+		case CameraState.Right:
+			rb.velocity = new Vector3(0, moveY, moveX);
+			break;
+		}
+		//rb.velocity = new Vector3(moveX, moveY, moveZ);
 
     }
 

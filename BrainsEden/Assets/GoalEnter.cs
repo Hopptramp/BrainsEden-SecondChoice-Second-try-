@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
-
+#if UNITY_5_3_OR_NEWER
+	using UnityEngine.SceneManagement;
+#endif
 public class GoalEnter : MonoBehaviour
 {
 
@@ -17,9 +18,11 @@ public class GoalEnter : MonoBehaviour
     {
         if (triggered)
         {
-            timer += Time.deltaTime;
-            if (timer >= delay && !disableSceneLoad)
-                SceneManager.LoadScene(sceneNumber);
+			timer += Time.deltaTime;
+			#if UNITY_5_3_OR_NEWER
+				if (timer >= delay && !disableSceneLoad)
+					SceneManager.LoadScene(sceneNumber);
+			#endif
         }
 
     }
