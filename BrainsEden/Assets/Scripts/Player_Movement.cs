@@ -13,31 +13,69 @@ public class Player_Movement : MonoBehaviour
     public int jumpForce = 100;
     private float moveX, moveY, moveZ;
     private bool justJumped = false;
-    private bool nullifyMovement = false;
+    private bool nullifyInput = false;
+    private bool frozen = false;
+    private float storeY = 0;
+    private int? hzInput = null;
+    private int? vtInput = null;
+    public bool useKeyboard;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
-
-
+    
     // Update is called once per frame
     void FixedUpdate()
     {       
         justJumped = false;
-        if (!nullifyMovement)        
-            Movement();
+        if (useKeyboard)
+            KeyboardInput();
+        if (!frozen)
+        {
+            if (!nullifyInput)
+                Movement();
+            else
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        }
         else
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            rb.velocity = Vector3.zero;
 
+        hzInput = null;
+        vtInput = null;
         grounded = false;
+    }
+
+    public void HorizontalInput(int _val)
+    {
+        hzInput = _val;
+    }
+
+    public void VerticalInput(int _val)
+    {
+        vtInput = _val;
+    }
+
+    void KeyboardInput()
+    {
+        if (Input.GetKey(KeyCode.A))
+            HorizontalInput(-1);
+        if (Input.GetKey(KeyCode.D))
+            HorizontalInput(1);
+        if (Input.GetKey(KeyCode.S))
+            VerticalInput(-1);
+        if (Input.GetKey(KeyCode.W))
+            VerticalInput(1);
     }
 
     void Movement()
     {
-        moveX = Input.GetButton("Horizontal") ? moveSpeed * Input.GetAxis("Horizontal") : 0;
+
+        //moveX = Input.GetButton("Horizontal") ? moveSpeed * Input.GetAxis("Horizontal") : 0;
+        moveX = hzInput != null ? moveSpeed * (float)hzInput : 0;
         moveY = rb.velocity.y;
-        moveZ = Input.GetButton("Vertical") ? moveSpeed * Input.GetAxis("Vertical") : 0;
+        //moveZ = Input.GetButton("Vertical") ? moveSpeed * Input.GetAxis("Vertical") : 0;
+        moveZ = vtInput != null ? moveSpeed * (float)vtInput : 0;
         if (DEBUG_MULTIJUMP)
         {
             if (Input.GetButtonDown("Jump") && jumpCount > 0)
@@ -89,8 +127,18 @@ public class Player_Movement : MonoBehaviour
         }
     }
 
+    public void FreezeUnfreeze(bool _freeze)
+    {
+        if (_freeze)
+            storeY = rb.velocity.y;
+        else
+            rb.velocity = new Vector3(0, storeY, 0);
+
+        frozen = _freeze;
+    }
+
     public void DisableInput(bool _set = true)
     {
-        nullifyMovement = _set;
+        nullifyInput = _set;
     }
 }

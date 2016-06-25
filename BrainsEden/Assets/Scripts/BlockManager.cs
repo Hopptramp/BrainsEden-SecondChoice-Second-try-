@@ -63,7 +63,7 @@ public class BlockManager : MonoBehaviour
         }
     }
 
-    public void BlockCollided(BlockData bData)
+    public void BlockCollided(BlockData bData, Collision coll)
     {
         switch (bData.tag)
         {
@@ -75,13 +75,22 @@ public class BlockManager : MonoBehaviour
         case "End":
        		EndBlockCollided();
         	break;
+            case "Fake":
+                if(coll.gameObject.tag == "Player")
+                    FakeBlockCollided(bData);
+            break;
+            case "End":
+                EndBlockCollided();
+                break;
 
         }
     }
 
 	void FakeBlockCollided(BlockData bData)
     {
-        bData.gameObject.GetComponent<Rigidbody>().useGravity = true;
+        Rigidbody rb = bData.gameObject.GetComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.constraints = ~RigidbodyConstraints.FreezeAll;
     }
 
     void EndBlockCollided()
