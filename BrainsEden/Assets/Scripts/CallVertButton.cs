@@ -15,9 +15,8 @@ public class CallVertButton : MonoBehaviour {
 	}
     public void SetPressed(bool _b)
     {
-        pressed = _b;
+        pressed = _b; 
     }
-
 	
 	// Update is called once per frame
 	void Update ()
