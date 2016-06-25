@@ -20,11 +20,13 @@ public class Player_Movement : MonoBehaviour
     private int? vtInput = null;
     private bool jump;
     public bool useKeyboard;
+    private Animator anim;
     GameObject cam;
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();        
+        rb = GetComponent<Rigidbody>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     void Start()
@@ -46,7 +48,10 @@ public class Player_Movement : MonoBehaviour
                 rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
         else
+        {
             rb.velocity = Vector3.zero;
+            //freez animations here!!
+        }
 
         hzInput = null;
         vtInput = null;
@@ -88,6 +93,22 @@ public class Player_Movement : MonoBehaviour
         moveY = rb.velocity.y;
         //moveZ = Input.GetButton("Vertical") ? moveSpeed * Input.GetAxis("Vertical") : 0;
         moveZ = vtInput != null ? moveSpeed * (float)vtInput : 0;
+
+        if ((anim.GetInteger("States") == 2 && grounded) && !justJumped)
+        {
+            anim.SetInteger("States", 0);
+        }
+        if ((moveX != 0 || moveZ != 0) && grounded)
+        {
+            anim.SetInteger("States", 1);
+        }
+        else if (grounded)
+        {
+            anim.SetInteger("States", 0);
+        }
+
+
+
         if (DEBUG_MULTIJUMP)
         {
             if (jump && jumpCount > 0)
@@ -96,6 +117,8 @@ public class Player_Movement : MonoBehaviour
                 jumpCount--;
                 jump = false;
                 justJumped = true;
+                anim.SetInteger("States", 2);
+
             }
         }
         else
@@ -104,7 +127,8 @@ public class Player_Movement : MonoBehaviour
             {
                 jump = false;
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Acceleration);
-                justJumped = true;             
+                justJumped = true;
+                anim.SetInteger("States", 2);
             }
         }
 		switch (GameManager.instance.m_CameraState) 
