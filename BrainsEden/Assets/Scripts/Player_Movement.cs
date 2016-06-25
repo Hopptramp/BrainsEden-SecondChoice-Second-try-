@@ -75,6 +75,9 @@ public class Player_Movement : MonoBehaviour
             VerticalInput(-1);
         if (Input.GetKey(KeyCode.W))
             VerticalInput(1);
+        if (Input.GetKeyDown(KeyCode.Space))
+            SetJump(true);
+
     }
 
     void Movement()
