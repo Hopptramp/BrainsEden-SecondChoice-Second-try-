@@ -6,7 +6,8 @@ public enum BlockType
     Default,
     Fake,
     End,
-	Mobile
+	Mobile,
+	Kill
 }
 
 public class BlockManager : MonoBehaviour
@@ -16,6 +17,7 @@ public class BlockManager : MonoBehaviour
 
     List<BlockData> blockList;
 
+	List<GameObject> corpse = new List<GameObject>();
 
     // called by the block object, will add itself to it's respective list
     public void AddToBlockList(BlockData bData)
@@ -67,18 +69,36 @@ public class BlockManager : MonoBehaviour
     {
         switch (bData.tag)
         {
-		case "Mobile":
+		case "Kill":
+			if(coll.gameObject.tag == "Player")
+				KillBlockCollided();
 			break;
-            case "Fake":
-                if(coll.gameObject.tag == "Player")
-                    FakeBlockCollided(bData);
+        case "Fake":
+            if(coll.gameObject.tag == "Player")
+            	FakeBlockCollided(bData);
             break;
-            case "End":
-                EndBlockCollided();
-                break;
-
+        case "End":
+            EndBlockCollided();
+            break;
         }
     }
+
+	void KillBlockCollided()
+	{
+		if (corpse.Count != 0)
+		{
+			foreach (GameObject _obj in corpse)
+			{
+				Destroy (_obj);
+			}
+
+			corpse.Clear ();
+		}
+
+		//LOGIC FOR DISCONNECTING THE PLAYER AND ASSIGNING THEIR COMPONENETS TO CORPSE
+
+		GameManager.instance.EndLevel (false);
+	}
 
 	void FakeBlockCollided(BlockData bData)
     {
