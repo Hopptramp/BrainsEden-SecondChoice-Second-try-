@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     [SerializeField] Transform spawnPoint;
     public GameObject player;
-    [SerializeField] GameObject camera;
+    public GameObject camera;
 
     public float killHeight = -5;
     [SerializeField] bool ResetLevel = true;

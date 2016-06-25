@@ -19,10 +19,16 @@ public class Player_Movement : MonoBehaviour
     private int? hzInput = null;
     private int? vtInput = null;
     public bool useKeyboard;
+    GameObject cam;
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();        
+    }
+
+    void Start()
+    {
+        cam = GameManager.instance.camera;
     }
     
     // Update is called once per frame
@@ -96,25 +102,59 @@ public class Player_Movement : MonoBehaviour
 		switch (GameManager.instance.m_CameraState) 
 		{
 		case CameraState.Above:
-			rb.velocity = new Vector3(moveX, moveY, moveZ);
-			break;
+                FixVertCam(true);
+			    break;
 		case CameraState.Below:
-			rb.velocity = new Vector3(moveX, moveY, -moveZ);
-			break;
+                FixVertCam(false);
+                break;
 		case CameraState.Front:
 			rb.velocity = new Vector3(-moveX, moveY, 0);
-			break;
+			    break;
 		case CameraState.Behind:
 			rb.velocity = new Vector3(moveX, moveY, 0);
-			break;
+			    break;
 		case CameraState.Left:
 			rb.velocity = new Vector3(0, moveY, -moveX);
-			break;
+			    break;
 		case CameraState.Right:
 			rb.velocity = new Vector3(0, moveY, moveX);
-			break;
+			    break;
 		}
 		//rb.velocity = new Vector3(moveX, moveY, moveZ);
+
+    }
+
+    void FixVertCam(bool _top)
+    {
+        Debug.Log(cam.transform.up);
+        if (cam.transform.up.x < -0.5f)
+        {
+            if (_top)
+                rb.velocity = new Vector3(-moveZ, moveY, moveX);
+            else
+                rb.velocity = new Vector3(-moveZ, moveY, -moveX);
+        }
+        if (cam.transform.up.x > 0.5f)
+        {
+            if (_top)
+                rb.velocity = new Vector3(moveZ, moveY, -moveX);
+            else
+                rb.velocity = new Vector3(moveZ, moveY, moveX);
+        }
+        if (cam.transform.up.z < -0.5f)
+        {
+            if (_top)
+                rb.velocity = new Vector3(-moveX, moveY, -moveZ);
+            else
+                rb.velocity = new Vector3(moveX, moveY, -moveZ);
+        }
+        if (cam.transform.up.z > 0.5f)
+        {
+            if (_top)
+                rb.velocity = new Vector3(moveX, moveY, moveZ);
+            else
+                rb.velocity = new Vector3(-moveX, moveY, moveZ);
+        }
 
     }
 
