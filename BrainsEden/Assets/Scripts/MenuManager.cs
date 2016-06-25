@@ -38,7 +38,7 @@ public class MenuManager : MonoBehaviour
     }
     public void ExitGame()
     {
-        SceneManager.UnloadScene(0);
+        Application.Quit();
     }
 
     // return to main menu

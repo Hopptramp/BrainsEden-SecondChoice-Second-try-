@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public float killHeight = -5;
     [SerializeField] bool ResetLevel = true;
     [SerializeField] GameObject pauseMenu;
+    public GameObject endMenu;
 
 
     
@@ -94,6 +95,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PrepEndLevel()
+    {
+        endMenu.SetActive(true);
+        ScoreManager.instance.runUpdate = false;
+        endMenu.GetComponent<EndLevelMenu>().SetEndValues(ScoreManager.instance.timerValue, (int)ScoreManager.instance.flipValue, (int)ScoreManager.instance.jumpValue);
+    }
 
     public void EndLevel(bool? overwriteReset)
     {
