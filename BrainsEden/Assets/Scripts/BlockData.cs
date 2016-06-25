@@ -35,7 +35,7 @@ public class BlockData : MonoBehaviour
 	}
         //if(m_blockType == BlockType.Fake)
         //    gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-    }
+    //}
 	
 	// Update is called once per frame
 	void Update ()

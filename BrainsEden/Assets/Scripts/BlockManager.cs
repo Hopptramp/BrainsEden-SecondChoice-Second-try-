@@ -69,12 +69,6 @@ public class BlockManager : MonoBehaviour
         {
 		case "Mobile":
 			break;
-        case "Fake":
-            FakeBlockCollided(bData);
-        	break;
-        case "End":
-       		EndBlockCollided();
-        	break;
             case "Fake":
                 if(coll.gameObject.tag == "Player")
                     FakeBlockCollided(bData);
