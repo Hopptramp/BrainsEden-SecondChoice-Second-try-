@@ -57,6 +57,8 @@ public class Rotation : MonoBehaviour
 		{
 			RotateLeft();
 		}
+
+		origin.transform.position = player.transform.position;
 	}
 
 	public void RotateUp ()
@@ -84,10 +86,10 @@ public class Rotation : MonoBehaviour
 	}
 
 
-    void FixedUpdate()
-    {
-        origin.transform.position = player.transform.position;
-    }
+//    void FixedUpdate()
+//    {
+//        
+//    }
 
 	/// <summary>
 	/// Checks the rotation of the camera and rites it if at a stupid orientation

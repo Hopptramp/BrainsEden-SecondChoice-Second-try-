@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        player = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity) as GameObject;
+        player.transform.position = spawnPoint.position;
         player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
         camera.GetComponent<Rotation>().player = player;
     }

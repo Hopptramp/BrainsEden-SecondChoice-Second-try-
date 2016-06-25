@@ -126,7 +126,7 @@ public class Player_Movement : MonoBehaviour
 
     void FixVertCam(bool _top)
     {
-        Debug.Log(cam.transform.up);
+ 
         if (cam.transform.up.x < -0.5f)
         {
             if (_top)
