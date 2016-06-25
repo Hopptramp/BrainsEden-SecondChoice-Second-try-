@@ -18,6 +18,7 @@ public class Player_Movement : MonoBehaviour
     private float storeY = 0;
     private int? hzInput = null;
     private int? vtInput = null;
+    private bool jump;
     public bool useKeyboard;
     GameObject cam;
 
@@ -57,6 +58,8 @@ public class Player_Movement : MonoBehaviour
         hzInput = _val;
     }
 
+    public void SetJump(bool b) { jump = b; }
+
     public void VerticalInput(int _val)
     {
         vtInput = _val;
@@ -84,17 +87,19 @@ public class Player_Movement : MonoBehaviour
         moveZ = vtInput != null ? moveSpeed * (float)vtInput : 0;
         if (DEBUG_MULTIJUMP)
         {
-            if (Input.GetButtonDown("Jump") && jumpCount > 0)
+            if (jump && jumpCount > 0)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Acceleration);
                 jumpCount--;
+                jump = false;
                 justJumped = true;
             }
         }
         else
         {
-            if (Input.GetButtonDown("Jump") && grounded)
+            if (jump && grounded)
             {
+                jump = false;
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Acceleration);
                 justJumped = true;             
             }

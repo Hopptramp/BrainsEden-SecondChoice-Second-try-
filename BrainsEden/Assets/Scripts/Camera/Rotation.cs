@@ -15,6 +15,10 @@ public class Rotation : MonoBehaviour
 
 	private GameObject origin;
     public GameObject player;
+    [SerializeField]
+    private bool useKeyboard;
+
+    private bool left, right, up, down;
 
 	[SerializeField]
 	private bool clear = true;
@@ -35,33 +39,64 @@ public class Rotation : MonoBehaviour
 
         currentState = GameManager.instance.m_CameraState;
 	}
+    
 
 	void Update ()
 	{
-		if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
-		{
-			RotateUp ();
-		}
+        if (useKeyboard)
+        {
+            if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
+            {
+                RotateUp();
+            }
 
-		else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
-		{
-			RotateDown ();
-		}
+            else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
+            {
+                RotateDown();
+            }
 
-		else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
-		{
-			RotateRight();
-		}
+            else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
+            {
+                RotateRight();
+            }
 
-		else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
-		{
-			RotateLeft();
-		}
+            else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
+            {
+                RotateLeft();
+            }
 
+        }
+        else
+        {
+            if (up && clear)            
+               RotateUp();            
+                                                      
+            else if (down && clear)      
+                RotateDown();            
+
+            else if (right && clear)            
+               RotateRight();           
+
+            else if (left && clear)
+                RotateLeft();
+        }
+        ResetBools();
 		origin.transform.position = player.transform.position;
 	}
+    void ResetBools()
+    {
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+    }
 
-	public void RotateUp ()
+    public void LeftPress() {left = true; }
+    public void RightPress() { right = true; }
+    public void UpPress() { up = true; }
+    public void DownPress() { down = true; }
+
+    public void RotateUp ()
 	{
 		clear = false;
 		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"onstarttarget",player,"onstart", "FreezeUnfreeze", "onstartparams" , true,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
