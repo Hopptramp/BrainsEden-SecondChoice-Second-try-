@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public enum BlockType
 {
     Default,
-    Fake
+    Fake,
+    End
 }
 
 public class BlockManager : MonoBehaviour
@@ -68,6 +69,9 @@ public class BlockManager : MonoBehaviour
             case "Fake":
                 FakeBlockCollided(bData);
             break;
+            case "End":
+                EndBlockCollided();
+                break;
 
         }
     }
@@ -75,7 +79,11 @@ public class BlockManager : MonoBehaviour
 	void FakeBlockCollided(BlockData bData)
     {
         bData.gameObject.GetComponent<Rigidbody>().useGravity = true;
+    }
 
+    void EndBlockCollided()
+    {
+        GameManager.instance.EndLevel(false);
     }
 
 }

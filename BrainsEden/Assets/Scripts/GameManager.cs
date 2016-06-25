@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     public float killHeight = -5;
     [SerializeField] bool ResetLevel = true;
 
+    int currentLevel = 0;
+
     
     
     void Awake()
@@ -43,13 +45,17 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
+        InitGame();
+           
+	}
 
+    void InitGame()
+    {
         player = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity) as GameObject;
         player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
         camera.GetComponent<Rotation>().player = player;
-        
-	}
+    }
 
     public void UpdateCameraState()
     {
@@ -79,18 +85,30 @@ public class GameManager : MonoBehaviour
     {
        if (player.transform.position.y <= killHeight)
         {
-            EndLevel();
+            EndLevel(null);
         }
 	}
 
 
-    void EndLevel()
+    public void EndLevel(bool? overwriteReset)
     {
-        if (ResetLevel)
+        if (overwriteReset.HasValue ? (bool)overwriteReset : ResetLevel)
         {
             Destroy(gameObject);
-            SceneManager.LoadScene(0);
-
+#if UNITY_5_3_OR_NEWER
+            SceneManager.LoadScene(currentLevel);
+#else
+            Application.LoadLevel(currentLevel);
+#endif
+        }
+        else
+        {
+#if UNITY_5_3_OR_NEWER
+            SceneManager.LoadScene(++currentLevel);
+#else
+            Application.LoadLevel(currentLevel);
+#endif
+            InitGame();
         }
     }
 }
