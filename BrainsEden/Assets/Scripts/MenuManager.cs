@@ -22,7 +22,8 @@ public class MenuManager : MonoBehaviour
     // main menu buttons
     public void StartGame()
     {
-        SceneManager.LoadScene(++DataHolder.instance.currentLevel);
+        DataHolder.instance.currentLevel = 2;
+        SceneManager.LoadScene(2);
     }
     public void ActivateLevelMenu()
     {
@@ -51,6 +52,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartLevel (int _levelNumber)
     {
+        DataHolder.instance.currentLevel = _levelNumber;
         SceneManager.LoadScene(_levelNumber);
     }
     

@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
         if (overwriteReset.HasValue ? (bool)overwriteReset : ResetLevel)
         {
             Destroy(gameObject);
-#if UNITY_5_3_OR_NEWER
+#if UNITY_5_3_OR_NEWER               
             SceneManager.LoadScene(DataHolder.instance.currentLevel);
 #else
             Application.LoadLevel(DataHolder.instance.currentLevel);
@@ -130,9 +130,9 @@ public class GameManager : MonoBehaviour
         else
         {
 #if UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene(++DataHolder.instance.currentLevel);
+            SceneManager.LoadScene(++DataHolder.instance.currentLevel > 11 ? 0 : DataHolder.instance.currentLevel);
 #else
-            Application.LoadLevel(++DataHolder.instance.currentLevel);
+            Application.LoadLevel(++DataHolder.instance.currentLevel > 11 ? 0 : DataHolder.instance.currentLevel);
 #endif
             InitGame();
         }
