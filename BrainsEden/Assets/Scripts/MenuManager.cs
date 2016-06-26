@@ -49,19 +49,9 @@ public class MenuManager : MonoBehaviour
         activeMenu = mainMenu;
     }
 
-
-    // Loading the levels
-    public void StartLevelOne()
+    public void StartLevel (int _levelNumber)
     {
-        SceneManager.LoadScene(1);
-    }
-    public void StartLevelTwo()
-    {
-        SceneManager.LoadScene(2);
-    }
-    public void StartLevelThree()
-    {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(_levelNumber);
     }
     
     

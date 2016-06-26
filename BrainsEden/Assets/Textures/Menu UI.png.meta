@@ -1,0 +1,257 @@
+fileFormatVersion: 2
+guid: 32e7fed357cb90e4cad3299df86ba85f
+timeCreated: 1466947844
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Menu UI_0
+    21300002: Menu UI_1
+    21300004: Menu UI_2
+    21300006: Menu UI_3
+    21300008: Menu UI_4
+    21300010: Menu UI_5
+    21300012: Menu UI_6
+    21300014: Menu UI_7
+    21300016: Menu UI_8
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Menu UI_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 1191
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.44133, y: 85.55597}
+        - {x: 166.44133, y: 86.55597}
+        - {x: -163.55867, y: 86.55597}
+        - {x: -164.55867, y: 85.55597}
+        - {x: -166.55867, y: 85.55597}
+        - {x: -169.55867, y: 82.55597}
+        - {x: -169.55867, y: -83.44403}
+        - {x: -166.55867, y: -86.44403}
+        - {x: 167.44133, y: -86.44403}
+        - {x: 171.44133, y: -85.44403}
+        - {x: 171.44133, y: 84.55597}
+    - name: Menu UI_1
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 879
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.44133, y: 85.563965}
+        - {x: 166.44133, y: 86.563965}
+        - {x: -163.55867, y: 86.563965}
+        - {x: -164.55867, y: 85.563965}
+        - {x: -166.55867, y: 85.563965}
+        - {x: -169.55867, y: 82.563965}
+        - {x: -169.55867, y: -83.436035}
+        - {x: -166.55867, y: -86.436035}
+        - {x: 167.44133, y: -86.436035}
+        - {x: 171.44133, y: -85.436035}
+        - {x: 171.44133, y: 84.563965}
+    - name: Menu UI_2
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 580
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.44133, y: 87.446655}
+        - {x: -166.55867, y: 87.446655}
+        - {x: -169.55867, y: 84.446655}
+        - {x: -169.55867, y: -81.553345}
+        - {x: -166.55867, y: -84.553345}
+        - {x: -164.55867, y: -84.553345}
+        - {x: -163.55867, y: -85.553345}
+        - {x: 166.44133, y: -85.553345}
+        - {x: 167.44133, y: -84.553345}
+        - {x: 171.44133, y: -83.553345}
+        - {x: 171.44133, y: 86.446655}
+    - name: Menu UI_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 287
+        width: 498
+        height: 251
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 170.80667, y: 84.42534}
+        - {x: 167.80667, y: 87.42534}
+        - {x: -168.19333, y: 87.42534}
+        - {x: -170.19333, y: 85.42534}
+        - {x: -170.19333, y: -83.57466}
+        - {x: -168.19333, y: -85.57466}
+        - {x: 167.80667, y: -85.57466}
+        - {x: 170.80667, y: -82.57466}
+    - name: Menu UI_4
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 85
+        width: 498
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -168.60666, y: 48.526665}
+        - {x: -169.60666, y: 47.526665}
+        - {x: -169.60666, y: -48.473335}
+        - {x: 171.39334, y: -48.473335}
+        - {x: 171.39334, y: 47.526665}
+        - {x: 170.39334, y: 48.526665}
+    - name: Menu UI_5
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 1191
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.47064, y: 85.55597}
+        - {x: 166.47064, y: 86.55597}
+        - {x: -163.52936, y: 86.55597}
+        - {x: -164.52936, y: 85.55597}
+        - {x: -166.52936, y: 85.55597}
+        - {x: -169.52936, y: 82.55597}
+        - {x: -169.52936, y: -83.44403}
+        - {x: -166.52936, y: -86.44403}
+        - {x: 167.47064, y: -86.44403}
+        - {x: 171.47064, y: -85.44403}
+        - {x: 171.47064, y: 84.55597}
+    - name: Menu UI_6
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 879
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.47064, y: 85.563965}
+        - {x: 166.47064, y: 86.563965}
+        - {x: -163.52936, y: 86.563965}
+        - {x: -164.52936, y: 85.563965}
+        - {x: -166.52936, y: 85.563965}
+        - {x: -169.52936, y: 82.563965}
+        - {x: -169.52936, y: -83.436035}
+        - {x: -166.52936, y: -86.436035}
+        - {x: 167.47064, y: -86.436035}
+        - {x: 171.47064, y: -85.436035}
+        - {x: 171.47064, y: 84.563965}
+    - name: Menu UI_7
+      rect:
+        serializedVersion: 2
+        x: 769
+        y: 580
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 167.47064, y: 87.446655}
+        - {x: -166.52936, y: 87.446655}
+        - {x: -169.52936, y: 84.446655}
+        - {x: -169.52936, y: -81.553345}
+        - {x: -166.52936, y: -84.553345}
+        - {x: -164.52936, y: -84.553345}
+        - {x: -163.52936, y: -85.553345}
+        - {x: 166.47064, y: -85.553345}
+        - {x: 167.47064, y: -84.553345}
+        - {x: 171.47064, y: -83.553345}
+        - {x: 171.47064, y: 86.446655}
+    - name: Menu UI_8
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 255
+        width: 498
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 170.836, y: 82.58}
+        - {x: 167.836, y: 85.58}
+        - {x: 165.836, y: 85.58}
+        - {x: 164.836, y: 86.58}
+        - {x: -165.164, y: 86.58}
+        - {x: -166.164, y: 85.58}
+        - {x: -168.164, y: 85.58}
+        - {x: -170.164, y: 83.58}
+        - {x: -170.164, y: -84.42}
+        - {x: -168.164, y: -86.42}
+        - {x: 167.836, y: -86.42}
+        - {x: 170.836, y: -83.42}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
