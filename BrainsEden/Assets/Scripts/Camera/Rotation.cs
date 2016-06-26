@@ -13,6 +13,8 @@ public class Rotation : MonoBehaviour
 
     CameraState currentState;
 
+	public GameObject compassOrigin;
+
 	private GameObject origin;
     public GameObject player;
     [SerializeField]
@@ -40,6 +42,14 @@ public class Rotation : MonoBehaviour
         currentState = GameManager.instance.m_CameraState;
 	}
     
+
+	void FixedUpdate ()
+	{
+		if (compassOrigin)
+		{
+			compassOrigin.transform.rotation = origin.transform.rotation;
+		}
+	}
 
 	void Update ()
 	{
