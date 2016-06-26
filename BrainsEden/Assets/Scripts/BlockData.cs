@@ -4,6 +4,8 @@ using System.Collections;
 public class BlockData : MonoBehaviour
 {
     public BlockType m_blockType;
+    public BlockType m_secondBlockType;
+    
     CameraState currentCameraState;
     VisibleState currentVisibleState { get { return currentVisibleState; } set { currentVisibleState = value; } }
 
@@ -40,7 +42,7 @@ public class BlockData : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		if (m_blockType == BlockType.Mobile && !moving)
+		if ((m_blockType == BlockType.Mobile && !moving) || (m_secondBlockType == BlockType.Mobile && !moving))
 		{
 			MoveToSecond();
 			moving = true;
