@@ -50,7 +50,7 @@ public class ScoreManager : MonoBehaviour {
         jumpText.text = "Jumps " + jumpValue.ToString();
     }
 
-    public void IncreaseFlips(float flips)
+    public void IncreaseFlips()
     {
         ++flipValue;
         flipText.text = "Flips " + flipValue.ToString();

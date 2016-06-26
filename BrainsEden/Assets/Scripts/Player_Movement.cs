@@ -125,6 +125,8 @@ public class Player_Movement : MonoBehaviour
                 anim.SetInteger("States", 2);
                 audioSrc.Play();
 
+                ScoreManager.instance.IncreaseJumps();
+
             }
         }
         else
@@ -136,6 +138,8 @@ public class Player_Movement : MonoBehaviour
                 justJumped = true;
                 audioSrc.Play();
                 anim.SetInteger("States", 2);
+
+                ScoreManager.instance.IncreaseJumps();
             }
         }
 		switch (GameManager.instance.m_CameraState) 

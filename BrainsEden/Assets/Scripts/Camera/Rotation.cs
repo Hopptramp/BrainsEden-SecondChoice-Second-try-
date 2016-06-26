@@ -71,37 +71,53 @@ public class Rotation : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
             {
                 RotateUp();
+                ScoreManager.instance.IncreaseFlips();
             }
 
             else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
             {
                 RotateDown();
+                ScoreManager.instance.IncreaseFlips();
             }
 
             else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
             {
                 RotateRight();
+                ScoreManager.instance.IncreaseFlips();
             }
 
             else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
             {
                 RotateLeft();
+                ScoreManager.instance.IncreaseFlips();
             }
 
         }
         else
         {
-            if (up && clear)            
-               RotateUp();            
-                                                      
-            else if (down && clear)      
-                RotateDown();            
+            if (up && clear)
+            {
+                RotateUp();
+                ScoreManager.instance.IncreaseFlips();
+            }
 
-            else if (right && clear)            
-               RotateRight();           
+            else if (down && clear)
+            { 
+                RotateDown();
+                ScoreManager.instance.IncreaseFlips();
+            }
+
+            else if (right && clear)
+            { 
+                RotateRight();
+                ScoreManager.instance.IncreaseFlips();
+            }
 
             else if (left && clear)
+            { 
                 RotateLeft();
+                ScoreManager.instance.IncreaseFlips();
+            }
         }
         ResetBools();
 		origin.transform.position = player.transform.position;
