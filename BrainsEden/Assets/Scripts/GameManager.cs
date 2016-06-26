@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public enum CameraState
 {
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] bool ResetLevel = true;
     [SerializeField] GameObject pauseMenu;
     public GameObject endMenu;
+    public GameObject UpButton, DownButton;
 
 
     
@@ -56,6 +58,7 @@ public class GameManager : MonoBehaviour
         player.transform.position = spawnPoint.position;
         player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
         camera.GetComponent<Rotation>().player = player;
+        UpdateCameraState();
     }
 
     public void UpdateCameraState()
@@ -76,6 +79,17 @@ public class GameManager : MonoBehaviour
             m_CameraState = CameraState.Left;
         if (dir.x >= -11 && dir.x <= -9)
             m_CameraState = CameraState.Right;
+
+        if (m_CameraState != CameraState.Above && m_CameraState != CameraState.Below)
+        {
+            UpButton.GetComponent<Button>().interactable = false;
+            DownButton.GetComponent<Button>().interactable = false;
+        }
+        else
+        {
+            UpButton.GetComponent<Button>().interactable = true;
+            DownButton.GetComponent<Button>().interactable = true;
+        }
 
         BlockManager.instance.UpdateActiveBlocks(m_CameraState);
     }
