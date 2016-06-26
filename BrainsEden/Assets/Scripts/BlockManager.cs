@@ -22,6 +22,8 @@ public class BlockManager : MonoBehaviour
 	public List<List<BlockData>> shadeLists;
 	public List<float> multipliers; //stores the multipliers for each layer
 
+	private bool firstShade = false;
+
     // called by the block object, will add itself to it's respective list
     public void AddToBlockList(BlockData bData)
     {
@@ -34,6 +36,15 @@ public class BlockManager : MonoBehaviour
 
         blockList = new List<BlockData>();
     }
+
+	void Update()
+	{
+		if (!firstShade)
+		{
+			firstShade = true;
+			DepthShade (Vector3.back);
+		}
+	}
 
     public void DestroyBlock(BlockData bData)
     {
@@ -276,12 +287,6 @@ public class BlockManager : MonoBehaviour
 				}
 			}
 		}
-
-		List<List<BlockData>> copy = shadeLists;
-
-		List<BlockData> one = shadeLists [0],
-		two = shadeLists [1],
-		three = shadeLists [2];
 
 		//GO THROUGH AND DO THE CURRENT-LIST-NUMBER/NUMBER-OF-LISTS, STORE AS MULTIPLIER FLOAT?
 		float noOfLists = shadeLists.Count;
