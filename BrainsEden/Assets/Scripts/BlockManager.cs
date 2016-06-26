@@ -7,7 +7,8 @@ public enum BlockType
     Fake,
     End,
 	Mobile,
-	Kill
+	Kill,
+    None
 }
 
 public class BlockManager : MonoBehaviour

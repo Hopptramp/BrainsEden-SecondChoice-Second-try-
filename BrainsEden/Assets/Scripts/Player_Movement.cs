@@ -42,6 +42,7 @@ public class Player_Movement : MonoBehaviour
             KeyboardInput();
         if (!frozen)
         {
+            anim.speed = 1;
             if (!nullifyInput)
                 Movement();
             else
@@ -49,6 +50,7 @@ public class Player_Movement : MonoBehaviour
         }
         else
         {
+            anim.speed = 0;
             rb.velocity = Vector3.zero;
             //freez animations here!!
         }
