@@ -13,7 +13,7 @@ public class Rotation : MonoBehaviour
 
     CameraState currentState;
 
-	public GameObject compassOrigin;
+	public GameObject compassPrefab, compassOrigin;
 
 	private GameObject origin;
     public GameObject player;
@@ -25,9 +25,22 @@ public class Rotation : MonoBehaviour
 	[SerializeField]
 	private bool clear = true;
 
+	void Awake ()
+	{
+		if (!compassOrigin)
+		{
+			GameObject.Instantiate (compassPrefab);
+		}
+	}
+
 	//set the camera to start facing the origin at cameraDist distance
 	void Start ()
 	{
+		if (!compassOrigin)
+		{
+			compassOrigin = Compass.instance.compassOrigin;
+		}
+
 		//sanity check for origin
 		if (!origin)
 		{
