@@ -22,11 +22,14 @@ public class Player_Movement : MonoBehaviour
     public bool useKeyboard;
     private Animator anim;
     GameObject cam;
+    public AudioClip audioCLip;
+    public AudioSource audioSrc;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponentInChildren<Animator>();
+        audioSrc = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -120,6 +123,7 @@ public class Player_Movement : MonoBehaviour
                 jump = false;
                 justJumped = true;
                 anim.SetInteger("States", 2);
+                audioSrc.Play();
 
             }
         }
@@ -130,6 +134,7 @@ public class Player_Movement : MonoBehaviour
                 jump = false;
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Acceleration);
                 justJumped = true;
+                audioSrc.Play();
                 anim.SetInteger("States", 2);
             }
         }
