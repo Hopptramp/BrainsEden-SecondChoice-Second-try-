@@ -47,12 +47,6 @@ public class BlockManager : MonoBehaviour
 		}
 	}
 
-    public void DestroyBlock(BlockData bData)
-    {
-        blockList.Remove(bData);
-        Destroy(bData.gameObject);
-    }
-
     public void UpdateActiveBlocks(CameraState currentState)
     {
         bool remainActive;

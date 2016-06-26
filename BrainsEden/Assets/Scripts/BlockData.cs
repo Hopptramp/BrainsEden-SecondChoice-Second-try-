@@ -48,6 +48,14 @@ public class BlockData : MonoBehaviour
 			moving = true;
 		}
 
+        if(transform.position.y < -5)
+        {
+            gameObject.GetComponent<Rigidbody>().useGravity = false;
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            //BlockManager.instance.DestroyBlock(this);
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+        }
+
         currentCameraState = GameManager.instance.m_CameraState;
 	}
 
@@ -86,8 +94,5 @@ public class BlockData : MonoBehaviour
 		}
 	}
 
-    void DestroyBlock()
-    {
-        BlockManager.instance.DestroyBlock(this);
-    }
+
 }

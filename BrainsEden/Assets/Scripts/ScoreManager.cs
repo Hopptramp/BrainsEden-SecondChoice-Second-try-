@@ -53,6 +53,6 @@ public class ScoreManager : MonoBehaviour {
     public void IncreaseFlips()
     {
         ++flipValue;
-        flipText.text = "Flips " + flipValue.ToString();
+        //flipText.text = "Flips " + flipValue.ToString();
     }
 }
