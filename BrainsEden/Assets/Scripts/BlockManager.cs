@@ -24,6 +24,7 @@ public class BlockManager : MonoBehaviour
 	public List<float> multipliers; //stores the multipliers for each layer
 
 	private bool firstShade = false;
+    [SerializeField] bool dontListShade = false;
 
     // called by the block object, will add itself to it's respective list
     public void AddToBlockList(BlockData bData)
@@ -76,34 +77,37 @@ public class BlockManager : MonoBehaviour
 
 	public void DepthShade(Vector3 _camForward)
 	{
-		Vector3 pass = Vector3.zero;
+        if (!dontListShade)
+        {
+            Vector3 pass = Vector3.zero;
 
-		if (_camForward == Vector3.right)
-		{
-			pass = Vector3.right;
-		}
-		else if (_camForward == Vector3.left)
-		{
-			pass = Vector3.left;
-		}
-		else if (_camForward == Vector3.up)
-		{
-			pass = Vector3.up;
-		}
-		else if (_camForward == Vector3.down)
-		{
-			pass = Vector3.down;
-		}
-		else if (_camForward == Vector3.forward)
-		{
-			pass = Vector3.forward;
-		}
-		else
-		{
-			pass = Vector3.back;
-		}
+            if (_camForward == Vector3.right)
+            {
+                pass = Vector3.right;
+            }
+            else if (_camForward == Vector3.left)
+            {
+                pass = Vector3.left;
+            }
+            else if (_camForward == Vector3.up)
+            {
+                pass = Vector3.up;
+            }
+            else if (_camForward == Vector3.down)
+            {
+                pass = Vector3.down;
+            }
+            else if (_camForward == Vector3.forward)
+            {
+                pass = Vector3.forward;
+            }
+            else
+            {
+                pass = Vector3.back;
+            }
 
-		Shade (pass);
+            Shade(pass);
+        }
 	}
 
 	private void Shade (Vector3 axis)
