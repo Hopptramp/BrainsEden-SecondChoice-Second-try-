@@ -4,6 +4,7 @@
 	{
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Texture", 2D) = "white" {}
+		/*_DepthMax("Max Depth", Float) = 5*/
 	}
 		SubShader
 	{
@@ -36,6 +37,7 @@
 	
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			float _DepthMax;
 	
 			v2f vert(appdata v)
 			{
@@ -55,7 +57,7 @@
 				fixed4 col = tex2D(_MainTex, i.uv) * _Color;
 				// apply fog
 				UNITY_APPLY_FOG(i.fogCoord, col);
-				float invert = 1 - i.depth;
+				float invert = _DepthMax - i.depth;
 				return col * invert;
 			}
 			ENDCG

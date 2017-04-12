@@ -26,6 +26,8 @@ public class BlockManager : MonoBehaviour
 	private bool firstShade = false;
     [SerializeField] bool dontListShade = false;
 
+    [SerializeField] float shaderDepthValue = 3;
+
     // called by the block object, will add itself to it's respective list
     public void AddToBlockList(BlockData bData)
     {
@@ -46,6 +48,8 @@ public class BlockManager : MonoBehaviour
 			firstShade = true;
 			DepthShade (Vector3.back);
 		}
+        Shader.SetGlobalFloat("_DepthMax", shaderDepthValue);
+        
 	}
 
     public void UpdateActiveBlocks(CameraState currentState)
