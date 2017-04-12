@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/Scenes/Sam.unity
-  isLoaded: 1
-  isActive: 1
