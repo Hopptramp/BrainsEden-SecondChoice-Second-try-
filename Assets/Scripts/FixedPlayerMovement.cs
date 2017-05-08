@@ -12,7 +12,7 @@ public class FixedPlayerMovement : MonoBehaviour {
     CameraState camState;
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
-
+    enum ObstructionType { None, Drop, CanJump, Obstruction }
 
 	// Use this for initialization
 	void Start () {
@@ -31,7 +31,10 @@ public class FixedPlayerMovement : MonoBehaviour {
     /// <param name="_direction"></param>
     void MoveCharacter(Vector3 _direction)
     {
-        if(!CheckObstruction(_direction))
+        print(CheckObstruction(_direction));
+
+        // check what obstruction type is found when moving in that direction
+        if(CheckObstruction(_direction) == ObstructionType.None)
             StartCoroutine(SmoothMoveCharacter(_direction));
     }
 
@@ -40,11 +43,20 @@ public class FixedPlayerMovement : MonoBehaviour {
     /// </summary>
     /// <param name="_direction"></param>
     /// <returns></returns>
-    bool CheckObstruction(Vector3 _direction)
+    ObstructionType CheckObstruction(Vector3 _direction)
     {
         if (Physics.Raycast(transform.position, _direction, 1, obstuctionObjects))
-            return true;
-        return false;
+        {
+            if (!Physics.Raycast(transform.position + _direction, Vector3.up, 1, obstuctionObjects))
+            {
+                return ObstructionType.CanJump;
+            }
+            return ObstructionType.Obstruction;
+        }
+        if (!Physics.Raycast(transform.position + _direction, Vector3.down, 1, obstuctionObjects))
+            return ObstructionType.Drop;
+
+            return ObstructionType.None;
     }
 
     /// <summary>
