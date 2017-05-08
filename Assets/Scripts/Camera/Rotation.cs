@@ -29,7 +29,7 @@ public class Rotation : MonoBehaviour
 	{
 		if (!compassOrigin)
 		{
-			GameObject.Instantiate (compassPrefab);
+			//-GameObject.Instantiate (compassPrefab);
 		}
 
 
@@ -137,6 +137,27 @@ public class Rotation : MonoBehaviour
     public void RightPress() { right = true; }
     public void UpPress() { up = true; }
     public void DownPress() { down = true; }
+
+    public void TriggerRotation(Direction _direction)
+    {
+        switch (_direction)
+        {
+            case Direction.Up:
+                RotateUp();
+                break;
+            case Direction.Down:
+                RotateDown();
+                break;
+            case Direction.Left:
+                RotateLeft();
+                break;
+            case Direction.Right:
+                RotateRight();
+                break;
+            default:
+                break;
+        }
+    }
 
     public void RotateUp ()
 	{
