@@ -31,7 +31,20 @@ public class Rotation : MonoBehaviour
 		{
 			GameObject.Instantiate (compassPrefab);
 		}
-	}
+
+
+        //sanity check for origin
+        if (!origin)
+        {
+            origin = new GameObject();
+            origin.transform.position = Vector3.zero;
+            origin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
+        }
+
+        transform.parent = origin.transform;
+        transform.position = transform.parent.position - new Vector3(0f, 0f, cameraDist);
+
+    }
 
 	//set the camera to start facing the origin at cameraDist distance
 	void Start ()
@@ -41,16 +54,6 @@ public class Rotation : MonoBehaviour
 			compassOrigin = Compass.instance.compassOrigin;
 		}
 
-		//sanity check for origin
-		if (!origin)
-		{
-			origin = new GameObject ();
-			origin.transform.position = Vector3.zero;
-			origin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
-		}
-
-		transform.parent = origin.transform;
-		transform.position = transform.parent.position - new Vector3 (0f, 0f, cameraDist);
 
         currentState = GameManager.instance.m_CameraState;
 	}
@@ -138,7 +141,7 @@ public class Rotation : MonoBehaviour
     public void RotateUp ()
 	{
 		//pass the camera's new fwd
-		BlockManager.instance.DepthShade (origin.transform.up);
+		//BlockManager.instance.DepthShade (origin.transform.up);
 
 		clear = false;
 		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"onstarttarget",player,"onstart", "FreezeUnfreeze", "onstartparams" , true,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
@@ -147,7 +150,7 @@ public class Rotation : MonoBehaviour
 	public void RotateDown ()
 	{
 		//pass the camera's new fwd
-		BlockManager.instance.DepthShade (origin.transform.up * -1);
+		//BlockManager.instance.DepthShade (origin.transform.up * -1);
 
 		clear = false;
 		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
@@ -156,7 +159,7 @@ public class Rotation : MonoBehaviour
 	public void RotateLeft ()
 	{
 		//pass the camera's new fwd
-		BlockManager.instance.DepthShade (origin.transform.right * -1);
+		//BlockManager.instance.DepthShade (origin.transform.right * -1);
 
 		clear = false;
 		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
@@ -165,7 +168,7 @@ public class Rotation : MonoBehaviour
 	public void RotateRight ()
 	{
 		//pass the camera's new fwd
-		BlockManager.instance.DepthShade (origin.transform.right);
+		//BlockManager.instance.DepthShade (origin.transform.right);
 
 		clear = false;
 		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
@@ -203,6 +206,6 @@ public class Rotation : MonoBehaviour
         origin.transform.position = player.transform.position;
         GameManager.instance.UpdateCameraState();
         clear = true;
-        player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
+        //player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
 	}
 }

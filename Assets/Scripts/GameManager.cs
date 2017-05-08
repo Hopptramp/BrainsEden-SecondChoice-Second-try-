@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         player.transform.position = spawnPoint.position;
-        player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
+        //player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
         camera.GetComponent<Rotation>().player = player;
         UpdateCameraState();
     }
