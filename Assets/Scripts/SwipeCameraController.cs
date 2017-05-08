@@ -14,15 +14,15 @@ public class SwipeCameraController : MonoBehaviour {
         cameraRotate = Camera.main.GetComponent<Rotation>();
 	}
 
-    //private void FixedUpdate()
-    //{
-    //    transform.position = cameraPos.position;
-    //}
+    private void FixedUpdate()
+    {
+        transform.position = cameraPos.position;
+    }
 
-    //private void LateUpdate()
-    //{
-    //    transform.position = cameraPos.position;
-    //}
+    private void LateUpdate()
+    {
+        transform.position = cameraPos.position;
+    }
 
     // Update is called once per frame
     void Update()
@@ -107,15 +107,15 @@ public class SwipeCameraController : MonoBehaviour {
 
     IEnumerator RotateSelf(Vector3 _rotation)
     {
-        //Quaternion LocalRotation = Quaternion.Inverse(transform.rotation) * WorldRotation;
+        Quaternion LocalRotation = Quaternion.Inverse(Quaternion.Euler(_rotation)) * cameraPos.rotation;
         isRotating = true;
         Quaternion newRotation = transform.localRotation * Quaternion.Euler(_rotation);
-        while(Quaternion.Angle(transform.localRotation, newRotation) > 1)
+        while(Quaternion.Angle(transform.localRotation, LocalRotation) > 1)
         {
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, newRotation, rotateSpeed);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, LocalRotation, rotateSpeed);
             yield return null; 
         }
-        transform.localRotation = newRotation;
+        transform.localRotation = LocalRotation;
         isRotating = false;
         print(transform.forward);
     }
