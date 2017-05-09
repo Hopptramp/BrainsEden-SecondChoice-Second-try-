@@ -167,7 +167,7 @@ public class Rotation : MonoBehaviour
 		//BlockManager.instance.DepthShade (origin.transform.up);
 
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"onstarttarget",player,"onstart", "FreezeUnfreeze", "onstartparams" , true,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"onstarttarget",player,"onstart", "FreezeUnfreeze", "onstartparams" , true,"oncompletetarget", gameObject, "oncomplete"));
 	}
 
 	public void RotateDown ()
@@ -176,7 +176,7 @@ public class Rotation : MonoBehaviour
 		//BlockManager.instance.DepthShade (origin.transform.up * -1);
 
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete"));
 	}
 
 	public void RotateLeft ()
@@ -185,7 +185,7 @@ public class Rotation : MonoBehaviour
 		//BlockManager.instance.DepthShade (origin.transform.right * -1);
 
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete"));
 	}
 
 	public void RotateRight ()
@@ -194,42 +194,7 @@ public class Rotation : MonoBehaviour
 		//BlockManager.instance.DepthShade (origin.transform.right);
 
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete"));
 	}
 
-	/// <summary>
-	/// Checks the rotation of the camera and rites it if at a stupid orientation
-	/// </summary>
-	void CheckRotation()
-	{
-		//if not looking up or down and the camera is off orientation
-		if (transform.right == Vector3.up || (-1 * transform.right) == Vector3.up || transform.up == Vector3.down)
-		{
-			StartCoroutine (CorrectRotation ());
-		}
-		else
-		{
-			ClearToRotate ();
-		}
-	}
-
-	IEnumerator CorrectRotation()
-	{
-		//pause for a little while?
-		//yield return new WaitForSeconds (0.25f)
-
-		//correct the camera rotation
-		iTween.RotateTo (origin, iTween.Hash ("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
-
-		yield return null;
-	}
-
-    void ClearToRotate()
-	{
-        origin.transform.position = player.transform.position;
-        GameManager.instance.UpdateCameraState();
-        clear = true;
-        isRotating = false;
-        //player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
-	}
 }
