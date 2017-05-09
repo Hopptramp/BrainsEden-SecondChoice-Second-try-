@@ -25,9 +25,10 @@ public class SwipeCameraController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        #region Debug Controls
-        if (!isRotating)
+        
+        if (!cameraRotate.isRotating)
         {
+            #region Debug Controls
             if (Input.GetKeyDown(KeyCode.A))
             {
                 cameraRotate.TriggerRotation(Direction.Left);
@@ -68,9 +69,9 @@ public class SwipeCameraController : MonoBehaviour {
                     else
                     {
                         if (dir.y > 0)
-                            direction = Direction.Up;
-                        else
                             direction = Direction.Down;
+                        else
+                            direction = Direction.Up;
                     }
 
                     cameraRotate.TriggerRotation(direction);

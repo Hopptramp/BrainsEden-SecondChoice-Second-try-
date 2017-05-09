@@ -19,6 +19,7 @@ public class Rotation : MonoBehaviour
     public GameObject player;
     [SerializeField]
     private bool useKeyboard;
+    public bool isRotating = false;
 
     private bool left, right, up, down;
 
@@ -140,6 +141,7 @@ public class Rotation : MonoBehaviour
 
     public void TriggerRotation(Direction _direction)
     {
+        isRotating = true;
         switch (_direction)
         {
             case Direction.Up:
@@ -227,6 +229,7 @@ public class Rotation : MonoBehaviour
         origin.transform.position = player.transform.position;
         GameManager.instance.UpdateCameraState();
         clear = true;
+        isRotating = false;
         //player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
 	}
 }
