@@ -13,9 +13,8 @@ public class MenuNavigation : MonoBehaviour {
 
     CameraState currentState;
 
-
-    private GameObject origin;
-    public GameObject player;
+    GameObject compassOrigin, origin;
+    public GameObject target;
 
     public bool isRotating = false;
 
@@ -24,53 +23,99 @@ public class MenuNavigation : MonoBehaviour {
     [SerializeField]
     private bool clear = true;
 
+    #region MonoBehaviour
+
     // Use this for initialization
-    void Start () {
-        origin.transform.position = Vector3.zero;
+    void Awake () {
+
+        if (!origin)
+        {
+            origin = new GameObject("origin");
+            origin.transform.position = Vector3.zero;
+            origin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
+        }
+        if (!compassOrigin)
+        {
+            compassOrigin = new GameObject("compassOrigin");
+            compassOrigin.transform.position = Vector3.zero;
+            compassOrigin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);        
+        }
+
+        transform.parent = origin.transform;
+        transform.position = transform.parent.position - new Vector3(0f, 0f, cameraDist);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
+            RotateUp();
+
+        else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
+            RotateDown();
+
+        else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
+            RotateRight();
+         
+        else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
+            RotateLeft();
+
+        origin.transform.position = target.transform.position;
     }
+
+    void FixedUpdate()
+    {
+        if (compassOrigin)
+        {
+            compassOrigin.transform.rotation = origin.transform.rotation;
+        }
+    }
+
+
+    #endregion
 
     #region Rotation Behaviour
 
+    /// <summary>
+    /// Triggers the iTween action
+    /// </summary>
+    /// <param name="_angle"></param>
+    /// <param name="_axis"></param>
+    void TriggeriTween(float _angle, string _axis)
+    {
+        isRotating = true;
+        clear = false;
+        iTween.RotateAdd(origin, iTween.Hash("x", _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", target, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "PostRotate"));
+    }
+
+
     public void RotateUp()
     {
-        //pass the camera's new fwd
-        //BlockManager.instance.DepthShade (origin.transform.up);
-
-        clear = false;
-        iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+        TriggeriTween(90f, "x");
     }
 
     public void RotateDown()
     {
-        //pass the camera's new fwd
-        //BlockManager.instance.DepthShade (origin.transform.up * -1);
-
-        clear = false;
-        iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+        TriggeriTween(-90f, "x");
     }
 
     public void RotateLeft()
     {
-        //pass the camera's new fwd
-        //BlockManager.instance.DepthShade (origin.transform.right * -1);
-
-        clear = false;
-        iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+        TriggeriTween(90f, "y");
     }
 
     public void RotateRight()
     {
-        //pass the camera's new fwd
-        //BlockManager.instance.DepthShade (origin.transform.right);
+        TriggeriTween(-90f, "y");
+    }
 
-        clear = false;
-        iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+    /// <summary>
+    /// Any logic required when rotation ends.
+    /// </summary>
+    void PostRotate()
+    {
+        origin.transform.position = target.transform.position;
+        isRotating = false;
     }
     #endregion
 }
