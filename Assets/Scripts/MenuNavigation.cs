@@ -48,18 +48,20 @@ public class MenuNavigation : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
-            RotateUp();
+        if (!isRotating)
+        {
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+                RotateUp();
 
-        else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
-            RotateDown();
+            else if (Input.GetKeyUp(KeyCode.DownArrow))
+                RotateDown();
 
-        else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
-            RotateRight();
-         
-        else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
-            RotateLeft();
+            else if (Input.GetKeyUp(KeyCode.RightArrow))
+                RotateRight();
 
+            else if (Input.GetKeyUp(KeyCode.LeftArrow))
+                RotateLeft();
+        }
         origin.transform.position = target.transform.position;
     }
 
@@ -84,9 +86,9 @@ public class MenuNavigation : MonoBehaviour {
     void TriggeriTween(float _angle, string _axis)
     {
         isRotating = true;
-        clear = false;
-        iTween.RotateAdd(origin, iTween.Hash("x", _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", target, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "PostRotate"));
+        iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "PostRotate"));
     }
+
 
 
     public void RotateUp()
