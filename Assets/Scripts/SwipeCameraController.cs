@@ -3,11 +3,9 @@ using System.Collections;
 
 public class SwipeCameraController : MonoBehaviour {
 
-    [SerializeField] float rotateSpeed = 0.04f;
-    enum SwipeDirection { Up, Down, Left, Right, }
     Rotation cameraRotate;
     bool isRotating = false;
-    [SerializeField] Transform cameraPos;
+    [SerializeField] Transform cameraTrans;
 
 	// Use this for initialization
 	void Start () {
@@ -16,36 +14,38 @@ public class SwipeCameraController : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        transform.position = cameraPos.position;
+        transform.position = cameraTrans.position;
     }
 
     private void LateUpdate()
     {
-        transform.position = cameraPos.position;
+        transform.position = cameraTrans.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //transform.position = cameraPos.position;
+        #region Debug Controls
         if (!isRotating)
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                Rotate(SwipeDirection.Left);
+                cameraRotate.TriggerRotation(Direction.Left);
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                Rotate(SwipeDirection.Right);
+                cameraRotate.TriggerRotation(Direction.Right);
             }
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Rotate(SwipeDirection.Up);
+                cameraRotate.TriggerRotation(Direction.Up);
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                Rotate(SwipeDirection.Down);
+                cameraRotate.TriggerRotation(Direction.Down);
             }
+
+            #endregion
 
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
@@ -55,68 +55,27 @@ public class SwipeCameraController : MonoBehaviour {
 
                 if (hit.transform == transform)
                 {
-                    SwipeDirection direction;
+                    Direction direction;
                     Vector2 dir = Input.GetTouch(0).deltaPosition;
 
                     if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
                     {
                         if (dir.x > 0)
-                            direction = SwipeDirection.Left;
+                            direction = Direction.Left;
                         else
-                            direction = SwipeDirection.Right;
+                            direction = Direction.Right;
                     }
                     else
                     {
                         if (dir.y > 0)
-                            direction = SwipeDirection.Up;
+                            direction = Direction.Up;
                         else
-                            direction = SwipeDirection.Down;
+                            direction = Direction.Down;
                     }
 
-                    Rotate(direction);
+                    cameraRotate.TriggerRotation(direction);
                 }
             }
         }
-    }
-
-    void Rotate(SwipeDirection _direction)
-    {
-        Vector3 rotation = Vector3.zero;
-        switch (_direction)
-        {
-            case SwipeDirection.Up:
-                rotation = new Vector3(90, 0, 0);
-                break;
-            case SwipeDirection.Down:
-                rotation = new Vector3(-90, 0, 0);
-                break;
-            case SwipeDirection.Left:
-                rotation = new Vector3(0, -90, 0);
-                break;
-            case SwipeDirection.Right:
-                rotation = new Vector3(0, 90, 0);
-                break;
-            default:
-                break;
-        }
-
-        StopAllCoroutines();
-        StartCoroutine(RotateSelf(rotation));
-        cameraRotate.TriggerRotation((Direction)((int)_direction));
-    }
-
-    IEnumerator RotateSelf(Vector3 _rotation)
-    {
-        Quaternion LocalRotation = Quaternion.Inverse(Quaternion.Euler(_rotation)) * cameraPos.rotation;
-        isRotating = true;
-        Quaternion newRotation = transform.localRotation * Quaternion.Euler(_rotation);
-        while(Quaternion.Angle(transform.localRotation, LocalRotation) > 1)
-        {
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, LocalRotation, rotateSpeed);
-            yield return null; 
-        }
-        transform.localRotation = LocalRotation;
-        isRotating = false;
-        print(transform.forward);
     }
 }
