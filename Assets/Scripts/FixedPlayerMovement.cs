@@ -13,10 +13,17 @@ public class FixedPlayerMovement : MonoBehaviour {
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
     enum ObstructionType { None, Drop, CanJump, Obstruction }
+    [SerializeField]
+    private AnimationCurve LinearMovement, VerticalMovement;
+    private Animator m_animator;
+    
+
+
 
 	// Use this for initialization
 	void Start () {
         cameraParent = Camera.main.transform.parent;
+        m_animator = GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -34,8 +41,10 @@ public class FixedPlayerMovement : MonoBehaviour {
         print(CheckObstruction(_direction));
 
         // check what obstruction type is found when moving in that direction
-        if(CheckObstruction(_direction) == ObstructionType.None)
+        if (CheckObstruction(_direction) == ObstructionType.None)
+        {
             StartCoroutine(SmoothMoveCharacter(_direction));
+        }
     }
 
     /// <summary>
@@ -67,11 +76,27 @@ public class FixedPlayerMovement : MonoBehaviour {
     IEnumerator SmoothMoveCharacter(Vector3 _translation)
     {
         Vector3 newPos = transform.position + _translation;
-        while (transform.position != newPos)
+        Vector3 origin = transform.position;
+        Vector3 temp = origin;     
+        float t = 0;
+        if (m_animator)
+            m_animator.SetTrigger("Move");
+        transform.LookAt(newPos);
+        while (t <= movementSpeed)
         {
-            transform.position = Vector3.MoveTowards(transform.position, newPos, movementSpeed);
+            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementSpeed));     
+            transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t/movementSpeed), temp.z);
+
             yield return null;
+            t += Time.deltaTime;
         }
+        transform.position = newPos;
+
+        //while (transform.position != newPos)
+        //{
+        //    transform.position = Vector3.MoveTowards(transform.position, newPos, movementSpeed);
+        //    yield return null;
+        //}
 
         OnMovementComplete();
     }
