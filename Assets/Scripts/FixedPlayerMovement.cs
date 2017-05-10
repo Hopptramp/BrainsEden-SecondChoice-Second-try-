@@ -16,6 +16,8 @@ public class FixedPlayerMovement : MonoBehaviour {
     [SerializeField]
     private AnimationCurve LinearMovement, VerticalMovement;
     private Animator m_animator;
+    [SerializeField]
+    private Transform child;
     
 
 
@@ -84,8 +86,15 @@ public class FixedPlayerMovement : MonoBehaviour {
         transform.LookAt(newPos);
         while (t <= movementSpeed)
         {
-            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementSpeed));     
-            transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t/movementSpeed), temp.z);
+            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementSpeed));
+            if (child)
+            {
+                transform.position = temp;
+                child.transform.localPosition = new Vector3(0, VerticalMovement.Evaluate(t / movementSpeed), 0);
+            }
+            else
+                transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementSpeed), temp.z);
+            
 
             yield return null;
             t += Time.deltaTime;
