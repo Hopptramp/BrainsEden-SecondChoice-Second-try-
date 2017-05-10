@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] Transform target;
     [SerializeField] FixedPlayerMovement playerMovement;
     [SerializeField] GameObject[] buttons;
+    Animator animator;
 
     private RegisterTouchInput[] inputs;
 
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour {
         {
             input.controller = this;
         }
+
+        animator = GetComponent<Animator>();
     }
 
     // Use this for initialization
@@ -25,7 +28,16 @@ public class PlayerController : MonoBehaviour {
         CheckNewOrientation();
 
         // add delegate event
-        GameManager.instance.postRotation += CheckNewOrientation;
+        GameManager.instance.postRotation += PostRotation;
+    }
+
+    /// <summary>
+    /// Use for any logic required after rotation completion
+    /// </summary>
+    void PostRotation()
+    {
+        CheckNewOrientation();
+
     }
 
     private void FixedUpdate()
@@ -40,18 +52,69 @@ public class PlayerController : MonoBehaviour {
 
     #endregion
 
-    #region Button input
+    #region Button Animation
 
     /// <summary>
-    /// Trigger player movement left or right
+    /// Trigger rotation animation
     /// </summary>
-    /// <param name="isLeft"></param>
+    /// <param name="_direction"></param>
+    void PressAnimation(Direction _direction, CameraState _cameraState)
+    {
+        // if above or below, use default animation
+        if (_cameraState == CameraState.Above || _cameraState == CameraState.Below)
+        {
+            animator.SetTrigger("Wobble" + _direction.ToString());
+        }
+        else // else inform of camera state
+            animator.SetTrigger("Wobble" + _direction.ToString() + _cameraState.ToString());
+    }
+
+    void ButtonDeactivationAnimation(CameraState _cameraState)
+    {
+        switch (_cameraState)
+        {
+            case CameraState.Above:
+                animator.SetTrigger("ShowAll");
+                break;
+            case CameraState.Left:
+                animator.SetTrigger("ShowLeft");
+                break;
+            case CameraState.Right:
+                animator.SetTrigger("ShowRight");
+                break;
+            case CameraState.Front:
+                animator.SetTrigger("ShowFront");
+                break;
+            case CameraState.Behind:
+                animator.SetTrigger("ShowBehind");
+                break;
+            case CameraState.Below:
+                animator.SetTrigger("ShowBelow");
+                break;
+            default:
+                break;
+        }
+    }
+
+        #endregion
+
+        #region Button input
+
+        /// <summary>
+        /// Trigger player movement left or right
+        /// </summary>
+        /// <param name="isLeft"></param>
     public void MoveHorizontal(bool isLeft)
     {
         if (isLeft)
+        {
             playerMovement.MoveLeft();
-        else
-            playerMovement.MoveRight();
+            //PressAnimation(Direction.Left, GameManager.instance.m_CameraState);
+            return;
+        }
+
+        playerMovement.MoveRight();
+        //PressAnimation(Direction.Right, GameManager.instance.m_CameraState);
     }
 
     /// <summary>
@@ -61,14 +124,25 @@ public class PlayerController : MonoBehaviour {
     public void MoveVertical(bool isUp)
     {
         if (isUp)
+        {
             playerMovement.MoveUp();
-        else
-            playerMovement.MoveDown();
+            //PressAnimation(Direction.Up, GameManager.instance.m_CameraState);
+            return;
+        }
+
+        playerMovement.MoveDown();
+        //PressAnimation(Direction.Down, GameManager.instance.m_CameraState);
+
     }
 
+    /// <summary>
+    /// Ensure correct buttons are displayed after rotation
+    /// Ensure correct direction applied
+    /// </summary>
     public void CheckNewOrientation()
     {
         CameraState cameraState = GameManager.instance.m_CameraState;
+        ButtonDeactivationAnimation(cameraState);
 
         switch (cameraState)
         {
@@ -77,11 +151,12 @@ public class PlayerController : MonoBehaviour {
                 {
                     buttons[i].SetActive(true);
                 }
-
+                
+                // above perspective has 4 variations
                 if(target.up == Vector3.right)
                 {
-                    inputs[0].direction = Direction.Up;
-                    inputs[1].direction = Direction.Down;
+                    inputs[0].direction = Direction.Down;
+                    inputs[1].direction = Direction.Up;
                     inputs[2].direction = Direction.Left;
                     inputs[3].direction = Direction.Right;
                 }

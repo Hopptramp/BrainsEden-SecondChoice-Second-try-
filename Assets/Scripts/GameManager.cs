@@ -37,11 +37,12 @@ public class GameManager : MonoBehaviour
     public GameObject UpButton, DownButton;
 
     public delegate void PostRotation();
-    public PostRotation postRotation;
+    public PostRotation postRotation = PostRotationLogic;
 
 
-    
-    
+
+
+
     void Awake()
     {
         m_instance = this;
@@ -53,8 +54,8 @@ public class GameManager : MonoBehaviour
     {
         //DontDestroyOnLoad(gameObject);
         InitGame();
-           
-	}
+
+    }
 
     void InitGame()
     {
@@ -96,6 +97,14 @@ public class GameManager : MonoBehaviour
 
         BlockManager.instance.UpdateActiveBlocks(m_CameraState);
         postRotation();
+    }
+
+    /// <summary>
+    /// Delegate that triggers any post rotation logic in other scripts
+    /// </summary>
+    static void PostRotationLogic()
+    {
+
     }
 
 	

@@ -8,6 +8,7 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
 
     Rotation cameraRotate;
     MenuNavigation menuNavigation;
+    Animator animator;
     bool isRotating = false;
     [SerializeField] Transform target;
     [SerializeField] bool isMenu = false;
@@ -15,7 +16,10 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
 	// Use this for initialization
 	void Start () {
         if (!isMenu)
+        {
             cameraRotate = Camera.main.GetComponent<Rotation>();
+            animator = GetComponent<Animator>();
+        }
         else
             menuNavigation = Camera.main.GetComponent<MenuNavigation>();
 	}
@@ -92,11 +96,35 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
                 }
 
                 if (!isMenu)
+                {
                     cameraRotate.TriggerRotation(direction);
+                    TriggerAnimation(direction);
+                }
                 else
                     menuNavigation.TriggerRotation(direction);
             }
 
+        }
+    }
+
+    void TriggerAnimation(Direction _direction)
+    {
+        switch (_direction)
+        {
+            case Direction.Up:
+                animator.SetTrigger("CameraUp");
+                break;
+            case Direction.Down:
+                animator.SetTrigger("CameraDown");
+                break;
+            case Direction.Left:
+                animator.SetTrigger("CameraLeft");
+                break;
+            case Direction.Right:
+                animator.SetTrigger("CameraRight");
+                break;
+            default:
+                break;
         }
     }
 
