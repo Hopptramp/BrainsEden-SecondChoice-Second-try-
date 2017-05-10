@@ -18,6 +18,8 @@ public class FixedPlayerMovement : MonoBehaviour {
     private Animator m_animator;
     [SerializeField]
     private Transform child;
+    private bool moving;
+    private float childOffset;
     
 
 
@@ -25,7 +27,8 @@ public class FixedPlayerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         cameraParent = Camera.main.transform.parent;
-        m_animator = GetComponent<Animator>();
+        m_animator = GetComponentInChildren<Animator>();
+        childOffset = child.transform.localPosition.y;
 	}
 	
 	// Update is called once per frame
@@ -40,12 +43,24 @@ public class FixedPlayerMovement : MonoBehaviour {
     /// <param name="_direction"></param>
     void MoveCharacter(Vector3 _direction)
     {
-        print(CheckObstruction(_direction));
-
-        // check what obstruction type is found when moving in that direction
-        if (CheckObstruction(_direction) == ObstructionType.None)
+        ObstructionType temp =(CheckObstruction(_direction));
+        if (!moving)
         {
-            StartCoroutine(SmoothMoveCharacter(_direction));
+            switch (temp)
+            {
+                case ObstructionType.None:
+                    StartCoroutine(SmoothMoveCharacter(_direction));
+                    break;
+                case ObstructionType.Drop:
+                    StartCoroutine(SmoothMoveCharacter(_direction));
+                    break;
+                case ObstructionType.CanJump:
+                    break;
+                case ObstructionType.Obstruction:
+                    break;
+                default:
+                    break;
+            }            
         }
     }
 
@@ -79,7 +94,8 @@ public class FixedPlayerMovement : MonoBehaviour {
     {
         Vector3 newPos = transform.position + _translation;
         Vector3 origin = transform.position;
-        Vector3 temp = origin;     
+        Vector3 temp = origin;
+        moving = true;  
         float t = 0;
         if (m_animator)
             m_animator.SetTrigger("Move");
@@ -87,10 +103,10 @@ public class FixedPlayerMovement : MonoBehaviour {
         while (t <= movementDuration)
         {
             temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementDuration));
-            if (child)
+            if (child!= null)
             {
                 transform.position = temp;
-                child.transform.localPosition = new Vector3(0, VerticalMovement.Evaluate(t / movementDuration), 0);
+                child.transform.localPosition = new Vector3(0, childOffset + VerticalMovement.Evaluate(t / movementDuration), 0);
             }
             else
                 transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementDuration), temp.z);
@@ -100,6 +116,7 @@ public class FixedPlayerMovement : MonoBehaviour {
             t += Time.deltaTime;
         }
         transform.position = newPos;
+        moving = false;
 
         //while (transform.position != newPos)
         //{
