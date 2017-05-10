@@ -13,7 +13,7 @@ public class MenuNavigation : MonoBehaviour {
 
     CameraState currentState;
 
-    GameObject compassOrigin, origin;
+    GameObject desiredRotation, cameraParent;
     public GameObject target;
 
     public bool isRotating = false;
@@ -28,26 +28,27 @@ public class MenuNavigation : MonoBehaviour {
     // Use this for initialization
     void Awake () {
 
-        if (!origin)
+        if (!cameraParent)
         {
-            origin = new GameObject("origin");
-            origin.transform.position = Vector3.zero;
-            origin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
+            cameraParent = new GameObject("Camera Parent");
+            cameraParent.transform.position = Vector3.zero;
+            cameraParent.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
         }
-        if (!compassOrigin)
+        if (!desiredRotation)
         {
-            compassOrigin = new GameObject("compassOrigin");
-            compassOrigin.transform.position = Vector3.zero;
-            compassOrigin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);        
+            desiredRotation = new GameObject("Desired Rotation");
+            desiredRotation.transform.position = Vector3.zero;
+            desiredRotation.transform.rotation.eulerAngles.Set(0f, 0f, 0f);        
         }
 
-        transform.parent = origin.transform;
+        transform.parent = cameraParent.transform;
         transform.position = transform.parent.position - new Vector3(0f, 0f, cameraDist);
     }
 
     // Update is called once per frame
     void Update()
     {
+        #region Debug Controls
         if (!isRotating)
         {
             if (Input.GetKeyUp(KeyCode.UpArrow))
@@ -62,14 +63,16 @@ public class MenuNavigation : MonoBehaviour {
             else if (Input.GetKeyUp(KeyCode.LeftArrow))
                 RotateLeft();
         }
-        origin.transform.position = target.transform.position;
+        #endregion
+
+      //  cameraParent.transform.position = target.transform.position;
     }
 
     void FixedUpdate()
     {
-        if (compassOrigin)
+        if (desiredRotation)
         {
-            compassOrigin.transform.rotation = origin.transform.rotation;
+            desiredRotation.transform.rotation = cameraParent.transform.rotation;
         }
     }
 
@@ -86,10 +89,30 @@ public class MenuNavigation : MonoBehaviour {
     void TriggeriTween(float _angle, string _axis)
     {
         isRotating = true;
-        iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "PostRotate"));
+        iTween.RotateAdd(cameraParent, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "PostRotate"));
     }
 
-
+    public void TriggerRotation(Direction _direction)
+    {
+        isRotating = true;
+        switch (_direction)
+        {
+            case Direction.Up:
+                RotateUp();
+                break;
+            case Direction.Down:
+                RotateDown();
+                break;
+            case Direction.Left:
+                RotateLeft();
+                break;
+            case Direction.Right:
+                RotateRight();
+                break;
+            default:
+                break;
+        }
+    }
 
     public void RotateUp()
     {
@@ -116,7 +139,29 @@ public class MenuNavigation : MonoBehaviour {
     /// </summary>
     void PostRotate()
     {
-        origin.transform.position = target.transform.position;
+        //if not looking up or down and the camera is off orientation
+        if (transform.right == Vector3.up || -transform.right == Vector3.up || transform.up == Vector3.down)
+        {
+            iTween.RotateTo(cameraParent, iTween.Hash("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+        }
+        else
+        {
+            FinishedRotating();
+        }
+        //cameraParent.transform.position = target.transform.position;
+    }
+
+    //IEnumerator CorrectRotation()
+    //{
+    //    TriggeriTween()
+    //    //correct the camera rotation
+    //    iTween.RotateTo(origin, iTween.Hash("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
+
+    //    yield return null;
+    //}
+
+    void FinishedRotating()
+    {
         isRotating = false;
     }
     #endregion

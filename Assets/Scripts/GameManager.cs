@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour
     public GameObject endMenu;
     public GameObject UpButton, DownButton;
 
+    public delegate void PostRotation();
+    public PostRotation postRotation;
+
 
     
     
@@ -92,6 +95,7 @@ public class GameManager : MonoBehaviour
         }
 
         BlockManager.instance.UpdateActiveBlocks(m_CameraState);
+        postRotation();
     }
 
 	
