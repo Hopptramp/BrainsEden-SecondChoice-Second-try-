@@ -8,7 +8,7 @@ public enum Direction
 
 public class FixedPlayerMovement : MonoBehaviour {
 
-    [SerializeField] float movementSpeed = 1;
+    [SerializeField] float movementDuration = 1;
     CameraState camState;
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
@@ -84,16 +84,16 @@ public class FixedPlayerMovement : MonoBehaviour {
         if (m_animator)
             m_animator.SetTrigger("Move");
         transform.LookAt(newPos);
-        while (t <= movementSpeed)
+        while (t <= movementDuration)
         {
-            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementSpeed));
+            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementDuration));
             if (child)
             {
                 transform.position = temp;
-                child.transform.localPosition = new Vector3(0, VerticalMovement.Evaluate(t / movementSpeed), 0);
+                child.transform.localPosition = new Vector3(0, VerticalMovement.Evaluate(t / movementDuration), 0);
             }
             else
-                transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementSpeed), temp.z);
+                transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementDuration), temp.z);
             
 
             yield return null;
