@@ -9,6 +9,7 @@ public enum Direction
 public class FixedPlayerMovement : MonoBehaviour {
 
     [SerializeField] float movementDuration = 1;
+    [SerializeField] float fallDuration = 1;
     CameraState camState;
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
@@ -29,6 +30,7 @@ public class FixedPlayerMovement : MonoBehaviour {
         cameraParent = Camera.main.transform.parent;
         m_animator = GetComponentInChildren<Animator>();
         childOffset = child.transform.localPosition.y;
+       
 	}
 	
 	// Update is called once per frame
@@ -52,7 +54,8 @@ public class FixedPlayerMovement : MonoBehaviour {
                     StartCoroutine(SmoothMoveCharacter(_direction));
                     break;
                 case ObstructionType.Drop:
-                    //StartCoroutine(SmoothMoveCharacter(_direction));
+                    StartCoroutine(SmoothMoveCharacter(_direction));
+                    //StartCoroutine(Fall(_direction));
                     break;
                 case ObstructionType.CanJump:
                     break;
@@ -97,20 +100,18 @@ public class FixedPlayerMovement : MonoBehaviour {
         Vector3 temp = origin;
         moving = true;  
         float t = 0;
+
         if (m_animator)
             m_animator.SetTrigger("Move");
         transform.LookAt(newPos);
+
         while (t <= movementDuration)
         {
             temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementDuration));
-            if (child!= null)
-            {
+            if (child != null)
                 transform.position = temp;
-                child.transform.localPosition = new Vector3(0, childOffset + VerticalMovement.Evaluate(t / movementDuration), 0);
-            }
             else
                 transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementDuration), temp.z);
-            
 
             yield return null;
             t += Time.deltaTime;
@@ -118,13 +119,26 @@ public class FixedPlayerMovement : MonoBehaviour {
         transform.position = newPos;
         moving = false;
 
-        //while (transform.position != newPos)
-        //{
-        //    transform.position = Vector3.MoveTowards(transform.position, newPos, movementSpeed);
-        //    yield return null;
-        //}
-
         OnMovementComplete();
+    }
+
+    IEnumerator Fall(Vector3 _translation)
+    {
+        Vector3 newPos = transform.position + _translation;
+        Vector3 origin = transform.position;
+        float t = 0;
+        moving = true;
+        while (t<fallDuration)
+        {
+            
+            transform.position = Vector3.Lerp(origin, newPos, t/fallDuration);          
+            yield return null;
+            t += Time.deltaTime;
+        }
+        transform.position = newPos;
+        moving = false;
+        OnMovementComplete();
+        
     }
 
     /// <summary>
@@ -134,7 +148,8 @@ public class FixedPlayerMovement : MonoBehaviour {
     {
         if (!Physics.Raycast(transform.position, Vector3.down, 1, obstuctionObjects))
         {
-            MoveCharacter(new Vector3(0, -10, 0));
+            //MoveCharacter(new Vector3(0, -10, 0));
+            StartCoroutine(Fall(new Vector3(0, -1, 0)));
         }
     }
 
