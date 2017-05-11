@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
         // add delegate event
         GameManager.instance.postRotation += PostRotation;
         GameManager.instance.preRotation += PreRotation;
+        AnimateCorrectButtons(cameraState = GameManager.instance.m_CameraState);
     }
 
 
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour {
     /// <param name="_intendedState"> The state that is being rotated to</param>
     void PreRotation(CameraState _intendedState)
     {
-        ButtonDeactivationAnimation(_intendedState);
+        AnimateCorrectButtons(_intendedState);
 
 
     }
@@ -111,7 +112,7 @@ public class PlayerController : MonoBehaviour {
     /// Trigger button change animation
     /// </summary>
     /// <param name="_intendedState"></param>
-    void ButtonDeactivationAnimation(CameraState _intendedState)
+    void AnimateCorrectButtons(CameraState _intendedState)
     {
         if(_intendedState == CameraState.Above || _intendedState == CameraState.Below)
         {
