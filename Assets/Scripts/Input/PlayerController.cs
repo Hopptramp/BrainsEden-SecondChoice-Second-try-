@@ -40,6 +40,29 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+    private void Update()
+    {
+        #region Debug Controls
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            MoveHorizontal(true);
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            MoveHorizontal(false);
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            MoveVertical(true);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            MoveVertical(false);
+        }
+
+        #endregion
+    }
+
     private void FixedUpdate()
     {
         transform.position = target.position;

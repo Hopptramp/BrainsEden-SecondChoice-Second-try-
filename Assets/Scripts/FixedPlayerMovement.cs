@@ -52,7 +52,7 @@ public class FixedPlayerMovement : MonoBehaviour {
                     StartCoroutine(SmoothMoveCharacter(_direction));
                     break;
                 case ObstructionType.Drop:
-                    StartCoroutine(SmoothMoveCharacter(_direction));
+                    //StartCoroutine(SmoothMoveCharacter(_direction));
                     break;
                 case ObstructionType.CanJump:
                     break;

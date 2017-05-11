@@ -50,19 +50,19 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
                 return;
         }
         #region Debug Controls
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             cameraRotate.TriggerRotation(Direction.Left);
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             cameraRotate.TriggerRotation(Direction.Right);
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             cameraRotate.TriggerRotation(Direction.Up);
         }
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             cameraRotate.TriggerRotation(Direction.Down);
         }
