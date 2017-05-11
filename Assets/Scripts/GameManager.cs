@@ -10,7 +10,8 @@ public enum CameraState
     Right,
     Front,
     Behind,
-    Below
+    Below,
+    None
 }
 
 public enum VisibleState
@@ -36,11 +37,10 @@ public class GameManager : MonoBehaviour
     public GameObject endMenu;
     public GameObject UpButton, DownButton;
 
-    public delegate void PostRotation();
-    public PostRotation postRotation = PostRotationLogic;
-
-
-
+    ///Pre and post rotation delegate events
+    public delegate void RotationEvents(CameraState _cameraState);
+    public RotationEvents postRotation = PostRotationLogic;
+    public RotationEvents preRotation = PreRotationLogic;
 
 
     void Awake()
@@ -96,20 +96,28 @@ public class GameManager : MonoBehaviour
         }
 
         BlockManager.instance.UpdateActiveBlocks(m_CameraState);
-        postRotation();
+        postRotation(m_CameraState);
     }
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
     /// </summary>
-    static void PostRotationLogic()
+    static void PostRotationLogic(CameraState _newState)
     {
 
     }
 
-	
-	// Update is called once per frame
-	void Update ()
+    /// <summary>
+    /// Delegate that triggers any post rotation logic in other scripts
+    /// </summary>
+    static void PreRotationLogic(CameraState _intendedState)
+    {
+
+    }
+
+
+    // Update is called once per frame
+    void Update ()
     {
        if (player.transform.position.y <= killHeight)
         {

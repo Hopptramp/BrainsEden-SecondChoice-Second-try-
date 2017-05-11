@@ -141,6 +141,10 @@ public class Rotation : MonoBehaviour
 
     public void TriggerRotation(Direction _direction)
     {
+        // trigger any pre rotation logic via delegates
+        GameManager.instance.preRotation(PredictCameraState(_direction));
+
+
         isRotating = true;
         switch (_direction)
         {
@@ -159,6 +163,222 @@ public class Rotation : MonoBehaviour
             default:
                 break;
         }
+    }
+
+
+    /// <summary>
+    /// Predicts what camera state it will be after the rotation
+    /// </summary>
+    /// <param name="_direction"></param>
+    /// <returns></returns>
+    CameraState PredictCameraState(Direction _direction)
+    {
+        switch (GameManager.instance.m_CameraState)
+        {
+            case CameraState.Above:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Right;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Left;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Behind;
+
+                        else
+                            return CameraState.Front;
+
+                    case Direction.Down:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Left;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Right;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Front;
+
+                        else
+                            return CameraState.Behind;
+
+                    case Direction.Left:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Behind;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Front;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Left;
+
+                        else
+                            return CameraState.Right;
+
+                    case Direction.Right:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Front;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Behind;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Right;
+
+                        else
+                            return CameraState.Left;
+
+                    default:
+                        break;
+                }
+                break;
+            case CameraState.Left:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        return CameraState.Above;
+
+                    case Direction.Down:
+                        return CameraState.Below;
+
+                    case Direction.Left:
+                        return CameraState.Behind;
+
+                    case Direction.Right:
+                        return CameraState.Front;
+
+                    default:
+                        break;
+                }
+                break;
+            case CameraState.Right:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        return CameraState.Above;
+
+                    case Direction.Down:
+                        return CameraState.Below;
+
+                    case Direction.Left:
+                        return CameraState.Front;
+
+                    case Direction.Right:
+                        return CameraState.Behind;
+
+                    default:
+                        break;
+                }
+                break;
+            case CameraState.Front:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        return CameraState.Above;
+
+                    case Direction.Down:
+                        return CameraState.Below;
+
+                    case Direction.Left:
+                        return CameraState.Left;
+
+                    case Direction.Right:
+                        return CameraState.Right;
+
+                    default:
+                        break;
+                }
+                break;
+            case CameraState.Behind:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        return CameraState.Above;
+
+                    case Direction.Down:
+                        return CameraState.Below;
+
+                    case Direction.Left:
+                        return CameraState.Right;
+
+                    case Direction.Right:
+                        return CameraState.Left;
+
+                    default:
+                        break;
+                }
+                break;
+
+            case CameraState.Below:
+                switch (_direction)
+                {
+                    case Direction.Up:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Left;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Right;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Front;
+
+                        else
+                            return CameraState.Behind;
+
+                    case Direction.Down:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Right;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Left;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Behind;
+
+                        else
+                            return CameraState.Front;
+
+                    case Direction.Left:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Front;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Behind;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Right;
+
+                        else
+                            return CameraState.Left;
+
+                    case Direction.Right:
+                        if (transform.up == Vector3.right)
+                            return CameraState.Behind;
+
+                        else if (transform.up == -Vector3.right)
+                            return CameraState.Front;
+
+                        else if (transform.up == Vector3.forward)
+                            return CameraState.Left;
+
+                        else
+                            return CameraState.Right;
+
+                    default:
+                        break;
+                }
+                break;
+        }
+        return CameraState.None;
+    }
+
+
+    void TriggeriTween(float _angle, string _axis)
+    {
+        isRotating = true;
+        iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", player, "oncomplete", "CheckRotation"));
     }
 
     public void RotateUp ()

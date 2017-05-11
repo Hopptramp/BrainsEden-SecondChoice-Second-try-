@@ -5,8 +5,10 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] Transform target;
     [SerializeField] FixedPlayerMovement playerMovement;
-    [SerializeField] GameObject[] buttons;
+    [SerializeField] Collider[] buttons; // LEFT, RIGHT, FRONT, BEHIND
     Animator animator;
+
+    private CameraState cameraState;
 
     private RegisterTouchInput[] inputs;
 
@@ -29,13 +31,26 @@ public class PlayerController : MonoBehaviour {
 
         // add delegate event
         GameManager.instance.postRotation += PostRotation;
+        GameManager.instance.preRotation += PreRotation;
     }
 
+
+    /// <summary>
+    /// Use for any logic required before rotation completion
+    /// </summary>
+    /// <param name="_intendedState"> The state that is being rotated to</param>
+    void PreRotation(CameraState _intendedState)
+    {
+        ButtonDeactivationAnimation(_intendedState);
+
+
+    }
     /// <summary>
     /// Use for any logic required after rotation completion
     /// </summary>
-    void PostRotation()
+    void PostRotation(CameraState _cameraState)
     {
+        cameraState = _cameraState;
         CheckNewOrientation();
 
     }
@@ -92,30 +107,37 @@ public class PlayerController : MonoBehaviour {
             animator.SetTrigger("Wobble" + _direction.ToString() + _cameraState.ToString());
     }
 
-    void ButtonDeactivationAnimation(CameraState _cameraState)
+    /// <summary>
+    /// Trigger button change animation
+    /// </summary>
+    /// <param name="_intendedState"></param>
+    void ButtonDeactivationAnimation(CameraState _intendedState)
     {
-        switch (_cameraState)
+        if(_intendedState == CameraState.Above || _intendedState == CameraState.Below)
         {
-            case CameraState.Above:
-                animator.SetTrigger("ShowAll");
-                break;
-            case CameraState.Left:
-                animator.SetTrigger("ShowLeft");
-                break;
-            case CameraState.Right:
-                animator.SetTrigger("ShowRight");
-                break;
-            case CameraState.Front:
+            if (target.forward == Vector3.right || target.forward == -Vector3.right)
+            {
+                animator.SetTrigger("ShowAllLeft");
+            }
+            else if (target.forward == Vector3.forward || target.forward == -Vector3.forward)
+            {
+                animator.SetTrigger("ShowAllFront");
+            }
+            return;
+        }
+        if (_intendedState == CameraState.Left || _intendedState == CameraState.Right)
+        {
+            if(cameraState == CameraState.Above || cameraState == CameraState.Below)
+                animator.SetTrigger("ShowFrontAbove");
+            else
                 animator.SetTrigger("ShowFront");
-                break;
-            case CameraState.Behind:
-                animator.SetTrigger("ShowBehind");
-                break;
-            case CameraState.Below:
-                animator.SetTrigger("ShowBelow");
-                break;
-            default:
-                break;
+        }
+        else
+        {
+            if (cameraState == CameraState.Above || cameraState == CameraState.Below)
+                animator.SetTrigger("ShowLeftAbove");
+            else 
+                animator.SetTrigger("ShowLeft");
         }
     }
 
@@ -132,12 +154,10 @@ public class PlayerController : MonoBehaviour {
         if (isLeft)
         {
             playerMovement.MoveLeft();
-            //PressAnimation(Direction.Left, GameManager.instance.m_CameraState);
             return;
         }
 
         playerMovement.MoveRight();
-        //PressAnimation(Direction.Right, GameManager.instance.m_CameraState);
     }
 
     /// <summary>
@@ -149,12 +169,10 @@ public class PlayerController : MonoBehaviour {
         if (isUp)
         {
             playerMovement.MoveUp();
-            //PressAnimation(Direction.Up, GameManager.instance.m_CameraState);
             return;
         }
 
         playerMovement.MoveDown();
-        //PressAnimation(Direction.Down, GameManager.instance.m_CameraState);
 
     }
 
@@ -164,15 +182,12 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     public void CheckNewOrientation()
     {
-        CameraState cameraState = GameManager.instance.m_CameraState;
-        ButtonDeactivationAnimation(cameraState);
-
         switch (cameraState)
         {
             case CameraState.Above: // all active
                 for(int i = 0; i < buttons.Length; ++i)
                 {
-                    buttons[i].SetActive(true);
+                    buttons[i].enabled = true;
                 }
                 
                 // above perspective has 4 variations
@@ -211,9 +226,9 @@ public class PlayerController : MonoBehaviour {
                 for (int i = 0; i < buttons.Length; ++i)
                 {
                     if (i >= 2)
-                        buttons[i].SetActive(true);
+                        buttons[i].enabled = true;
                     else
-                        buttons[i].SetActive(false);
+                        buttons[i].enabled = false;
                 }
 
                 inputs[2].direction = Direction.Left;
@@ -223,9 +238,9 @@ public class PlayerController : MonoBehaviour {
                 for (int i = 0; i < buttons.Length; ++i)
                 {
                     if (i >= 2)
-                        buttons[i].SetActive(true);
+                        buttons[i].enabled = true;
                     else
-                        buttons[i].SetActive(false);
+                        buttons[i].enabled = false;
                 }
 
                 inputs[2].direction = Direction.Right;
@@ -235,9 +250,9 @@ public class PlayerController : MonoBehaviour {
                 for (int i = 0; i < buttons.Length; ++i)
                 {
                     if (i < 2)
-                        buttons[i].SetActive(true);
+                        buttons[i].enabled = true;
                     else
-                        buttons[i].SetActive(false);
+                        buttons[i].enabled = false;
                 }
 
                 inputs[0].direction = Direction.Right;
@@ -247,9 +262,9 @@ public class PlayerController : MonoBehaviour {
                 for (int i = 0; i < buttons.Length; ++i)
                 {
                     if (i < 2)
-                        buttons[i].SetActive(true);
+                        buttons[i].enabled = true;
                     else
-                        buttons[i].SetActive(false);
+                        buttons[i].enabled = false;
                 }
 
                 inputs[0].direction = Direction.Left;
@@ -258,7 +273,7 @@ public class PlayerController : MonoBehaviour {
             case CameraState.Below: // all active (or none?)
                 for (int i = 0; i < buttons.Length; ++i)
                 {
-                    buttons[i].SetActive(true);
+                    buttons[i].enabled = false;
                 }
 
                 inputs[0].direction = Direction.Left;
