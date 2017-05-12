@@ -85,6 +85,8 @@ public class GameManager : MonoBehaviour
     public GameState gameState { get; private set; }
     public CameraState cameraState { get; private set; }
 
+
+
     [SerializeField] private Transform startPos;
     public GameObject player;
     public GameObject mainCamera;
@@ -94,15 +96,19 @@ public class GameManager : MonoBehaviour
 
     //public float killHeight = -5;
     //[SerializeField] bool ResetLevel = true;
+    [SerializeField] private Transform menuBase;
+
     [SerializeField] GameObject pauseMenu;
     public GameObject endMenu;
     public GameObject UpButton, DownButton;
 
-    ///Pre and post rotation delegate events
+    // delegate events
     public delegate void PostRotation(RotationData _rotationData, bool _isInit);
-    public delegate void PreRotation(RotationData _rotationData);
+    public delegate void DataDelegate(RotationData _rotationData);
     public PostRotation postRotation = PostRotationLogic;
-    public PreRotation preRotation = PreRotationLogic;
+    public DataDelegate preRotation = PreRotationLogic;
+    public DataDelegate onPlayStart = OnPlayStart;
+    public DataDelegate onPlayPause = OnPlayPause;
 
     public static RotationData rotationData;
 
@@ -144,9 +150,21 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Receive button input to begin level
+    /// </summary>
+    public void BeginLevel()
+    {
+        onPlayStart(rotationData);
+    }
+
+    public void CompleteLevel()
+    {
+        onPlayPause(rotationData);
+    }
 
 
-    #region Pre/Post rotation delegates
+    #region delegates
 
     /// <summary>
     /// Update rotation data struct and trigger PostRotation logic
@@ -190,6 +208,21 @@ public class GameManager : MonoBehaviour
         print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
     }
 
+    /// <summary>
+    /// Delegate that triggers play start logic in other scripts
+    /// </summary>
+    static void OnPlayStart(RotationData _rotationData)
+    {
+
+    }
+
+    /// <summary>
+    /// Delegate that triggers any pauses in logic in other scripts
+    /// </summary>
+    static void OnPlayPause(RotationData _rotationData)
+    {
+
+    }
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
@@ -200,7 +233,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Delegate that triggers any post rotation logic in other scripts
+    /// Delegate that triggers any pre rotation logic in other scripts
     /// </summary>
     static void PreRotationLogic(RotationData _rotationData)
     {
