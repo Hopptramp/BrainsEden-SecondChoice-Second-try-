@@ -355,44 +355,18 @@ public class Rotation : MonoBehaviour
 
     public void TriggerJumpingTracking(Vector3 _target, float _duration)
     {
-        Vector3 target = _target;
-        switch (rotationData.currentState)
-        {
-            case CameraState.Above:
-                target.z = cameraDist;
-                break;
-            case CameraState.Left:
-                target.x = cameraDist;
-                break;
-            case CameraState.Right:
-                target.x = -cameraDist;
-                break;
-            case CameraState.Front:
-                target.y = -cameraDist;
-                break;
-            case CameraState.Behind:
-                target.y = cameraDist;
-                break;
-            case CameraState.Below:
-                target.z = -cameraDist;
-                break;
-            case CameraState.None:
-                break;
-            default:
-                break;
-        }
-
-        StartCoroutine(JumpTracking(target, _duration));
+        
+        StartCoroutine(JumpTracking(_target, _duration));
     }
 
     IEnumerator JumpTracking(Vector3 _target, float _duration)
     {
-        Vector3 currentPos = transform.position;
+        Vector3 currentPos = origin.transform.position;
         var t = 0f;
         while (t < 1)
         {
             t += Time.deltaTime / _duration;
-            transform.position = Vector3.Lerp(currentPos, _target, t);
+            origin.transform.position = Vector3.Slerp(currentPos, _target, t);
             yield return null;
         }
     }
