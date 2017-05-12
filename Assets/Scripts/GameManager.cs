@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 
+#region Enum States
+
 public enum CameraState
 {
     Above,
@@ -14,10 +16,57 @@ public enum CameraState
     None
 }
 
+public enum TransitionState
+{
+    FromAboveToFront,
+    FromAboveToRight,
+    FromAboveToLeft,
+    FromAboveToBehind,
+
+    FromLeftToFront,
+    FromLeftToAbove,
+    FromLeftToBelow,
+    FromLeftToBehind,
+
+    FromRightToFront,
+    FromRightToAbove,
+    FromRightToBelow,
+    FromRightToBehind,
+
+    FromBelowToFront,
+    FromBelowToRight,
+    FromBelowToLeft,
+    FromBelowToBehind,
+
+    FromFrontToAbove,
+    FromFrontToRight,
+    FromFrontToLeft,
+    FromFrontToBelow,
+
+    FromBehindToAbove,
+    FromBehindToRight,
+    FromBehindToLeft,
+    FromBehindToBelow,
+
+    None,
+}
+
 public enum VisibleState
 {
     Visible,
     Invisible
+}
+
+#endregion
+
+/// <summary>
+/// Contains any necessary information about the camera rotation
+/// </summary>
+public struct RotationData
+{
+    public CameraState currentState;
+    public CameraState intendedState;
+    public TransitionState transitionState;
 }
 
 public class GameManager : MonoBehaviour
@@ -25,7 +74,7 @@ public class GameManager : MonoBehaviour
     static GameManager m_instance;
     static public GameManager instance { get { return m_instance; } }
 
-    public CameraState m_CameraState;
+    public CameraState cameraState;
     [SerializeField] GameObject playerPrefab;
     [SerializeField] Transform spawnPoint;
     public GameObject player;
@@ -38,15 +87,20 @@ public class GameManager : MonoBehaviour
     public GameObject UpButton, DownButton;
 
     ///Pre and post rotation delegate events
-    public delegate void RotationEvents(CameraState _cameraState);
+    public delegate void RotationEvents(RotationData _rotationData);
     public RotationEvents postRotation = PostRotationLogic;
     public RotationEvents preRotation = PreRotationLogic;
+
+    public static RotationData rotationData;
 
 
     void Awake()
     {
         m_instance = this;
-       // m_CameraState = CameraState.Above;
+        rotationData = new RotationData();
+        rotationData.currentState = cameraState;
+        rotationData.intendedState = CameraState.None;
+        rotationData.transitionState = TransitionState.None;
     }
 
     // Use this for initialization
@@ -72,19 +126,19 @@ public class GameManager : MonoBehaviour
         //print(dir);
 
         if (dir.y >= -11 && dir.y <= -9)
-            m_CameraState = CameraState.Above;
+            cameraState = CameraState.Above;
         if (dir.y <= 11 && dir.y >= 9)
-            m_CameraState = CameraState.Below;
+            cameraState = CameraState.Below;
         if (dir.z <= 11 && dir.z >= 9)
-            m_CameraState = CameraState.Behind;
+            cameraState = CameraState.Behind;
         if (dir.z >= -11 && dir.z <= -9)
-            m_CameraState = CameraState.Front;
+            cameraState = CameraState.Front;
         if (dir.x <= 11 && dir.x >= 9)
-            m_CameraState = CameraState.Left;
+            cameraState = CameraState.Left;
         if (dir.x >= -11 && dir.x <= -9)
-            m_CameraState = CameraState.Right;
+            cameraState = CameraState.Right;
 
-        if (m_CameraState != CameraState.Above && m_CameraState != CameraState.Below)
+        if (cameraState != CameraState.Above && cameraState != CameraState.Below)
         {
             UpButton.GetComponent<Button>().interactable = false;
             DownButton.GetComponent<Button>().interactable = false;
@@ -95,24 +149,28 @@ public class GameManager : MonoBehaviour
             DownButton.GetComponent<Button>().interactable = true;
         }
 
-        BlockManager.instance.UpdateActiveBlocks(m_CameraState);
-        postRotation(m_CameraState);
+        BlockManager.instance.UpdateActiveBlocks(cameraState);
+
+        //update rotation data and set out
+        rotationData.currentState = cameraState;
+        postRotation(rotationData);
+        print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
     }
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
     /// </summary>
-    static void PostRotationLogic(CameraState _newState)
+    static void PostRotationLogic(RotationData _rotationData)
     {
-
+        
     }
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
     /// </summary>
-    static void PreRotationLogic(CameraState _intendedState)
+    static void PreRotationLogic(RotationData _rotationData)
     {
-
+        rotationData = _rotationData;
     }
 
 

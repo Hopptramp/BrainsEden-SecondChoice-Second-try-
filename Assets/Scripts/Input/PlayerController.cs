@@ -33,26 +33,26 @@ public class PlayerController : MonoBehaviour {
         GameManager.instance.postRotation += PostRotation;
         GameManager.instance.preRotation += PreRotation;
 
-        AnimateCorrectButtons(cameraState = GameManager.instance.m_CameraState);
+        AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
     }
 
 
     /// <summary>
     /// Use for any logic required before rotation completion
     /// </summary>
-    /// <param name="_intendedState"> The state that is being rotated to</param>
-    void PreRotation(CameraState _intendedState)
+    /// <param name="_rotationData"> The state that is being rotated to</param>
+    void PreRotation(RotationData _rotationData)
     {
-        AnimateCorrectButtons(_intendedState);
+        AnimateCorrectButtons(_rotationData.intendedState);
 
 
     }
     /// <summary>
     /// Use for any logic required after rotation completion
     /// </summary>
-    void PostRotation(CameraState _cameraState)
+    void PostRotation(RotationData _rotationData)
     {
-        cameraState = _cameraState;
+        cameraState = _rotationData.currentState;
         CheckNewOrientation();
 
     }
