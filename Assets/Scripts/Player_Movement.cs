@@ -34,7 +34,7 @@ public class Player_Movement : MonoBehaviour
 
     void Start()
     {
-        cam = GameManager.instance.camera;
+        cam = GameManager.instance.mainCamera;
     }
     
     // Update is called once per frame

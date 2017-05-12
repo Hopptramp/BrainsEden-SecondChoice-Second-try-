@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
         // add delegate event
         GameManager.instance.postRotation += PostRotation;
         GameManager.instance.preRotation += PreRotation;
+
         AnimateCorrectButtons(cameraState = GameManager.instance.m_CameraState);
     }
 

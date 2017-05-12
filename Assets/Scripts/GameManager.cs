@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     [SerializeField] Transform spawnPoint;
     public GameObject player;
-    public GameObject camera;
+    public GameObject mainCamera;
 
     public float killHeight = -5;
     [SerializeField] bool ResetLevel = true;
@@ -61,13 +61,13 @@ public class GameManager : MonoBehaviour
     {
         player.transform.position = spawnPoint.position;
         //player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
-        camera.GetComponent<Rotation>().player = player;
+        mainCamera.GetComponent<Rotation>().player = player;
         UpdateCameraState();
     }
 
     public void UpdateCameraState()
     {
-        Vector3 dir = player.transform.position - camera.transform.position;
+        Vector3 dir = player.transform.position - mainCamera.transform.position;
         dir = new Vector3(Mathf.Floor(dir.x), Mathf.Floor(dir.y), Mathf.Floor(dir.z));
         //print(dir);
 
