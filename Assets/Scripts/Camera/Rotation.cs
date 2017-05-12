@@ -15,6 +15,7 @@ public class Rotation : MonoBehaviour
 	public GameObject compassPrefab, compassOrigin;
 	private GameObject origin;
     GameObject player;
+    FixedPlayerMovement playerScript;
 
 
     public bool isRotating = false;
@@ -35,6 +36,7 @@ public class Rotation : MonoBehaviour
 
         transform.parent = origin.transform;
         transform.position = transform.parent.position - new Vector3(0f, 0f, cameraDist);
+        
 
     }
 	//set the camera to start facing the origin at cameraDist distance
@@ -47,6 +49,7 @@ public class Rotation : MonoBehaviour
         
         rotationData = GameManager.rotationData;
         player = rotationData.target;
+        playerScript = player.GetComponent<FixedPlayerMovement>();
 	}
     
 	void FixedUpdate ()
@@ -56,6 +59,11 @@ public class Rotation : MonoBehaviour
 			compassOrigin.transform.rotation = origin.transform.rotation;
 		}
 	}
+
+    void LateUpdate()
+    {
+       // origin.transform.position = playerScript.cameraTarget;
+    }
 
 	void Update ()
 	{
@@ -85,7 +93,8 @@ public class Rotation : MonoBehaviour
             }
         
         ResetBools();
-		origin.transform.position = player.transform.position;
+		//origin.transform.position = player.transform.position;
+        origin.transform.position = playerScript.cameraTarget;
 	}
 
     #endregion

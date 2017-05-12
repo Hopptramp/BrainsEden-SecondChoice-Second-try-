@@ -21,7 +21,10 @@ public class FixedPlayerMovement : MonoBehaviour {
     [SerializeField]
     private Transform child;
     private bool moving;
+    public bool jumping;
     private float childOffset;
+    private Vector3 jumpCamTarget;
+    public Vector3 cameraTarget { get { return !jumping ? transform.position : jumpCamTarget; } }
     
 
 
@@ -142,14 +145,18 @@ public class FixedPlayerMovement : MonoBehaviour {
     IEnumerator Jump(Vector3 _translation)
     {
         moving = true;
+        jumping = true;
         Vector3 newPos = transform.position + _translation;
         Vector3 origin = transform.position;
         transform.LookAt(newPos);
         m_animator.SetTrigger("Jump");
+        jumpCamTarget = origin;
+
         float t = 0;
         while(t<jumpDuration)
         {
             transform.position = Vector3.Lerp(origin, newPos, JumpLinear.Evaluate(t / jumpDuration));
+            jumpCamTarget = new Vector3(transform.position.x, m_animator.transform.position.y, transform.position.z);
             yield return null;
             t += Time.deltaTime;
         }
@@ -159,6 +166,7 @@ public class FixedPlayerMovement : MonoBehaviour {
 
     public void EndJump()
     {
+        jumping = false;
         moving = false;
         transform.position += Vector3.up;
         m_animator.transform.localPosition = Vector3.zero;
