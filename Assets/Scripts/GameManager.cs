@@ -18,7 +18,7 @@ public enum CameraState
 
 public enum TransitionState
 {
-    FromAboveToFront,
+    FromAboveToFront, 
     FromAboveToRight,
     FromAboveToLeft,
     FromAboveToBehind,
@@ -57,6 +57,13 @@ public enum VisibleState
     Invisible
 }
 
+public enum GameState
+{
+    Idle,
+    Play,
+    Pause,
+}
+
 #endregion
 
 /// <summary>
@@ -67,6 +74,7 @@ public struct RotationData
     public CameraState currentState;
     public CameraState intendedState;
     public TransitionState transitionState;
+    public GameObject target;
 }
 
 public class GameManager : MonoBehaviour
@@ -74,52 +82,76 @@ public class GameManager : MonoBehaviour
     static GameManager m_instance;
     static public GameManager instance { get { return m_instance; } }
 
-    public CameraState cameraState;
-    [SerializeField] GameObject playerPrefab;
-    [SerializeField] Transform spawnPoint;
+    public GameState gameState { get; private set; }
+    public CameraState cameraState { get; private set; }
+
+    [SerializeField] private Transform startPos;
     public GameObject player;
     public GameObject mainCamera;
 
-    public float killHeight = -5;
-    [SerializeField] bool ResetLevel = true;
+    private float playTime = 0;
+
+    //public float killHeight = -5;
+    //[SerializeField] bool ResetLevel = true;
     [SerializeField] GameObject pauseMenu;
     public GameObject endMenu;
     public GameObject UpButton, DownButton;
 
     ///Pre and post rotation delegate events
-    public delegate void RotationEvents(RotationData _rotationData);
-    public RotationEvents postRotation = PostRotationLogic;
-    public RotationEvents preRotation = PreRotationLogic;
+    public delegate void PostRotation(RotationData _rotationData, bool _isInit);
+    public delegate void PreRotation(RotationData _rotationData);
+    public PostRotation postRotation = PostRotationLogic;
+    public PreRotation preRotation = PreRotationLogic;
 
     public static RotationData rotationData;
 
+    #region MonoBehaviour
 
     void Awake()
     {
         m_instance = this;
         rotationData = new RotationData();
         rotationData.currentState = cameraState;
-        rotationData.intendedState = CameraState.None;
+        rotationData.intendedState = cameraState;
         rotationData.transitionState = TransitionState.None;
+        rotationData.target = player;
     }
 
     // Use this for initialization
     void Start ()
     {
-        //DontDestroyOnLoad(gameObject);
         InitGame();
 
     }
 
-    void InitGame()
+    // Update is called once per frame
+    void Update()
     {
-        player.transform.position = spawnPoint.position;
-        //player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
-        mainCamera.GetComponent<Rotation>().player = player;
-        UpdateCameraState();
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+           // pauseMenu.SetActive(true);
+        }
     }
 
-    public void UpdateCameraState()
+    void InitGame()
+    {
+        player.transform.position = startPos.position;
+        //player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
+        //mainCamera.GetComponent<Rotation>().player = player;
+        UpdateRotationData(true);
+    }
+
+    #endregion
+
+
+
+    #region Pre/Post rotation delegates
+
+    /// <summary>
+    /// Update rotation data struct and trigger PostRotation logic
+    /// </summary>
+    /// <param name="isInit"></param>
+    public void UpdateRotationData(bool isInit)
     {
         Vector3 dir = player.transform.position - mainCamera.transform.position;
         dir = new Vector3(Mathf.Floor(dir.x), Mathf.Floor(dir.y), Mathf.Floor(dir.z));
@@ -153,14 +185,15 @@ public class GameManager : MonoBehaviour
 
         //update rotation data and set out
         rotationData.currentState = cameraState;
-        postRotation(rotationData);
+        postRotation(rotationData, isInit);
         print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
     }
+
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
     /// </summary>
-    static void PostRotationLogic(RotationData _rotationData)
+    static void PostRotationLogic(RotationData _rotationData, bool _isInit)
     {
         
     }
@@ -173,47 +206,8 @@ public class GameManager : MonoBehaviour
         rotationData = _rotationData;
     }
 
+    #endregion
 
-    // Update is called once per frame
-    void Update ()
-    {
-       if (player.transform.position.y <= killHeight)
-        {
-            EndLevel(null);
-        }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            pauseMenu.SetActive(true);
-        }
-    }
-
-    public void PrepEndLevel()
-    {
-        endMenu.SetActive(true);
-        ScoreManager.instance.runUpdate = false;
-        endMenu.GetComponent<EndLevelMenu>().SetEndValues(ScoreManager.instance.timerValue, (int)ScoreManager.instance.flipValue, (int)ScoreManager.instance.jumpValue);
-    }
-
-    public void EndLevel(bool? overwriteReset)
-    {
-        if (overwriteReset.HasValue ? (bool)overwriteReset : ResetLevel)
-        {
-            Destroy(gameObject);
-#if UNITY_5_3_OR_NEWER               
-            SceneManager.LoadScene(DataHolder.instance.currentLevel);
-#else
-            Application.LoadLevel(DataHolder.instance.currentLevel);
-#endif
-        }
-        else
-        {
-#if UNITY_5_3_OR_NEWER
-            SceneManager.LoadScene(++DataHolder.instance.currentLevel > 11 ? 0 : DataHolder.instance.currentLevel);
-#else
-            Application.LoadLevel(++DataHolder.instance.currentLevel > 11 ? 0 : DataHolder.instance.currentLevel);
-#endif
-            InitGame();
-        }
-    }
+ 
 }

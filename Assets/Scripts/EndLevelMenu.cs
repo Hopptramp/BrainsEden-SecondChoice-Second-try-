@@ -10,12 +10,12 @@ public class EndLevelMenu : MonoBehaviour
 
     public void NextLevel()
     {
-        GameManager.instance.EndLevel(false);
+       //-+ GameManager.instance.EndLevel(false);
     }
 
     public void RestartLevel()
     {
-        GameManager.instance.EndLevel(null);
+      //  GameManager.instance.EndLevel(null);
     }
 
     public void SetEndValues(float _time, int _flips, int _jumps)

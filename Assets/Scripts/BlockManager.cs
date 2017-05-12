@@ -354,7 +354,7 @@ public class BlockManager : MonoBehaviour
 
 		//LOGIC FOR DISCONNECTING THE PLAYER AND ASSIGNING THEIR COMPONENETS TO CORPSE
 
-		GameManager.instance.EndLevel (null);
+		//GameManager.instance.EndLevel (null);
 	}
 
 	void FakeBlockCollided(BlockData bData)
@@ -366,7 +366,7 @@ public class BlockManager : MonoBehaviour
 
     void EndBlockCollided()
     {
-        GameManager.instance.PrepEndLevel();
+       // GameManager.instance.PrepEndLevel();
         //GameManager.instance.EndLevel(false);
     }
 

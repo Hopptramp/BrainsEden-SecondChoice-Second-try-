@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
         GameManager.instance.postRotation += PostRotation;
         GameManager.instance.preRotation += PreRotation;
 
-        AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
+        //AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
     }
 
 
@@ -50,11 +50,13 @@ public class PlayerController : MonoBehaviour {
     /// <summary>
     /// Use for any logic required after rotation completion
     /// </summary>
-    void PostRotation(RotationData _rotationData)
+    void PostRotation(RotationData _rotationData, bool _isInit)
     {
-        cameraState = _rotationData.currentState;
+        cameraState = _isInit ? GameManager.instance.cameraState : _rotationData.currentState;
         CheckNewOrientation();
 
+        if(_isInit)
+            AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
     }
 
     private void Update()

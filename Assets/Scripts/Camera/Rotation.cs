@@ -7,37 +7,24 @@ public class Rotation : MonoBehaviour
 	[SerializeField]
 	//the distance for the camera to rotate around the world
 	private float cameraDist = 10f;
-
 	[SerializeField]
 	//time taken for rotation
 	private float rotateTime = 0.5f;
 
-
     RotationData rotationData;
-
 	public GameObject compassPrefab, compassOrigin;
-
 	private GameObject origin;
-    public GameObject player;
-    [SerializeField]
-    private bool useKeyboard;
+    GameObject player;
+
+
     public bool isRotating = false;
-
     private bool left, right, up, down;
-
-	[SerializeField]
 	private bool clear = true;
 
     #region MonoBehaviour
 
     void Awake ()
 	{
-		if (!compassOrigin)
-		{
-			//-GameObject.Instantiate (compassPrefab);
-		}
-
-
         //sanity check for origin
         if (!origin)
         {
@@ -57,9 +44,9 @@ public class Rotation : MonoBehaviour
 		{
 			compassOrigin = Compass.instance.compassOrigin;
 		}
-
-
+        
         rotationData = GameManager.rotationData;
+        player = rotationData.target;
 	}
     
 	void FixedUpdate ()
@@ -72,35 +59,7 @@ public class Rotation : MonoBehaviour
 
 	void Update ()
 	{
-        if (useKeyboard)
-        {
-            if (Input.GetKeyUp(KeyCode.UpArrow) && clear)
-            {
-                RotateUp();
-                ScoreManager.instance.IncreaseFlips();
-            }
 
-            else if (Input.GetKeyUp(KeyCode.DownArrow) && clear)
-            {
-                RotateDown();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-            else if (Input.GetKeyUp(KeyCode.RightArrow) && clear)
-            {
-                RotateRight();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-            else if (Input.GetKeyUp(KeyCode.LeftArrow) && clear)
-            {
-                RotateLeft();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-        }
-        else
-        {
             if (up && clear)
             {
                 RotateUp();
@@ -124,7 +83,7 @@ public class Rotation : MonoBehaviour
                 RotateLeft();
                 ScoreManager.instance.IncreaseFlips();
             }
-        }
+        
         ResetBools();
 		origin.transform.position = player.transform.position;
 	}
@@ -391,38 +350,26 @@ public class Rotation : MonoBehaviour
     #region Input
     public void RotateUp ()
 	{
-		//pass the camera's new fwd
-		//BlockManager.instance.DepthShade (origin.transform.up);
-
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"onstarttarget",player,"onstart", "FreezeUnfreeze", "onstartparams" , true,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
     }
 
 	public void RotateDown ()
 	{
-		//pass the camera's new fwd
-		//BlockManager.instance.DepthShade (origin.transform.up * -1);
-
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
     }
 
 	public void RotateLeft ()
 	{
-		//pass the camera's new fwd
-		//BlockManager.instance.DepthShade (origin.transform.right * -1);
-
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete" ,"CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete" ,"CheckRotation"));
     }
 
 	public void RotateRight ()
 	{
-		//pass the camera's new fwd
-		//BlockManager.instance.DepthShade (origin.transform.right);
-
 		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "onstarttarget", player, "onstart", "FreezeUnfreeze", "onstartparams", true, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
+		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
     }
 
     void ResetBools()
@@ -442,11 +389,11 @@ public class Rotation : MonoBehaviour
 
     #region Rotation Logic
 
-    void TriggeriTween(float _angle, string _axis)
-    {
-        isRotating = true;
-        iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", player, "oncomplete", "CheckRotation"));
-    }
+    //void TriggeriTween(float _angle, string _axis)
+    //{
+    //    isRotating = true;
+    //    iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", player, "oncomplete", "CheckRotation"));
+    //}
 
     /// <summary>
     /// Checks the rotation of the camera and rites it if at a stupid orientation
@@ -478,7 +425,7 @@ public class Rotation : MonoBehaviour
     void ClearToRotate()
     {
         origin.transform.position = player.transform.position;
-        GameManager.instance.UpdateCameraState();
+        GameManager.instance.UpdateRotationData(false);
         clear = true;
         isRotating = false;
         //player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
