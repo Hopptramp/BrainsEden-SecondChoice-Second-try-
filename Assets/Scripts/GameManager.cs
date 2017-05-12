@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform startPos;
     public GameObject player;
     public GameObject mainCamera;
+    public Rotation rotation;
 
     private float playTime = 0;
 

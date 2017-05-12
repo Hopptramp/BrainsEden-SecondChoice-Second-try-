@@ -97,7 +97,7 @@ public class Rotation : MonoBehaviour
 		//origin.transform.position = player.transform.position;
 
         if(!playerScript.jumping)
-            origin.transform.position = playerScript.cameraTarget;
+            origin.transform.position = playerScript.transform.position;
 	}
 
     #endregion
