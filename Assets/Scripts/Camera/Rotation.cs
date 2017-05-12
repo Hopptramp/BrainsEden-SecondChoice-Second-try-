@@ -14,7 +14,8 @@ public class Rotation : MonoBehaviour
     RotationData rotationData;
 	public GameObject compassPrefab, compassOrigin;
 	private GameObject origin;
-    GameObject player;
+    private GameObject player;
+    private Vector3 tempTarget;
     FixedPlayerMovement playerScript;
 
 
@@ -94,7 +95,9 @@ public class Rotation : MonoBehaviour
         
         ResetBools();
 		//origin.transform.position = player.transform.position;
-        origin.transform.position = playerScript.cameraTarget;
+
+        if(!playerScript.jumping)
+            origin.transform.position = playerScript.cameraTarget;
 	}
 
     #endregion
@@ -350,8 +353,22 @@ public class Rotation : MonoBehaviour
         }
     }
 
+    public void TriggerJumpingTracking(Vector3 _target, float _duration)
+    {
+        StartCoroutine(JumpTracking(_target, _duration));
+    }
 
-
+    IEnumerator JumpTracking(Vector3 _target, float _duration)
+    {
+        Vector3 currentPos = transform.position;
+        var t = 0f;
+        while (t < 1)
+        {
+            t += Time.deltaTime / _duration;
+            transform.position = Vector3.Lerp(currentPos, _target, t);
+            yield return null;
+        }
+    }
 
 
     
