@@ -9,13 +9,14 @@ public enum Direction
 public class FixedPlayerMovement : MonoBehaviour {
 
     [SerializeField] float movementDuration = 1;
+    [SerializeField] float jumpDuration = 1;
     [SerializeField] float fallDuration = 1;
     CameraState camState;
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
     enum ObstructionType { None, Drop, CanJump, Obstruction }
     [SerializeField]
-    private AnimationCurve LinearMovement, VerticalMovement;
+    private AnimationCurve LinearMovement, JumpLinear;
     private Animator m_animator;
     [SerializeField]
     private Transform child;
@@ -58,7 +59,7 @@ public class FixedPlayerMovement : MonoBehaviour {
                     //StartCoroutine(Fall(_direction));
                     break;
                 case ObstructionType.CanJump:
-
+                    StartCoroutine(Jump(_direction));
                     break;
                 case ObstructionType.Obstruction:
                     break;
@@ -109,11 +110,7 @@ public class FixedPlayerMovement : MonoBehaviour {
         while (t <= movementDuration)
         {
             temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementDuration));
-            if (child != null)
-                transform.position = temp;
-            else
-                transform.position = new Vector3(temp.x, origin.y + VerticalMovement.Evaluate(t / movementDuration), temp.z);
-
+            transform.position = temp;
             yield return null;
             t += Time.deltaTime;
         }
@@ -144,7 +141,25 @@ public class FixedPlayerMovement : MonoBehaviour {
 
     IEnumerator Jump(Vector3 _translation)
     {
+        moving = true;
+        Vector3 newPos = transform.position + _translation;
+        Vector3 origin = transform.position;
+        transform.LookAt(newPos);
+        m_animator.SetTrigger("Jump");
+        float t = 0;
+        while(t<jumpDuration)
+        {
+            transform.position = Vector3.Lerp(origin, newPos, JumpLinear.Evaluate(t / jumpDuration));
+            yield return null;
+            t += Time.deltaTime;
+        }
+        transform.position = newPos;
+
         yield return null;
+        moving = false;
+        transform.position += Vector3.up;
+        m_animator.transform.localPosition = Vector3.zero;
+        OnMovementComplete();
     }
 
     /// <summary>
