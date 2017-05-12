@@ -58,6 +58,7 @@ public class FixedPlayerMovement : MonoBehaviour {
                     //StartCoroutine(Fall(_direction));
                     break;
                 case ObstructionType.CanJump:
+
                     break;
                 case ObstructionType.Obstruction:
                     break;
@@ -139,6 +140,11 @@ public class FixedPlayerMovement : MonoBehaviour {
         moving = false;
         OnMovementComplete();
         
+    }
+
+    IEnumerator Jump(Vector3 _translation)
+    {
+        yield return null;
     }
 
     /// <summary>
