@@ -154,8 +154,11 @@ public class FixedPlayerMovement : MonoBehaviour {
             t += Time.deltaTime;
         }
         transform.position = newPos;
+        yield return null;        
+    }
 
-        yield return null;
+    public void EndJump()
+    {
         moving = false;
         transform.position += Vector3.up;
         m_animator.transform.localPosition = Vector3.zero;
