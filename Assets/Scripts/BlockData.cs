@@ -7,6 +7,9 @@ public class BlockData : GameActors
     public BlockType blockType;
     public Vector3 localPosition;
     public int ID;
+        
+    public int startingHealth = 3;
+    public int currentHealth;
 
     #region Teleporting Variables
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
@@ -35,6 +38,7 @@ public class BlockData : GameActors
             case BlockType.Moving:
                 break;
             case BlockType.Falling:
+                currentHealth = startingHealth;
                 break;
             case BlockType.Start:
                 GameManager.instance.PlacePlayer(transform.position + Vector3.up);
@@ -107,6 +111,9 @@ public class BlockData : GameActors
             case BlockType.Moving:
                 break;
             case BlockType.Falling:
+                currentHealth--;
+                if (currentHealth <= 0)
+                    gameObject.SetActive(false);
                 break;
             case BlockType.Start:
                 break;
