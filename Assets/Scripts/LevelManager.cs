@@ -8,7 +8,9 @@ public enum BlockType
     Default,
     Teleport,
     Moving,
-    Falling
+    Falling,
+    Start,
+    End
 }
 
 [System.Serializable]

@@ -32,6 +32,10 @@ public class BlockData : GameActors
                 break;
             case BlockType.Falling:
                 break;
+            case BlockType.Start:
+                break;
+            case BlockType.End:
+                break;
             default:
                 break;
         }
@@ -55,12 +59,17 @@ public class BlockData : GameActors
             
             case BlockType.Default:
                 break;
-            case BlockType.Teleport:                
+            case BlockType.Teleport:       
+                //This isnt working properly yet;                       
                     currTargetBlock = GameManager.instance.levelManager.GetBlockByID(getTeleportTarget(_rotationData.intendedState));
                 break;
             case BlockType.Moving:
                 break;
             case BlockType.Falling:
+                break;
+            case BlockType.Start:
+                break;
+            case BlockType.End:
                 break;
             default:
                 break;
@@ -68,6 +77,10 @@ public class BlockData : GameActors
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
+    /// <summary>
+    /// Called from player when player has moved onto a block.
+    /// </summary>
+    /// <param name="_player">Reference to the player script.</param>
     public void BlockLandedOn(FixedPlayerMovement _player)
     {        
         switch (blockType)
@@ -77,13 +90,19 @@ public class BlockData : GameActors
             case BlockType.Teleport:
                 if (currTargetBlock.ID != ID)
                 {
+                    //temporary, will make a function in player to call from here.      
                     Debug.Log(""+ currTargetBlock.ID + "__" + currTargetBlock.localPosition);
-                    _player.transform.position = currTargetBlock.localPosition + Vector3.up;
+                    _player.TeleportTo(currTargetBlock.localPosition + Vector3.up);
+                    //_player.transform.position = currTargetBlock.localPosition + Vector3.up;
                 }
                 break;
             case BlockType.Moving:
                 break;
             case BlockType.Falling:
+                break;
+            case BlockType.Start:
+                break;
+            case BlockType.End:
                 break;
             default:
                 break;
