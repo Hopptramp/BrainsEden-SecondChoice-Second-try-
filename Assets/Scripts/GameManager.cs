@@ -194,9 +194,9 @@ public class GameManager : MonoBehaviour
     {
         timerValue += Time.deltaTime;
         timerText.text = timerValue.ToString("00:00");
-        flipText.text = "Flips: " + flipValue.ToString();
-        stepsText.text = "Steps: " + stepsValue.ToString();
-        levelText.text = "Level: " + levelValue.ToString();
+        flipText.text = "Flips\n" + flipValue.ToString();
+        stepsText.text = "Steps\n" + stepsValue.ToString();
+        levelText.text = "Level\n" + levelValue.ToString();
     }
 
     public void IncrementSteps()
