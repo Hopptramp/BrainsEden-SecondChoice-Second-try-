@@ -91,6 +91,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject mainCamera;
     public Rotation rotation;
+    [SerializeField] private LevelManager levelManager;
+    private int currentLevelID = 0;
 
     // scoring
     private float timerValue = 0;
@@ -148,7 +150,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-           // pauseMenu.SetActive(true);
+            CompleteLevel();
         }
 
         if(gameState == GameState.Play)
@@ -184,7 +186,8 @@ public class GameManager : MonoBehaviour
 
     public void CompleteLevel()
     {
-        onPlayPause(rotationData);
+        levelManager.SwitchLevels(++currentLevelID);
+       // onPlayPause(rotationData);
     }
 
     #endregion
