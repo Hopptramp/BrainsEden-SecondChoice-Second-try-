@@ -13,6 +13,8 @@ public class BlockData : GameActors
     private BlockData currTargetBlock;
     #endregion
 
+
+
     /// <summary>
     /// initialise the block after being created
     /// </summary>
@@ -59,6 +61,23 @@ public class BlockData : GameActors
                 break;
         }
         base.PostRotationLogic(_rotationData, _isInit);
+    }
+
+    public void BlockLandedOn()
+    {        
+        switch (blockType)
+        {
+            case BlockType.Default:
+                break;
+            case BlockType.Teleport:
+                break;
+            case BlockType.Moving:
+                break;
+            case BlockType.Falling:
+                break;
+            default:
+                break;
+        }
     }
 
     int getTeleportTarget(CameraState _state)

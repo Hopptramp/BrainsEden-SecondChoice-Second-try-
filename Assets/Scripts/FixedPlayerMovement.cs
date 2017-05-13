@@ -177,7 +177,8 @@ public class FixedPlayerMovement : GameActors {
     /// </summary>
     public void OnMovementComplete()
     {
-        if (!Physics.Raycast(transform.position, Vector3.down, 1, obstuctionObjects))
+        RaycastHit hit;
+        if (!Physics.Raycast(transform.position, Vector3.down, out hit, 1, obstuctionObjects))
         {
             //If one block fall, landing animation, else falling
             if (Physics.Raycast(transform.position + Vector3.down, Vector3.down, 1, obstuctionObjects))
@@ -191,6 +192,10 @@ public class FixedPlayerMovement : GameActors {
                 m_animator.SetTrigger("Falling");
                 StartCoroutine(Fall(new Vector3(0, -1, 0)));
             }
+        }
+        else
+        {
+            hit.collider.GetComponent<BlockData>().BlockLandedOn();
         }
     }
 
