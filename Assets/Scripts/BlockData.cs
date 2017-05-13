@@ -13,6 +13,7 @@ public class BlockData : GameActors
     private BlockData currTargetBlock;
     #endregion
 
+    public LevelDataActive level;
 
 
     /// <summary>
@@ -34,6 +35,10 @@ public class BlockData : GameActors
             default:
                 break;
         }
+
+        StoredBlockData data = level.storedBlocks[ID];
+        data.block = gameObject;
+        level.storedBlocks[ID] = data;
     }
 
     
