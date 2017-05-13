@@ -16,7 +16,7 @@ public class FixedPlayerMovement : MonoBehaviour {
     [SerializeField] LayerMask obstuctionObjects;
     enum ObstructionType { None, Drop, CanJump, Obstruction }
     [SerializeField]
-    private AnimationCurve LinearMovement, JumpLinear;
+    private AnimationCurve LinearMovement, JumpLinear, DropLinear;
     private Animator m_animator;
     [SerializeField]
     private Transform child;
@@ -53,11 +53,12 @@ public class FixedPlayerMovement : MonoBehaviour {
             switch (temp)
             {
                 case ObstructionType.None:
-                    StartCoroutine(SmoothMoveCharacter(_direction));
+                    m_animator.SetTrigger("Move");
+                    StartCoroutine(SmoothMoveCharacter(_direction, LinearMovement));
                     break;
                 case ObstructionType.Drop:
-                    StartCoroutine(SmoothMoveCharacter(_direction));
-                    //StartCoroutine(Fall(_direction));
+                    m_animator.SetTrigger("Drop");
+                    StartCoroutine(SmoothMoveCharacter(_direction, DropLinear));                    
                     break;
                 case ObstructionType.CanJump:
                     StartCoroutine(Jump(_direction));
@@ -96,21 +97,19 @@ public class FixedPlayerMovement : MonoBehaviour {
     /// </summary>
     /// <param name="_translation"></param>
     /// <returns></returns>
-    IEnumerator SmoothMoveCharacter(Vector3 _translation)
+    IEnumerator SmoothMoveCharacter(Vector3 _translation, AnimationCurve _linearCurve)
     {
         Vector3 newPos = transform.position + _translation;
         Vector3 origin = transform.position;
         Vector3 temp = origin;
         moving = true;  
         float t = 0;
-
-        if (m_animator)
-            m_animator.SetTrigger("Move");
+        
         transform.LookAt(newPos);
 
         while (t <= movementDuration)
         {
-            temp = Vector3.Lerp(origin, newPos, LinearMovement.Evaluate(t / movementDuration));
+            temp = Vector3.Lerp(origin, newPos, _linearCurve.Evaluate(t / movementDuration));
             transform.position = temp;
             yield return null;
             t += Time.deltaTime;
