@@ -232,7 +232,7 @@ public class GameManager : MonoBehaviour
             cameraState = CameraState.Right;
 
         // MOVE TO POST ROTATION LOGIC IN BLOCK MANAGER     
-        BlockManager.instance.UpdateActiveBlocks(cameraState);
+        //BlockManager.instance.UpdateActiveBlocks(cameraState);
 
         //update rotation data and set out
         rotationData.currentState = cameraState;
