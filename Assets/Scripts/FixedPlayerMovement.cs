@@ -74,6 +74,14 @@ public class FixedPlayerMovement : GameActors {
         }
     }
 
+    public void TeleportTo (Vector3 _destination)
+    {
+        if (!moving)
+        {
+            StartCoroutine(Teleport(_destination));
+        }
+    }
+
     /// <summary>
     /// check if any blocks are in the way
     /// </summary>
@@ -162,6 +170,21 @@ public class FixedPlayerMovement : GameActors {
         transform.position = newPos;
         yield return null;        
     }
+
+    IEnumerator Teleport(Vector3 _destination)
+    {
+        moving = true;
+        float t = 0;
+        m_animator.SetTrigger("Teleport");
+        while (t < 1)
+        {
+            yield return null;
+            t += Time.deltaTime;
+        }
+        transform.position = _destination;
+        moving = false;
+        
+    }    
 
     public void EndJump()
     {
