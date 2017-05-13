@@ -23,12 +23,14 @@ public class FixedPlayerMovement : MonoBehaviour {
     private bool moving;
     public bool jumping;
     private float childOffset;  
+    public Vector3 jumpCamTarget { get { return jumping ? new Vector3(transform.position.x, m_animator.transform.localPosition.y, transform.position.z): transform.position; } }
     
 
 	// Use this for initialization
 	void Start () {
         cameraParent = Camera.main.transform.parent;
         m_animator = GetComponentInChildren<Animator>();
+        m_animator.Play("Idle");
         childOffset = child.transform.localPosition.y;
        
 	}
@@ -145,8 +147,8 @@ public class FixedPlayerMovement : MonoBehaviour {
         Vector3 newPos = transform.position + _translation;
         Vector3 origin = transform.position;
         transform.LookAt(newPos);
-        m_animator.SetTrigger("Jump");
-        GameManager.instance.rotation.TriggerJumpingTracking(newPos + Vector3.up, jumpDuration);
+        m_animator.SetTrigger("JumpNew");
+        GameManager.instance.rotation.TriggerJumpingTracking(origin ,newPos + Vector3.up, jumpDuration, JumpLinear.keys[1].time -0.1f);
         float t = 0;
         while(t<jumpDuration)
         {

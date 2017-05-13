@@ -65,7 +65,7 @@ public class Rotation : MonoBehaviour
 
     void LateUpdate()
     {
-       // origin.transform.position = playerScript.cameraTarget;
+        //origin.transform.position = playerScript.jumpCamTarget;
     }
 
 	void Update ()
@@ -365,20 +365,29 @@ public class Rotation : MonoBehaviour
         }
     }
 
-    public void TriggerJumpingTracking(Vector3 _target, float _duration)
+    public void TriggerJumpingTracking(Vector3 _origin, Vector3 _target, float _duration, float _keyframeValue)
     {
         
-        StartCoroutine(JumpTracking(_target, _duration));
+        StartCoroutine(JumpTracking(_origin, _target, _duration, _keyframeValue));
     }
 
-    IEnumerator JumpTracking(Vector3 _target, float _duration)
+    IEnumerator JumpTracking(Vector3 _origin, Vector3 _target, float _duration, float _keyframeValue)
     {
         Vector3 currentPos = origin.transform.position;
+        Vector3 firstPos = currentPos + Vector3.up;
         var t = 0f;
         while (t < 1)
         {
             t += Time.deltaTime / _duration;
-            origin.transform.position = Vector3.Slerp(currentPos, _target, t);
+            if (t< _keyframeValue)
+            {
+                origin.transform.position = Vector3.Slerp(currentPos, firstPos, t / _keyframeValue);
+            }
+            else
+            {
+                origin.transform.position = Vector3.Slerp(firstPos, _target, (t-_keyframeValue) / (1-_keyframeValue));
+            }
+            
             yield return null;
         }
     }
