@@ -183,10 +183,12 @@ public class FixedPlayerMovement : GameActors {
             if (Physics.Raycast(transform.position + Vector3.down, Vector3.down, 1, obstuctionObjects))
             {
                 //MoveCharacter(new Vector3(0, -10, 0));
+                m_animator.SetTrigger("Land");
                 StartCoroutine(Fall(new Vector3(0, -1, 0)));
             }
             else
             {
+                m_animator.SetTrigger("Falling");
                 StartCoroutine(Fall(new Vector3(0, -1, 0)));
             }
         }
