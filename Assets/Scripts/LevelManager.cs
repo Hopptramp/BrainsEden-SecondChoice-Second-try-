@@ -88,7 +88,7 @@ public class LevelDataActive : MonoBehaviour
     }
 }
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : GameActors
 {
     public LevelDataActive unsavedLevel;
     public List<LevelDataScriptable> storedLevels;
@@ -98,22 +98,32 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private GameObject defaultCube;
 
+    protected override void OnPlayStart(RotationData _rotationData)
+    {
+        
+    }
 
     public void SaveAsScriptableObject()
     {
-        ++levelID;
-        unsavedLevel.SaveAsScriptableObject(levelID);
+        unsavedLevel.SaveAsScriptableObject(storedLevels.Count);
+    }
+
+    public StoredBlockData GetBlockByID(int _id)
+    {
+        return currentLoadedLevel.storedBlocks[_id];
     }
 
     public void SwitchLevels(LevelDataScriptable _newlevel)
     {
-        Destroy(currentLoadedLevel);
+        if(currentLoadedLevel != null)
+            Destroy(currentLoadedLevel);
         GenerateLevelFromLevelData(_newlevel);
     }
 
     public void SwitchLevels(int _newlevel)
     {
-        RemoveLevel(currentLoadedLevel);
+        if (currentLoadedLevel != null)
+            RemoveLevel(currentLoadedLevel);
         GenerateLevelFromLevelData(storedLevels[_newlevel]);
     }
 
