@@ -20,11 +20,22 @@ public struct StoredBlockData
     public GameObject block;
 }
 
+[System.Serializable]
+public struct LevelCompletionData
+{
+    public bool hasCompleted;
+    public float timeTaken;
+    public int totalFlips;
+    public int totalSteps;
+}
+
 [CreateAssetMenu(fileName = "Data", menuName = "Inventory/List", order = 1)]
 public class LevelDataScriptable : ScriptableObject
 {
     public int levelID;
     public List<StoredBlockData> storedBlocks;
+
+    public LevelCompletionData completionData;
 }
 
 [System.Serializable]
@@ -32,6 +43,8 @@ public class LevelDataActive : MonoBehaviour
 {
     public List<StoredBlockData> storedBlocks;   
     public GameObject blockHolder;
+    public LevelCompletionData completionData;
+    public LevelDataScriptable scriptableObject;
 
 
     /// <summary>
@@ -71,8 +84,11 @@ public class LevelDataActive : MonoBehaviour
         EditorUtility.FocusProjectWindow();
 
         Selection.activeObject = asset;
+
+        // APPLY VARIABLES HERE
         asset.levelID = _id;
         asset.storedBlocks = _stored;
+        
     }
 
     public void SaveAsScriptableObject(int _id)
@@ -93,40 +109,94 @@ public class LevelManager : GameActors
     public LevelDataActive unsavedLevel;
     public List<LevelDataScriptable> storedLevels;
     public LevelDataScriptable currentSavedLevel;
-    [SerializeField] private int levelID = 0;
+    [SerializeField] private int activeLevelID = 0;
     [SerializeField] private LevelDataActive currentLoadedLevel;
 
     [SerializeField] private GameObject defaultCube;
 
-    protected override void OnPlayStart(RotationData _rotationData)
+    private void Update()
     {
-        
+
     }
 
-    public void SaveAsScriptableObject()
+    #region delegates
+
+    protected override void PreRotationLogic(RotationData _rotationData)
     {
-        unsavedLevel.SaveAsScriptableObject(storedLevels.Count);
+        base.PreRotationLogic(_rotationData);
     }
 
+    protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
+    {
+
+        base.PostRotationLogic(_rotationData, _isInit);
+    }
+
+    #endregion
+
+    #region public API
+
+    /// <summary>
+    /// return block data via ID
+    /// </summary>
+    /// <param name="_id"></param>
+    /// <returns></returns>
     public StoredBlockData GetBlockByID(int _id)
     {
         return currentLoadedLevel.storedBlocks[_id];
     }
 
+    /// <summary>
+    /// apply score changes to level
+    /// </summary>
+    /// <param name="_data"></param>
+    public void OnLevelComplete(LevelCompletionData _data)
+    {
+        currentLoadedLevel.completionData = _data;
+    }
+
+    #endregion
+
+    #region Level creation/removal
+
+    /// <summary>
+    /// load level via scriptable object
+    /// </summary>
+    /// <param name="_newlevel"></param>
     public void SwitchLevels(LevelDataScriptable _newlevel)
     {
-        if(currentLoadedLevel != null)
+        activeLevelID = _newlevel.levelID;
+        if (currentLoadedLevel != null)
             Destroy(currentLoadedLevel);
         GenerateLevelFromLevelData(_newlevel);
     }
 
+    /// <summary>
+    /// lead level via level ID
+    /// </summary>
+    /// <param name="_newlevel"></param>
     public void SwitchLevels(int _newlevel)
     {
+        activeLevelID = _newlevel;
         if (currentLoadedLevel != null)
             RemoveLevel(currentLoadedLevel);
         GenerateLevelFromLevelData(storedLevels[_newlevel]);
     }
 
+    /// <summary>
+    /// load current level
+    /// </summary>
+    public void ReloadLevel()
+    {
+        if (currentLoadedLevel != null)
+            RemoveLevel(currentLoadedLevel);
+        GenerateLevelFromLevelData(storedLevels[activeLevelID]);
+    }
+
+    /// <summary>
+    /// Remove the passed in level
+    /// </summary>
+    /// <param name="_level"></param>
     void RemoveLevel(LevelDataActive _level)
     {
         foreach(StoredBlockData stored in _level.storedBlocks)
@@ -136,12 +206,17 @@ public class LevelManager : GameActors
         DestroyImmediate(_level.blockHolder);
     }
 
+    /// <summary>
+    /// Generate level from scriptable object
+    /// </summary>
+    /// <param name="_levelData"></param>
     public void GenerateLevelFromLevelData(LevelDataScriptable _levelData)
     {
         GameObject temp = new GameObject("LoadedLevel" + currentSavedLevel.levelID.ToString());
         temp.transform.SetParent(transform);
         currentLoadedLevel = temp.AddComponent<LevelDataActive>();
         currentLoadedLevel.storedBlocks = _levelData.storedBlocks;
+        currentLoadedLevel.scriptableObject = _levelData;
         currentLoadedLevel.blockHolder = temp;
 
         foreach (StoredBlockData storedData in _levelData.storedBlocks)
@@ -156,13 +231,30 @@ public class LevelManager : GameActors
             block.Initialise();
         }
     }
-	
+
+    #endregion
+
+    #region Scriptable Object
+
+    /// <summary>
+    /// create a new blank level template
+    /// </summary>
     public void CreateNewLevel()
     {
         GameObject levelObject = new GameObject("Unsaved Level " + storedLevels.Count);
         unsavedLevel = levelObject.AddComponent<LevelDataActive>();
         levelObject.transform.SetParent(transform);
     }
+
+    /// <summary>
+    /// Save the unsavedLevel as a new scriptable object
+    /// </summary>
+    public void SaveAsScriptableObject()
+    {
+        unsavedLevel.SaveAsScriptableObject(storedLevels.Count);
+    }
+
+    #endregion
 }
 
 [CustomEditor(typeof(LevelDataActive))]

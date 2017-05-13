@@ -96,9 +96,9 @@ public class GameManager : MonoBehaviour
 
     // scoring
     private float timerValue = 0;
-    private float stepsValue = 0;
-    private float flipValue = 0;
-    private float levelValue = 0;
+    private int stepsValue = 0;
+    private int flipValue = 0;
+    private int levelValue = 0;
 
     [SerializeField] private Text timerText;
     [SerializeField] private Text stepsText;
@@ -174,6 +174,7 @@ public class GameManager : MonoBehaviour
     {
         player.transform.position = startPos.position;
         UpdateRotationData(true);
+        levelManager.SwitchLevels(0);
     }
 
     /// <summary>
@@ -186,8 +187,15 @@ public class GameManager : MonoBehaviour
 
     public void CompleteLevel()
     {
+        LevelCompletionData data = new LevelCompletionData();
+        data.hasCompleted = true;
+        data.timeTaken = timerValue;
+        data.totalFlips = flipValue;
+        data.totalSteps = stepsValue;
+
+        levelManager.OnLevelComplete(data);
         levelManager.SwitchLevels(++currentLevelID);
-       // onPlayPause(rotationData);
+        // onPlayPause(rotationData);
     }
 
     #endregion
