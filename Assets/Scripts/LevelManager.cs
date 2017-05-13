@@ -81,9 +81,9 @@ public class LevelDataActive : MonoBehaviour
         AssetDatabase.CreateAsset(asset, "Assets/Resources/" + "Level-" + _id + ".asset");
         AssetDatabase.SaveAssets();
 
-        EditorUtility.FocusProjectWindow();
+        //EditorUtility.FocusProjectWindow();
 
-        Selection.activeObject = asset;
+        //Selection.activeObject = asset;
 
         // APPLY VARIABLES HERE
         asset.levelID = _id;
@@ -212,7 +212,7 @@ public class LevelManager : GameActors
     /// <param name="_levelData"></param>
     public void GenerateLevelFromLevelData(LevelDataScriptable _levelData)
     {
-        GameObject temp = new GameObject("LoadedLevel" + currentSavedLevel.levelID.ToString());
+        GameObject temp = new GameObject("LoadedLevel" + _levelData.levelID.ToString());
         temp.transform.SetParent(transform);
         currentLoadedLevel = temp.AddComponent<LevelDataActive>();
         currentLoadedLevel.storedBlocks = _levelData.storedBlocks;
