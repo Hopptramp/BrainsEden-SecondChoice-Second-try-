@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,79 +34,73 @@ public struct LevelCompletionData
     public int totalSteps;
 }
 
-[CreateAssetMenu(fileName = "Data", menuName = "Inventory/List", order = 1)]
-public class LevelDataScriptable : ScriptableObject
-{
-    public int levelID;
-    public LevelCompletionData completionData;
-    public List<StoredBlockData> storedBlocks;
-}
 
-[System.Serializable]
-public class LevelDataActive : MonoBehaviour
-{
-    public List<StoredBlockData> storedBlocks;   
-    public GameObject blockHolder;
-    public LevelCompletionData completionData;
-    public LevelDataScriptable scriptableObject;
+//[System.Serializable]
+//public class LevelDataActive : MonoBehaviour
+//{
+//    public List<StoredBlockData> storedBlocks;   
+//    public GameObject blockHolder;
+//    public LevelCompletionData completionData;
+//    public LevelDataScriptable scriptableObject;
 
 
-    /// <summary>
-    /// Find all references to block data in children
-    /// </summary>
-    public void CollectBlocks()
-    {
-        if (storedBlocks == null)
-            storedBlocks = new List<StoredBlockData>();
-        else
-            storedBlocks.Clear();
+//    /// <summary>
+//    /// Find all references to block data in children
+//    /// </summary>
+//    public void CollectBlocks()
+//    {
+//        if (storedBlocks == null)
+//            storedBlocks = new List<StoredBlockData>();
+//        else
+//            storedBlocks.Clear();
 
-        BlockData[] datas = GetComponentsInChildren<BlockData>();
+//        BlockData[] datas = GetComponentsInChildren<BlockData>();
 
-        int temp = -1;
-        foreach(BlockData data in datas)
-        {
-            StoredBlockData storedBlock = new StoredBlockData();
-            storedBlock.ID = ++temp;
-            storedBlock.localPosition = data.transform.localPosition;
-            storedBlock.type = data.blockType;
-            storedBlock.block = data.gameObject;
-            storedBlocks.Add(storedBlock);
-        }
-    }
+//        int temp = -1;
+//        foreach(BlockData data in datas)
+//        {
+//            StoredBlockData storedBlock = new StoredBlockData();
+//            storedBlock.ID = ++temp;
+//            storedBlock.localPosition = data.transform.localPosition;
+//            storedBlock.type = data.blockType;
+//            storedBlock.block = data.gameObject;
+//            storedBlocks.Add(storedBlock);
+//        }
+//    }
 
-#if UNITY_EDITOR
-    [MenuItem("Assets/Create/My Scriptable Object")]
-    public static LevelDataScriptable CreateMyAsset(int _id, List<StoredBlockData> _stored)
-    {
-        LevelDataScriptable asset;
+//#if UNITY_EDITOR
+//    [MenuItem("Assets/Create/Level Scriptable Object")]
+//    public static LevelDataScriptable CreateMyAsset(int _id, List<StoredBlockData> _stored)
+//    {
+//        LevelDataScriptable asset;
        
-        asset = ScriptableObject.CreateInstance<LevelDataScriptable>();
+//        asset = ScriptableObject.CreateInstance<LevelDataScriptable>();
 
-        AssetDatabase.CreateAsset(asset, "Assets/Resources/" + "Level-" + _id + ".asset");
-        AssetDatabase.SaveAssets();
 
-        // APPLY VARIABLES HERE
-        asset.levelID = _id;
-        asset.storedBlocks = _stored;
+//        AssetDatabase.CreateAsset(asset, "Assets/Resources/" + "Level-" + _id + ".asset");
+//        AssetDatabase.SaveAssets();
+        
+//        // APPLY VARIABLES HERE
+//        asset.levelID = _id;
+//        asset.storedBlocks = _stored;
 
-        return asset;
-    }
+//        return asset;
+//    }
 
-    public LevelDataScriptable SaveAsScriptableObject(int _id)
-    {
-        List<StoredBlockData> temp = new List<StoredBlockData>();
-        for(int i = 0; i < storedBlocks.Count; ++i)
-        {
-            temp.Add(storedBlocks[i]);
-        }
+//    public LevelDataScriptable SaveAsScriptableObject(int _id)
+//    {
+//        List<StoredBlockData> temp = new List<StoredBlockData>();
+//        for(int i = 0; i < storedBlocks.Count; ++i)
+//        {
+//            temp.Add(storedBlocks[i]);
+//        }
 
-        scriptableObject = CreateMyAsset(_id, temp);
-        return scriptableObject;
+//        scriptableObject = CreateMyAsset(_id, temp);
+//        return scriptableObject;
 
-    }
-    #endif
-}
+//    }
+//    #endif
+//}
 
 public class LevelManager : GameActors
 {
@@ -116,11 +111,22 @@ public class LevelManager : GameActors
     [SerializeField] private LevelDataActive currentLoadedLevel;
 
     [SerializeField] private GameObject defaultCube;
-
-    private void Start()
+    
+    private void Awake()
     {
         unsavedLevel.gameObject.SetActive(false);
+        float count = Resources.LoadAll("").Length;
+        print(count);
+        for (int i = 0; i < count; ++i)
+        {
+            LevelDataScriptable asset = ScriptableObject.CreateInstance<LevelDataScriptable>();
+            string path = "Level-" + i;          
+            asset = (LevelDataScriptable)Resources.Load(path);
+            storedLevels.Add(asset);
+        }
+
     }
+
 
     #region delegates
 
@@ -282,29 +288,29 @@ public class LevelManager : GameActors
 
 #if UNITY_EDITOR
 
-[CustomEditor(typeof(LevelDataActive))]
-public class LevelCustomInspector : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        LevelDataActive level = (LevelDataActive)target;
+//[CustomEditor(typeof(LevelDataActive))]
+//public class LevelCustomInspector : Editor
+//{
+//    public override void OnInspectorGUI()
+//    {
+//        LevelDataActive level = (LevelDataActive)target;
 
-        DrawDefaultInspector();
+//        DrawDefaultInspector();
 
-        if (GUILayout.Button("Collect Blocks"))
-        {
-            level.CollectBlocks();
-        }
+//        if (GUILayout.Button("Collect Blocks"))
+//        {
+//            level.CollectBlocks();
+//        }
 
-        //if (GUILayout.Button("Save Scriptable Object"))
-        //{
-        //    level.SaveAsScriptableObject();
-        //}
+//        //if (GUILayout.Button("Save Scriptable Object"))
+//        //{
+//        //    level.SaveAsScriptableObject();
+//        //}
 
 
-        //   base.OnInspectorGUI();
-    }
-}
+//        //   base.OnInspectorGUI();
+//    }
+//}
 
 [CustomEditor(typeof(LevelManager))]
 public class LevelManagerCustomInspector : Editor
