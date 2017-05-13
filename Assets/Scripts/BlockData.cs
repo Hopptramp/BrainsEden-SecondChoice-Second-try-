@@ -10,7 +10,7 @@ public class BlockData : GameActors
 
     #region Teleporting Variables
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
-    private BlockData currTargetBlock;
+    private StoredBlockData currTargetBlock;
     #endregion
 
     public LevelDataActive level;
@@ -55,8 +55,8 @@ public class BlockData : GameActors
             
             case BlockType.Default:
                 break;
-            case BlockType.Teleport:
-                /*currTargetBlock = */ getTeleportTarget(_rotationData.intendedState);
+            case BlockType.Teleport:                
+                    currTargetBlock = GameManager.instance.levelManager.GetBlockByID(getTeleportTarget(_rotationData.intendedState));
                 break;
             case BlockType.Moving:
                 break;
@@ -68,13 +68,18 @@ public class BlockData : GameActors
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
-    public void BlockLandedOn()
+    public void BlockLandedOn(FixedPlayerMovement _player)
     {        
         switch (blockType)
         {
             case BlockType.Default:
                 break;
             case BlockType.Teleport:
+                if (currTargetBlock.ID != ID)
+                {
+                    Debug.Log(""+ currTargetBlock.ID + "__" + currTargetBlock.localPosition);
+                    _player.transform.position = currTargetBlock.localPosition + Vector3.up;
+                }
                 break;
             case BlockType.Moving:
                 break;

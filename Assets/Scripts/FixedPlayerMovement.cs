@@ -195,7 +195,7 @@ public class FixedPlayerMovement : GameActors {
         }
         else
         {
-            hit.collider.GetComponent<BlockData>().BlockLandedOn();
+            hit.collider.GetComponent<BlockData>().BlockLandedOn(this);
         }
     }
 

@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject mainCamera;
     public Rotation rotation;
-    [SerializeField] private LevelManager levelManager;
+    [SerializeField] public LevelManager levelManager;
     private int currentLevelID = 0;
 
     // scoring
