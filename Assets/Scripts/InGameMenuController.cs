@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class InGameMenuController : GameActors, IPointerEnterHandler
+public class InGameMenuController : GameActors, IPointerDownHandler
 {
     private Rotation cameraRotate;
 
@@ -51,7 +51,7 @@ public class InGameMenuController : GameActors, IPointerEnterHandler
         canvas.alpha = _isActive ? 1 : 0;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
         Debug.Log("The cursor entered the selectable UI element.");
         if(GameManager.gameState == GameState.Pause)

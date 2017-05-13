@@ -70,34 +70,6 @@ public class Rotation : MonoBehaviour
 
 	void Update ()
 	{
-
-            if (up && clear)
-            {
-                RotateUp();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-            else if (down && clear)
-            { 
-                RotateDown();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-            else if (right && clear)
-            { 
-                RotateRight();
-                ScoreManager.instance.IncreaseFlips();
-            }
-
-            else if (left && clear)
-            { 
-                RotateLeft();
-                ScoreManager.instance.IncreaseFlips();
-            }
-        
-        ResetBools();
-		//origin.transform.position = player.transform.position;
-
         if(!playerScript.jumping)
             origin.transform.position = playerScript.transform.position;
 	}
@@ -340,30 +312,7 @@ public class Rotation : MonoBehaviour
 
     #endregion
 
-    public void TriggerRotation(Direction _direction)
-    {
-        InitialisePreRotation(_direction);
-
-
-        isRotating = true;
-        switch (_direction)
-        {
-            case Direction.Up:
-                RotateUp();
-                break;
-            case Direction.Down:
-                RotateDown();
-                break;
-            case Direction.Left:
-                RotateLeft();
-                break;
-            case Direction.Right:
-                RotateRight();
-                break;
-            default:
-                break;
-        }
-    }
+    #region Jumping
 
     public void TriggerJumpingTracking(Vector3 _origin, Vector3 _target, float _duration, float _keyframeValue)
     {
@@ -392,91 +341,73 @@ public class Rotation : MonoBehaviour
         }
     }
 
-
-    
-
-    #region Input
-    public void RotateUp ()
-	{
-		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc,"oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
-    }
-
-	public void RotateDown ()
-	{
-		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("x", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
-    }
-
-	public void RotateLeft ()
-	{
-		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", 90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete" ,"CheckRotation"));
-    }
-
-	public void RotateRight ()
-	{
-		clear = false;
-		iTween.RotateAdd(origin, iTween.Hash("y", -90f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "CheckRotation"));
-    }
-
-    void ResetBools()
-    {
-        left = false;
-        right = false;
-        up = false;
-        down = false;
-    }
-
-    public void LeftPress() { left = true; }
-    public void RightPress() { right = true; }
-    public void UpPress() { up = true; }
-    public void DownPress() { down = true; }
-
     #endregion
 
     #region Rotation Logic
 
-    //void TriggeriTween(float _angle, string _axis)
-    //{
-    //    isRotating = true;
-    //    iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", player, "oncomplete", "CheckRotation"));
-    //}
+    public void TriggerRotation(float _angle, string _axis)
+    {
+        if (isRotating)
+            return;
+
+        RotateTo(_angle, _axis);   
+    }
+
+    public void TriggerRotation(Direction _direction)
+    {
+        if (isRotating)
+            return;
+
+        // prompt prerotation
+        InitialisePreRotation(_direction);
+
+        isRotating = true;
+        switch (_direction)
+        {
+            case Direction.Up:
+                RotateAdd(90, "x");
+                break;
+            case Direction.Down:
+                RotateAdd(-90, "x");
+                break;
+            case Direction.Left:
+                RotateAdd(90, "y");
+                break;
+            case Direction.Right:
+                RotateAdd(-90, "y");
+                break;
+            default:
+                break;
+        }
+    }
+
+    void RotateAdd(float _angle, string _axis)
+    {
+        isRotating = true;
+        iTween.RotateAdd(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "InitPostRotation"));
+    }
+
+    void RotateTo(float _angle, string _axis)
+    {
+        isRotating = true;
+        iTween.RotateTo(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "InitPostRotation"));
+    }
 
     /// <summary>
-    /// Checks the rotation of the camera and rites it if at a stupid orientation
+    /// Checks the rotation of the camera and rights it if not correctly oriented
     /// </summary>
-    void CheckRotation()
+    void InitPostRotation()
     {
         //if not looking up or down and the camera is off orientation
         if (transform.right == Vector3.up || (-1 * transform.right) == Vector3.up || transform.up == Vector3.down)
-        {
-            StartCoroutine(CorrectRotation());
-        }
+            RotateTo(0, "z");
         else
         {
-            ClearToRotate();
+            origin.transform.position = player.transform.position;
+            GameManager.instance.UpdateRotationData(false);
+            clear = true;
+            isRotating = false;
         }
-    }
-
-    IEnumerator CorrectRotation()
-    {
-        //pause for a little while?
-        //yield return new WaitForSeconds (0.25f)
-
-        //correct the camera rotation
-        iTween.RotateTo(origin, iTween.Hash("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
-
-        yield return null;
-    }
-
-    void ClearToRotate()
-    {
-        origin.transform.position = player.transform.position;
-        GameManager.instance.UpdateRotationData(false);
-        clear = true;
-        isRotating = false;
-        //player.GetComponent<Player_Movement>().FreezeUnfreeze(false);
     }
 
     #endregion

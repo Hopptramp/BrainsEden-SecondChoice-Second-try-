@@ -79,26 +79,23 @@ public struct RotationData
 
 public class GameManager : MonoBehaviour
 {
-    static GameManager m_instance;
-    static public GameManager instance { get { return m_instance; } }
+    static public GameManager instance { get; private set; }
 
     public static GameState gameState { get; private set; }
     public static CameraState cameraState { get; private set; }
 
-
-
-    [SerializeField] private Transform startPos;
     public GameObject player;
     public GameObject mainCamera;
     public Rotation rotation;
     [SerializeField] public LevelManager levelManager;
     private int currentLevelID = 0;
 
-    // scoring
+    // scoring - Need scoring criteria for 1/2/3 stars
     private float timerValue = 0;
     private int stepsValue = 0;
     private int flipValue = 0;
     private int levelValue = 0;
+
 
     [SerializeField] private Text timerText;
     [SerializeField] private Text stepsText;
@@ -130,7 +127,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        m_instance = this;
+        instance = this;
         rotationData = new RotationData();
         rotationData.currentState = cameraState;
         rotationData.intendedState = cameraState;
@@ -172,9 +169,9 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
-        player.transform.position = startPos.position;
         UpdateRotationData(true);
         levelManager.SwitchLevels(0);
+        
     }
 
     /// <summary>
@@ -185,17 +182,34 @@ public class GameManager : MonoBehaviour
         onPlayStart(rotationData);
     }
 
+    /// <summary>
+    /// Place player at start
+    /// </summary>
+    /// <param name="_position"></param>
+    public void PlacePlayer(Vector3 _position)
+    {
+        player.transform.position = _position;
+    }
+
+    /// <summary>
+    /// called when the player steps on the end tile
+    /// </summary>
     public void CompleteLevel()
     {
+        // store the level data in the scriptable object
         LevelCompletionData data = new LevelCompletionData();
         data.hasCompleted = true;
         data.timeTaken = timerValue;
         data.totalFlips = flipValue;
         data.totalSteps = stepsValue;
 
+        // inform levelmanager
         levelManager.OnLevelComplete(data);
-        levelManager.SwitchLevels(++currentLevelID);
+        levelManager.RemoveLevel();
+        //levelManager.SwitchLevels(++currentLevelID);
         // onPlayPause(rotationData);
+
+        rotation.TriggerRotation(-90, "x");
     }
 
     #endregion
@@ -242,13 +256,11 @@ public class GameManager : MonoBehaviour
         if (dir.x >= -11 && dir.x <= -9)
             cameraState = CameraState.Right;
 
-        // MOVE TO POST ROTATION LOGIC IN BLOCK MANAGER     
-        //BlockManager.instance.UpdateActiveBlocks(cameraState);
 
         //update rotation data and set out
         rotationData.currentState = cameraState;
         postRotation(rotationData, isInit);
-        print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
+        //print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
 
         if (cameraState == CameraState.Below) // entering pause
         {

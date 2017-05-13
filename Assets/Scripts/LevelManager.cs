@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,8 +37,8 @@ public struct LevelCompletionData
 public class LevelDataScriptable : ScriptableObject
 {
     public int levelID;
-    public List<StoredBlockData> storedBlocks;
     public LevelCompletionData completionData;
+    public List<StoredBlockData> storedBlocks;
 }
 
 [System.Serializable]
@@ -72,6 +74,7 @@ public class LevelDataActive : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     [MenuItem("Assets/Create/My Scriptable Object")]
     public static LevelDataScriptable CreateMyAsset(int _id, List<StoredBlockData> _stored)
     {
@@ -101,6 +104,7 @@ public class LevelDataActive : MonoBehaviour
         return scriptableObject;
 
     }
+    #endif
 }
 
 public class LevelManager : GameActors
@@ -151,7 +155,8 @@ public class LevelManager : GameActors
     /// <param name="_data"></param>
     public void OnLevelComplete(LevelCompletionData _data)
     {
-        currentLoadedLevel.completionData = _data;
+        //currentLoadedLevel.completionData = _data;
+        storedLevels[activeLevelID].completionData = _data;
     }
 
     #endregion
@@ -199,7 +204,7 @@ public class LevelManager : GameActors
     /// Remove the passed in level
     /// </summary>
     /// <param name="_level"></param>
-    void RemoveLevel(LevelDataActive _level)
+    public void RemoveLevel(LevelDataActive _level)
     {
         foreach(StoredBlockData stored in _level.storedBlocks)
         {
@@ -207,6 +212,20 @@ public class LevelManager : GameActors
         }
         DestroyImmediate(_level.blockHolder);
     }
+
+    /// <summary>
+    /// Remove the passed in level
+    /// </summary>
+    /// <param name="_level"></param>
+    public void RemoveLevel()
+    {
+        foreach (StoredBlockData stored in currentLoadedLevel.storedBlocks)
+        {
+            DestroyImmediate(stored.block);
+        }
+        DestroyImmediate(currentLoadedLevel.blockHolder);
+    }
+
 
     /// <summary>
     /// Generate level from scriptable object
@@ -238,6 +257,7 @@ public class LevelManager : GameActors
 
     #region Scriptable Object
 
+#if UNITY_EDITOR
     /// <summary>
     /// create a new blank level template
     /// </summary>
@@ -255,9 +275,12 @@ public class LevelManager : GameActors
     {
         storedLevels.Add(unsavedLevel.SaveAsScriptableObject(storedLevels.Count));
     }
+#endif
 
-    #endregion
+#endregion
 }
+
+#if UNITY_EDITOR
 
 [CustomEditor(typeof(LevelDataActive))]
 public class LevelCustomInspector : Editor
@@ -311,3 +334,5 @@ public class LevelManagerCustomInspector : Editor
         // base.OnInspectorGUI();
     }
 }
+
+#endif

@@ -15,13 +15,17 @@ public class BlockData : GameActors
 
     public LevelDataActive level;
 
+    private void Start()
+    {
+        // needs to be runtime (i think)
+        InitDelegates();
+    }
 
     /// <summary>
     /// initialise the block after being created
     /// </summary>
     public void Initialise()
     {
-        InitDelegates();
         switch (blockType)
         {
             case BlockType.Default:
@@ -33,6 +37,7 @@ public class BlockData : GameActors
             case BlockType.Falling:
                 break;
             case BlockType.Start:
+                GameManager.instance.PlacePlayer(transform.position + Vector3.up);
                 break;
             case BlockType.End:
                 break;
@@ -45,7 +50,8 @@ public class BlockData : GameActors
         level.storedBlocks[ID] = data;
     }
 
-    
+
+    #region Delegates
 
     /// <summary>
     /// Override to recieve the post rotation event;
@@ -77,6 +83,8 @@ public class BlockData : GameActors
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
+    #endregion
+
     /// <summary>
     /// Called from player when player has moved onto a block.
     /// </summary>
@@ -103,6 +111,7 @@ public class BlockData : GameActors
             case BlockType.Start:
                 break;
             case BlockType.End:
+                GameManager.instance.CompleteLevel();
                 break;
             default:
                 break;
