@@ -6,7 +6,7 @@ public enum Direction
     Up, Down, Left, Right,
 }
 
-public class FixedPlayerMovement : MonoBehaviour {
+public class FixedPlayerMovement : GameActors {
 
     [SerializeField] float movementDuration = 1;
     [SerializeField] float jumpDuration = 1;
@@ -55,13 +55,16 @@ public class FixedPlayerMovement : MonoBehaviour {
                 case ObstructionType.None:
                     m_animator.SetTrigger("Move");
                     StartCoroutine(SmoothMoveCharacter(_direction, LinearMovement));
+                    GameManager.instance.IncrementSteps();
                     break;
                 case ObstructionType.Drop:
                     m_animator.SetTrigger("Drop");
-                    StartCoroutine(SmoothMoveCharacter(_direction, DropLinear));                    
+                    StartCoroutine(SmoothMoveCharacter(_direction, DropLinear));
+                    GameManager.instance.IncrementSteps();
                     break;
                 case ObstructionType.CanJump:
                     StartCoroutine(Jump(_direction));
+                    GameManager.instance.IncrementSteps();
                     break;
                 case ObstructionType.Obstruction:
                     break;
