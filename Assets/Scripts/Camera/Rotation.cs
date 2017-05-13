@@ -51,6 +51,8 @@ public class Rotation : MonoBehaviour
         rotationData = GameManager.rotationData;
         player = rotationData.target;
         playerScript = player.GetComponent<FixedPlayerMovement>();
+
+        GameManager.instance.postRotation += PostRotation;
 	}
     
 	void FixedUpdate ()
@@ -118,6 +120,16 @@ public class Rotation : MonoBehaviour
     }
 
     /// <summary>
+    /// From post rotation delegate
+    /// </summary>
+    /// <param name="_rotationData"></param>
+    /// <param name="isInit"></param>
+    void PostRotation(RotationData _rotationData, bool isInit)
+    {
+        rotationData = _rotationData;
+    }
+
+    /// <summary>
     /// Predicts what camera state it will be after the rotation
     /// KEY - CameraState
     /// VALUE - TransitionState
@@ -128,7 +140,7 @@ public class Rotation : MonoBehaviour
     {
         // KEY - CameraState
         // VALUE - TransitionState
-        switch (GameManager.instance.cameraState)
+        switch (GameManager.cameraState)
         {
             case CameraState.Above:
                 switch (_direction)

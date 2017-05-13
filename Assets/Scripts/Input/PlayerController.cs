@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : GameActors {
 
     [SerializeField] Transform target;
     [SerializeField] FixedPlayerMovement playerMovement;
     [SerializeField] Collider[] buttons; // LEFT, RIGHT, FRONT, BEHIND
     Animator animator;
-
+    MeshRenderer[] renderers;
     private CameraState cameraState;
 
     private RegisterTouchInput[] inputs;
@@ -26,37 +26,12 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
-        CheckNewOrientation();
-
-        // add delegate event
-        GameManager.instance.postRotation += PostRotation;
-        GameManager.instance.preRotation += PreRotation;
-
-        //AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
-    }
-
-
-    /// <summary>
-    /// Use for any logic required before rotation completion
-    /// </summary>
-    /// <param name="_rotationData"> The state that is being rotated to</param>
-    void PreRotation(RotationData _rotationData)
+    void Start ()
     {
-        AnimateCorrectButtons(_rotationData.intendedState);
-
-
-    }
-    /// <summary>
-    /// Use for any logic required after rotation completion
-    /// </summary>
-    void PostRotation(RotationData _rotationData, bool _isInit)
-    {
-        cameraState = _isInit ? GameManager.instance.cameraState : _rotationData.currentState;
         CheckNewOrientation();
+        InitDelegates();
 
-        if(_isInit)
-            AnimateCorrectButtons(cameraState = GameManager.instance.cameraState);
+        renderers = GetComponentsInChildren<MeshRenderer>();
     }
 
     private void Update()
@@ -91,8 +66,56 @@ public class PlayerController : MonoBehaviour {
     {
         transform.position = target.position;
     }
+    #endregion
+
+    #region Delegate
+
+    protected override void OnPlayPause(RotationData _rotationData)
+    {
+        // hide controls on pause
+        for(int i = 0; i < renderers.Length; ++i)
+        {
+            renderers[i].enabled = false;
+        }
+        base.OnPlayPause(_rotationData);
+    }
+
+    protected override void OnPlayStart(RotationData _rotationData)
+    {
+        // show controls on start
+        for (int i = 0; i < renderers.Length; ++i)
+        {
+            renderers[i].enabled = true;
+        }
+        base.OnPlayStart(_rotationData);
+    }
+
+    /// <summary>
+    /// Use for any logic required before rotation completion
+    /// </summary>
+    /// <param name="_rotationData"> The state that is being rotated to</param>
+    override protected void PreRotationLogic(RotationData _rotationData)
+    {
+        AnimateCorrectButtons(_rotationData.intendedState);
+
+
+    }
+    /// <summary>
+    /// Use for any logic required after rotation completion
+    /// </summary>
+    override protected void PostRotationLogic(RotationData _rotationData, bool _isInit)
+    {
+        cameraState = _isInit ? GameManager.cameraState : _rotationData.currentState;
+        CheckNewOrientation();
+
+        if(_isInit)
+            AnimateCorrectButtons(cameraState = GameManager.cameraState);
+    }
 
     #endregion
+
+
+   
 
     #region Button Animation
 

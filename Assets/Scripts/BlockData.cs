@@ -56,7 +56,7 @@ public class BlockData : MonoBehaviour
             gameObject.GetComponent<MeshRenderer>().enabled = false;
         }
 
-        currentCameraState = GameManager.instance.cameraState;
+        currentCameraState = GameManager.cameraState;
 	}
 
     void OnCollisionEnter(Collision coll)

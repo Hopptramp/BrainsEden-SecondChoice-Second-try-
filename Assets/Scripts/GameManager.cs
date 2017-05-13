@@ -82,8 +82,8 @@ public class GameManager : MonoBehaviour
     static GameManager m_instance;
     static public GameManager instance { get { return m_instance; } }
 
-    public GameState gameState { get; private set; }
-    public CameraState cameraState { get; private set; }
+    public static GameState gameState { get; private set; }
+    public static CameraState cameraState { get; private set; }
 
 
 
@@ -92,15 +92,15 @@ public class GameManager : MonoBehaviour
     public GameObject mainCamera;
     public Rotation rotation;
 
+
     private float playTime = 0;
 
     //public float killHeight = -5;
     //[SerializeField] bool ResetLevel = true;
-    [SerializeField] private Transform menuBase;
+    [SerializeField] private Transform belowMenu;
 
     [SerializeField] GameObject pauseMenu;
-    public GameObject endMenu;
-    public GameObject UpButton, DownButton;
+
 
     // delegate events
     public delegate void PostRotation(RotationData _rotationData, bool _isInit);
@@ -143,8 +143,6 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         player.transform.position = startPos.position;
-        //player.GetComponent<PlayerOcclusionDetection>().mainCam = camera.transform;
-        //mainCamera.GetComponent<Rotation>().player = player;
         UpdateRotationData(true);
     }
 
@@ -189,23 +187,25 @@ public class GameManager : MonoBehaviour
         if (dir.x >= -11 && dir.x <= -9)
             cameraState = CameraState.Right;
 
-        if (cameraState != CameraState.Above && cameraState != CameraState.Below)
-        {
-            UpButton.GetComponent<Button>().interactable = false;
-            DownButton.GetComponent<Button>().interactable = false;
-        }
-        else
-        {
-            UpButton.GetComponent<Button>().interactable = true;
-            DownButton.GetComponent<Button>().interactable = true;
-        }
-
+        // MOVE TO POST ROTATION LOGIC IN BLOCK MANAGER     
         BlockManager.instance.UpdateActiveBlocks(cameraState);
 
         //update rotation data and set out
         rotationData.currentState = cameraState;
         postRotation(rotationData, isInit);
         print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
+
+        if (cameraState == CameraState.Below)
+        {
+            gameState = GameState.Pause;
+            onPlayPause(rotationData);
+        }
+
+        else if (gameState == GameState.Pause)
+        {
+            gameState = GameState.Play;
+            onPlayStart(rotationData);
+        }
     }
 
     /// <summary>
@@ -213,7 +213,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     static void OnPlayStart(RotationData _rotationData)
     {
-
     }
 
     /// <summary>
@@ -221,15 +220,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     static void OnPlayPause(RotationData _rotationData)
     {
-
-    }
-
-    /// <summary>
-    /// Delegate that triggers any post rotation logic in other scripts
-    /// </summary>
-    static void PostRotationLogic(RotationData _rotationData, bool _isInit)
-    {
-        
     }
 
     /// <summary>
@@ -238,6 +228,14 @@ public class GameManager : MonoBehaviour
     static void PreRotationLogic(RotationData _rotationData)
     {
         rotationData = _rotationData;
+    }
+
+    /// <summary>
+    /// Delegate that triggers any post rotation logic in other scripts
+    /// </summary>
+    static void PostRotationLogic(RotationData _rotationData, bool _isInit)
+    {
+        
     }
 
     #endregion

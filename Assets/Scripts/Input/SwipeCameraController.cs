@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
+public class SwipeCameraController : GameActors, IPointerEnterHandler
 {
 
     Rotation cameraRotate;
@@ -13,8 +13,10 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
     [SerializeField] Transform target;
     [SerializeField] bool isMenu = false;
 
-	// Use this for initialization
-	void Start () {
+    #region MonoBehaviour
+
+    // Use this for initialization
+    void Start () {
         if (!isMenu)
         {
             cameraRotate = Camera.main.GetComponent<Rotation>();
@@ -22,6 +24,8 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
         }
         else
             menuNavigation = Camera.main.GetComponent<MenuNavigation>();
+
+        InitDelegates();
 	}
 
     private void FixedUpdate()
@@ -106,6 +110,26 @@ public class SwipeCameraController : MonoBehaviour, IPointerEnterHandler
 
         }
     }
+
+    #endregion
+
+    #region Inherited delegates
+
+    protected override void OnPlayPause(RotationData _rotationData)
+    {
+        GetComponent<MeshRenderer>().enabled = false;
+
+       // base.OnPlayPause(_rotationData);
+    }
+
+    protected override void OnPlayStart(RotationData _rotationData)
+    {
+        GetComponent<MeshRenderer>().enabled = true;
+
+        //base.OnPlayStart(_rotationData);
+    }
+
+    #endregion
 
     void TriggerAnimation(Direction _direction)
     {

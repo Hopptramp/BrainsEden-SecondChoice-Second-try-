@@ -27,11 +27,11 @@ public class ScoreManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        if (runUpdate)
-        {
-            timerValue += 1 * Time.deltaTime;
-            timerText.text = "Time - " + timerValue.ToString("F2");
-        }
+        //if (runUpdate)
+        //{
+        //    timerValue += 1 * Time.deltaTime;
+        //    timerText.text = "Time - " + timerValue.ToString("F2");
+        //}
 	}
 
     public void TimerReset()
