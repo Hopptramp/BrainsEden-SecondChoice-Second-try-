@@ -8,6 +8,13 @@ public class InGameMenuController : GameActors, IPointerEnterHandler
 
     [SerializeField] private CanvasGroup canvas;
     [SerializeField] private GameObject panel;
+    private BoxCollider collider;
+
+    private void Awake()
+    {
+        collider = GetComponent<BoxCollider>();
+
+    }
 
     private void Start()
     {
@@ -15,6 +22,7 @@ public class InGameMenuController : GameActors, IPointerEnterHandler
         InitDelegates();
 
         ActivateMenu(false);
+        collider.enabled = false;
     }
 
 
@@ -22,11 +30,13 @@ public class InGameMenuController : GameActors, IPointerEnterHandler
     protected override void OnPlayPause(RotationData _rotationData)
     {
         ActivateMenu(true);
+        collider.enabled = true;
     }
 
     protected override void OnPlayStart(RotationData _rotationData)
     {
         ActivateMenu(false);
+        collider.enabled = false;
     }
 
     protected override void PreRotationLogic(RotationData _rotationData)
@@ -44,25 +54,7 @@ public class InGameMenuController : GameActors, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("The cursor entered the selectable UI element.");
-        Direction direction;
-        Vector2 dir = Input.GetTouch(0).deltaPosition;
-
-        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
-            if (dir.x > 0)
-                direction = Direction.Left;
-            else
-                direction = Direction.Right;
-        }
-        else
-        {
-            if (dir.y > 0)
-                direction = Direction.Down;
-            else
-                direction = Direction.Up;
-        }
-
-
-            cameraRotate.TriggerRotation(direction);
+        if(GameManager.gameState == GameState.Pause)
+            cameraRotate.TriggerRotation(Direction.Up);
     }
 }

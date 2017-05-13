@@ -92,6 +92,18 @@ public class GameManager : MonoBehaviour
     public GameObject mainCamera;
     public Rotation rotation;
 
+    // scoring
+    private float timerValue = 0;
+    private float stepsValue = 0;
+    private float flipValue = 0;
+    private float levelValue = 0;
+
+    [SerializeField] private Text timerText;
+    [SerializeField] private Text stepsText;
+    [SerializeField] private Text flipText;
+    [SerializeField] private Text levelText;
+
+
 
     private float playTime = 0;
 
@@ -128,7 +140,7 @@ public class GameManager : MonoBehaviour
     void Start ()
     {
         InitGame();
-
+        BeginLevel();
     }
 
     // Update is called once per frame
@@ -138,15 +150,29 @@ public class GameManager : MonoBehaviour
         {
            // pauseMenu.SetActive(true);
         }
+
+        if(gameState == GameState.Play)
+        {            
+            ScoreTracking();
+        }
+        else if (gameState == GameState.Pause)
+        {
+
+        }
+        else
+        {
+
+        }
     }
+    #endregion
+
+    #region Game Management
 
     void InitGame()
     {
         player.transform.position = startPos.position;
         UpdateRotationData(true);
     }
-
-    #endregion
 
     /// <summary>
     /// Receive button input to begin level
@@ -161,6 +187,24 @@ public class GameManager : MonoBehaviour
         onPlayPause(rotationData);
     }
 
+    #endregion
+
+    #region Score
+    void ScoreTracking()
+    {
+        timerValue += Time.deltaTime;
+        timerText.text = timerValue.ToString("00:00");
+        flipText.text = "Flips: " + flipValue.ToString();
+        stepsText.text = "Steps: " + stepsValue.ToString();
+        levelText.text = "Level: " + levelValue.ToString();
+    }
+
+    public void IncrementSteps()
+    {
+        ++stepsValue;
+    }
+
+    #endregion
 
     #region delegates
 
@@ -195,17 +239,21 @@ public class GameManager : MonoBehaviour
         postRotation(rotationData, isInit);
         print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
 
-        if (cameraState == CameraState.Below)
+        if (cameraState == CameraState.Below) // entering pause
         {
             gameState = GameState.Pause;
             onPlayPause(rotationData);
         }
-
-        else if (gameState == GameState.Pause)
+        else if (gameState == GameState.Pause) // leaving pause
         {
-            gameState = GameState.Play;
-            onPlayStart(rotationData);
+
         }
+        else // normal flip
+        {
+            ++flipValue; 
+        }
+
+        
     }
 
     /// <summary>
@@ -213,30 +261,31 @@ public class GameManager : MonoBehaviour
     /// </summary>
     static void OnPlayStart(RotationData _rotationData)
     {
+        gameState = GameState.Play;
     }
 
     /// <summary>
     /// Delegate that triggers any pauses in logic in other scripts
     /// </summary>
-    static void OnPlayPause(RotationData _rotationData)
-    {
-    }
+    static void OnPlayPause(RotationData _rotationData) { }
 
     /// <summary>
     /// Delegate that triggers any pre rotation logic in other scripts
     /// </summary>
     static void PreRotationLogic(RotationData _rotationData)
     {
+        if (gameState == GameState.Pause && _rotationData.intendedState != CameraState.Below)
+        {
+            gameState = GameState.Play;
+            instance.onPlayStart(rotationData);
+        }
         rotationData = _rotationData;
     }
 
     /// <summary>
     /// Delegate that triggers any post rotation logic in other scripts
     /// </summary>
-    static void PostRotationLogic(RotationData _rotationData, bool _isInit)
-    {
-        
-    }
+    static void PostRotationLogic(RotationData _rotationData, bool _isInit) { }
 
     #endregion
 

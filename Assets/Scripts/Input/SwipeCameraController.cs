@@ -28,12 +28,6 @@ public class SwipeCameraController : GameActors, IPointerEnterHandler
         InitDelegates();
 	}
 
-    private void FixedUpdate()
-    {
-        if (!isMenu)
-            transform.position = target.position;
-    }
-
     private void LateUpdate()
     {
         if(!isMenu)
