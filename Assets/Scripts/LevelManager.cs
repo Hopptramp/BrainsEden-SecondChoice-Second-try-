@@ -11,28 +11,51 @@ public enum BlockType
     Falling
 }
 
+[System.Serializable]
+public struct StoredBlockData
+{
+    public int ID;
+    public Vector3 localPosition;
+    public BlockType type;
+}
+
 [CreateAssetMenu(fileName = "Data", menuName = "Inventory/List", order = 1)]
 public class LevelData : ScriptableObject
 {
     public int levelID;
-    public List<BlockData> storedBlocks;
+    public List<StoredBlockData> storedBlocks;
 }
 
     [System.Serializable]
 public class Level : MonoBehaviour
 {
-    [SerializeField] List<BlockData> storedBlocks;
+    public List<StoredBlockData> storedBlocks;
     static public int levelID;
     static LevelData asset;
 
+    /// <summary>
+    /// Find all references to block data in children
+    /// </summary>
     public void CollectBlocks()
     {
         if (storedBlocks == null)
-            storedBlocks = new List<BlockData>();
+            storedBlocks = new List<StoredBlockData>();
         else
             storedBlocks.Clear();
 
-        GetComponentsInChildren(storedBlocks);
+        BlockData[] datas = GetComponentsInChildren<BlockData>();
+
+        int temp = -1;
+        foreach(BlockData data in datas)
+        {
+            StoredBlockData storedBlock = new StoredBlockData();
+            storedBlock.ID = ++temp;
+            storedBlock.localPosition = data.transform.localPosition;
+            storedBlock.type = data.blockType;
+            storedBlocks.Add(storedBlock);
+        }
+
+        //GetComponentsInChildren(storedBlocks);
     }
 
     [MenuItem("Assets/Create/My Scriptable Object")]
@@ -82,20 +105,35 @@ public class LevelCustomInspector : Editor
 
 public class LevelManager : MonoBehaviour
 {
-    public List<Level> unsavedLevels;
+    public Level unsavedLevel;
     public List<LevelData> storedLevels;
+    public LevelData activeLevel;
+    private Transform levelParent;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
+    [SerializeField] private GameObject defaultCube;
 
+
+    public void GenerateLevelFromLevelData()
+    {
+        levelParent = new GameObject("LoadedLevel" + activeLevel.levelID.ToString()).transform;
+        levelParent.SetParent(transform);
+
+        foreach (StoredBlockData storedData in activeLevel.storedBlocks)
+        {
+            GameObject blockObject = Instantiate(defaultCube, levelParent) as GameObject;
+            BlockData block = blockObject.GetComponent<BlockData>();
+            block.localPosition = storedData.localPosition;
+            blockObject.transform.localPosition = block.localPosition;
+            block.blockType = storedData.type;
+            block.ID = storedData.ID;
+            block.Initialise();
+        }
+    }
+	
     public void CreateNewLevel()
     {
-        GameObject levelObject = new GameObject("Level " + unsavedLevels.Count);
-        Level level = levelObject.AddComponent<Level>();
-        unsavedLevels.Add(level);
+        GameObject levelObject = new GameObject("Unsaved Level " + storedLevels.Count);
+        unsavedLevel = levelObject.AddComponent<Level>();
         levelObject.transform.SetParent(transform);
     }
 }
@@ -109,12 +147,17 @@ public class LevelManagerCustomInspector : Editor
 
         DrawDefaultInspector();
 
-        if (GUILayout.Button("Create new level"))
+        if (GUILayout.Button("Create Empty Level"))
         {
             level.CreateNewLevel();
         }
 
+        if (GUILayout.Button("Create From Scriptable Object"))
+        {
+            level.GenerateLevelFromLevelData();
+        }
 
-       // base.OnInspectorGUI();
+
+        // base.OnInspectorGUI();
     }
 }
