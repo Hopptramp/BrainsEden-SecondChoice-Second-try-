@@ -34,7 +34,6 @@ public class LevelDataScriptable : ScriptableObject
 {
     public int levelID;
     public List<StoredBlockData> storedBlocks;
-
     public LevelCompletionData completionData;
 }
 
@@ -72,7 +71,7 @@ public class LevelDataActive : MonoBehaviour
     }
 
     [MenuItem("Assets/Create/My Scriptable Object")]
-    public static void CreateMyAsset(int _id, List<StoredBlockData> _stored)
+    public static LevelDataScriptable CreateMyAsset(int _id, List<StoredBlockData> _stored)
     {
         LevelDataScriptable asset;
        
@@ -81,25 +80,23 @@ public class LevelDataActive : MonoBehaviour
         AssetDatabase.CreateAsset(asset, "Assets/Resources/" + "Level-" + _id + ".asset");
         AssetDatabase.SaveAssets();
 
-        //EditorUtility.FocusProjectWindow();
-
-        //Selection.activeObject = asset;
-
         // APPLY VARIABLES HERE
         asset.levelID = _id;
         asset.storedBlocks = _stored;
-        
+
+        return asset;
     }
 
-    public void SaveAsScriptableObject(int _id)
+    public LevelDataScriptable SaveAsScriptableObject(int _id)
     {
         List<StoredBlockData> temp = new List<StoredBlockData>();
         for(int i = 0; i < storedBlocks.Count; ++i)
         {
             temp.Add(storedBlocks[i]);
         }
-           //storedBlocks;
-        CreateMyAsset(_id, temp);
+
+        scriptableObject = CreateMyAsset(_id, temp);
+        return scriptableObject;
 
     }
 }
@@ -108,15 +105,15 @@ public class LevelManager : GameActors
 {
     public LevelDataActive unsavedLevel;
     public List<LevelDataScriptable> storedLevels;
-    public LevelDataScriptable currentSavedLevel;
+    //public LevelDataScriptable currentSavedLevel;
     [SerializeField] private int activeLevelID = 0;
     [SerializeField] private LevelDataActive currentLoadedLevel;
 
     [SerializeField] private GameObject defaultCube;
 
-    private void Update()
+    private void Start()
     {
-
+        unsavedLevel.gameObject.SetActive(false);
     }
 
     #region delegates
@@ -175,12 +172,15 @@ public class LevelManager : GameActors
     /// lead level via level ID
     /// </summary>
     /// <param name="_newlevel"></param>
-    public void SwitchLevels(int _newlevel)
+    public bool SwitchLevels(int _newlevel)
     {
+        if (_newlevel >= storedLevels.Count)
+            return false;
         activeLevelID = _newlevel;
         if (currentLoadedLevel != null)
             RemoveLevel(currentLoadedLevel);
         GenerateLevelFromLevelData(storedLevels[_newlevel]);
+        return true;
     }
 
     /// <summary>
@@ -251,7 +251,7 @@ public class LevelManager : GameActors
     /// </summary>
     public void SaveAsScriptableObject()
     {
-        unsavedLevel.SaveAsScriptableObject(storedLevels.Count);
+        storedLevels.Add(unsavedLevel.SaveAsScriptableObject(storedLevels.Count));
     }
 
     #endregion
@@ -297,7 +297,7 @@ public class LevelManagerCustomInspector : Editor
 
         if (GUILayout.Button("Create From Scriptable Object"))
         {
-            level.GenerateLevelFromLevelData(level.currentSavedLevel);
+            level.GenerateLevelFromLevelData(level.storedLevels[0]);
         }
 
         if (GUILayout.Button("Save Scriptable Object"))
