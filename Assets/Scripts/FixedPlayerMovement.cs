@@ -176,8 +176,16 @@ public class FixedPlayerMovement : MonoBehaviour {
     {
         if (!Physics.Raycast(transform.position, Vector3.down, 1, obstuctionObjects))
         {
-            //MoveCharacter(new Vector3(0, -10, 0));
-            StartCoroutine(Fall(new Vector3(0, -1, 0)));
+            //If one block fall, landing animation, else falling
+            if (Physics.Raycast(transform.position + Vector3.down, Vector3.down, 1, obstuctionObjects))
+            {
+                //MoveCharacter(new Vector3(0, -10, 0));
+                StartCoroutine(Fall(new Vector3(0, -1, 0)));
+            }
+            else
+            {
+                StartCoroutine(Fall(new Vector3(0, -1, 0)));
+            }
         }
     }
 
