@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public LevelManager levelManager;
     public LevelDataScriptable loadedLevel;
     private int currentLevelID = 0;
+    private Vector3 currentLevelStartPos;
 
     // scoring - Need scoring criteria for 1/2/3 stars
     private float timerValue = 0;
@@ -155,7 +156,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            CompleteLevel();
+            PlayerFell();
         }
 
         if(gameState == GameState.Play)
@@ -225,17 +226,26 @@ public class GameManager : MonoBehaviour
     /// <param name="_position"></param>
     public void PlacePlayer(Vector3 _position)
     {
+        currentLevelStartPos = _position;
         player.transform.position = _position;
+        rotation.AttachToTempTarget(false);
     }
 
     public void PlayerFell()
     {
         StartCoroutine(ResetPlayer());
+        rotation.AttachToTempTarget(true);
     }
 
     IEnumerator ResetPlayer()
     {
         yield return new WaitForSeconds(2);
+
+        gameState = GameState.BeforeLevel;
+        rotationData.gameState = gameState;
+        rotation.TriggerRotation(-90, "x");
+        PlacePlayer(currentLevelStartPos);
+       // player.GetComponent<FixedPlayerMovement>().StopCoroutine("Fall");
         ResetScoreTracking();
         InitLevel();
     }

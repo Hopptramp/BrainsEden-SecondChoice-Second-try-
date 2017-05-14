@@ -15,13 +15,12 @@ public class Rotation : MonoBehaviour
 	public GameObject compassPrefab, compassOrigin;
 	private GameObject origin;
     private GameObject player;
-    private Vector3 tempTarget;
+    private Transform tempTarget;
     FixedPlayerMovement playerScript;
 
 
     public bool isRotating = false;
-    private bool left, right, up, down;
-	private bool clear = true;
+    private bool isStatictarget = false;
 
     #region MonoBehaviour
 
@@ -71,7 +70,7 @@ public class Rotation : MonoBehaviour
 	void Update ()
 	{
         if(!playerScript.jumping)
-            origin.transform.position = playerScript.transform.position;
+            origin.transform.position = isStatictarget ? tempTarget.transform.position : playerScript.transform.position;
 	}
 
     #endregion
@@ -345,6 +344,14 @@ public class Rotation : MonoBehaviour
 
     #region Rotation Logic
 
+    public void AttachToTempTarget(bool _isAttaching)
+    {
+        isStatictarget = _isAttaching;
+        if (!tempTarget)
+            tempTarget = new GameObject().transform;
+        tempTarget.transform.position = player.transform.position;
+    }
+
     /// <summary>
     /// Trigger rotation in _axis to _angle
     /// </summary>
@@ -433,7 +440,6 @@ public class Rotation : MonoBehaviour
         {
             origin.transform.position = player.transform.position;
             GameManager.instance.UpdateRotationData(false);
-            clear = true;
             isRotating = false;
         }
     }
