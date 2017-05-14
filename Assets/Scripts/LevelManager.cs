@@ -98,7 +98,7 @@ public class LevelManager : GameActors
     {
         //currentLoadedLevel.completionData = _data;
         storedLevels[activeLevelID].completionData = _data;
-        EditorUtility.SetDirty(storedLevels[activeLevelID]);
+        PersistantManager.instance.UpdateChangesToCompletionData(storedLevels);
     }
 
     #endregion
