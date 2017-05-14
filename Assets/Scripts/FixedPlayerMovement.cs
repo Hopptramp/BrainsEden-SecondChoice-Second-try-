@@ -86,6 +86,12 @@ public class FixedPlayerMovement : GameActors {
         }
     }
 
+    public void Reset()
+    {
+        StopAllCoroutines();
+        m_animator.Play("Idle");
+    }
+
     /// <summary>
     /// check if any blocks are in the way
     /// </summary>

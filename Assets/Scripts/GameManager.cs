@@ -244,8 +244,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.BeforeLevel;
         rotationData.gameState = gameState;
         rotation.TriggerRotation(-90, "x");
+        player.GetComponent<FixedPlayerMovement>().Reset();
         PlacePlayer(currentLevelStartPos);
-       // player.GetComponent<FixedPlayerMovement>().StopCoroutine("Fall");
         ResetScoreTracking();
         InitLevel();
     }
