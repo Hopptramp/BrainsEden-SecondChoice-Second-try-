@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
         // inform levelmanager
         levelManager.OnLevelComplete(data);
         levelManager.RemoveLevel();
-        levelManager.SwitchLevels(++currentLevelID);
+        
         // onPlayPause(rotationData);
         gameState = GameState.AfterLevel;
         rotationData.gameState = gameState;

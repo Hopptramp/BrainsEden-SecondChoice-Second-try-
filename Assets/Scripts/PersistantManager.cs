@@ -77,15 +77,16 @@ public class PersistantManager : MonoBehaviour
         {
             levelData = JsonUtility.FromJson<StoredCompletionData>(PlayerPrefs.GetString("StoredLevelData"));
 
-            if (levelData.storedCompletionData != null)
+
+            for (int i = 0; i < storedLevels.Count; ++i)
             {
-                for (int i = 0; i < storedLevels.Count; ++i)
+                if (i < levelData.storedCompletionData.Length)
                 {
                     storedLevels[i].completionData = levelData.storedCompletionData[i];
                 }
             }
         }
-        
+
     }
 
     public int ReturnLevelID()
