@@ -62,7 +62,7 @@ public enum GameState
     Idle,
     Play,
     Pause,
-    CompleteLevel,
+    InBetweenLevels,
 }
 
 #endregion
@@ -172,9 +172,10 @@ public class GameManager : MonoBehaviour
 
     void InitGame()
     {
+        gameState = GameState.InBetweenLevels;
         UpdateRotationData(true);
         rotation.TriggerRotation(-90, "x");
-        currentLevelID = PersistantManager.instance.ReturnLevelID();
+        currentLevelID = PersistantManager.instance == null ? 0 : PersistantManager.instance.ReturnLevelID();
     }
 
     /// <summary>
@@ -182,6 +183,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void BeginLevel()
     {
+        gameState = GameState.Play;
         levelManager.SwitchLevels(currentLevelID);
         onPlayStart(rotationData);
     }
@@ -212,7 +214,7 @@ public class GameManager : MonoBehaviour
         levelManager.RemoveLevel();
         levelManager.SwitchLevels(++currentLevelID);
         // onPlayPause(rotationData);
-        gameState = GameState.CompleteLevel;
+        gameState = GameState.InBetweenLevels;
         rotationData.gameState = gameState;
         rotation.TriggerRotation(-90, "x");
     }
@@ -270,7 +272,7 @@ public class GameManager : MonoBehaviour
 
         if (cameraState == CameraState.Below) // entering pause
         {
-            gameState = GameState.Pause;
+            gameState = gameState == GameState.InBetweenLevels ? GameState.InBetweenLevels : GameState.Pause;
             onPlayPause(rotationData);
         }
         else if (gameState == GameState.Pause) // leaving pause

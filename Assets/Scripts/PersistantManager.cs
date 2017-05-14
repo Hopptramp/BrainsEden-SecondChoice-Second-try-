@@ -11,6 +11,12 @@ public enum MenuState
     Levels
 }
 
+[System.Serializable]
+public class StoredCompletionData
+{
+    public LevelCompletionData[] storedCompletionData;
+}
+
 public class PersistantManager : MonoBehaviour
 {
     public static PersistantManager instance { get; private set; }
@@ -19,6 +25,8 @@ public class PersistantManager : MonoBehaviour
     [SerializeField] Text levelStats;
     MenuState menuState;
     private int levelSelectedID;
+
+    [SerializeField] StoredCompletionData levelData;
     
 
     void LoadLevels()
@@ -40,12 +48,44 @@ public class PersistantManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
         LoadLevels();
+        LoadCompletionData();
         DisplayLevel();
     }
 	
     public List<LevelDataScriptable> ReturnStoredLevels()
     {
         return storedLevels;
+    }
+
+
+    public void UpdateChangesToCompletionData(List<LevelDataScriptable> _storedLevels)
+    {
+        LevelCompletionData[] completion = new LevelCompletionData[_storedLevels.Count];
+
+        for(int i = 0; i < completion.Length; ++i)
+        {
+            completion[i] = _storedLevels[i].completionData;
+        }
+        levelData.storedCompletionData = completion;
+        PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
+    }
+
+    public void LoadCompletionData()
+    {
+        levelData = new StoredCompletionData();
+        if (PlayerPrefs.HasKey("StoredLevelData"))
+        {
+            levelData = JsonUtility.FromJson<StoredCompletionData>(PlayerPrefs.GetString("StoredLevelData"));
+
+            if (levelData.storedCompletionData != null)
+            {
+                for (int i = 0; i < storedLevels.Count; ++i)
+                {
+                    storedLevels[i].completionData = levelData.storedCompletionData[i];
+                }
+            }
+        }
+        
     }
 
     public int ReturnLevelID()

@@ -59,7 +59,7 @@ public class InGameMenuController : GameActors, IPointerDownHandler
         {
             cameraRotate.TriggerRotation(Direction.Up);
         }
-        else if (GameManager.gameState == GameState.CompleteLevel)
+        else if (GameManager.gameState == GameState.InBetweenLevels)
         {
             cameraRotate.TriggerRotation(Direction.Up);
             GameManager.instance.BeginLevel();

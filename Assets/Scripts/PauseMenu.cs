@@ -16,7 +16,7 @@ public class PauseMenu : MonoBehaviour
         mainMenu.SetActive(true);
         //active = !active;
         PauseButton.SetActive(false);
-        ScoreManager.instance.runUpdate = false;
+       // ScoreManager.instance.runUpdate = false;
     }
 
     public void ResumeGame()
@@ -24,7 +24,7 @@ public class PauseMenu : MonoBehaviour
         //tween down
         mainMenu.SetActive(false);
         PauseButton.SetActive(true);
-        ScoreManager.instance.runUpdate = true;
+       // ScoreManager.instance.runUpdate = true;
     }
 
     public void Options()
