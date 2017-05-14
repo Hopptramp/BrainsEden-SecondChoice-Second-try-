@@ -108,9 +108,12 @@ public class BlockData : GameActors
     /// </summary>
     /// <param name="_player">Reference to the player script.</param>
     public void BlockLandedOn(FixedPlayerMovement _player)
-    {        
+    {
+        _player.transform.position = transform.position + Vector3.up;
+
         switch (blockType)
         {
+             
             case BlockType.Default:
                 break;
             case BlockType.Teleport:
@@ -121,7 +124,7 @@ public class BlockData : GameActors
                 }
                 break;
             case BlockType.Moving:
-                _player.transform.position = transform.position + Vector3.up;
+                //_player.transform.position = transform.position + Vector3.up;
                 _player.transform.parent = transform;
                 break;
             case BlockType.Falling:
