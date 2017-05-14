@@ -16,7 +16,12 @@ public class BlockData : GameActors
     private int currentHealth;
 #endregion
 
+<<<<<<< HEAD
 #region Teleporting Variables
+=======
+    #region Teleporting Variables
+    [SerializeField]
+>>>>>>> origin/master
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
     private StoredBlockData currTargetBlock;
 #endregion
@@ -193,27 +198,39 @@ public class BlockDataCustomInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        BlockData data = (BlockData)target;
+        BlockData data = (BlockData)target;      
 
-        DrawDefaultInspector();
+        data.ID = EditorGUILayout.IntField("Block ID", data.ID);
+        data.localPosition = EditorGUILayout.Vector3Field("Block Position", data.localPosition);
+        data.blockType = (BlockType)EditorGUILayout.EnumPopup("Block Type", data.blockType);
 
-        //if (GUILayout.Button("Create Empty Level"))
-        //{
-        //    level.CreateNewLevel();
-        //}
+        switch (data.blockType)
+        {
+            case BlockType.Default:
+                break;
+            case BlockType.Teleport:
+                SerializedProperty prop = serializedObject.FindProperty("connectedBlockIds");
+                serializedObject.Update();                
+                EditorGUILayout.PropertyField(prop, true);
+                serializedObject.ApplyModifiedProperties();                
+                break;
+            case BlockType.Moving:
+                data.destination = EditorGUILayout.Vector3Field("Move To", data.destination);
+                data.moveSpeed = EditorGUILayout.Slider(data.moveSpeed, 0, 10);
+                break;
+            case BlockType.Falling:
+                data.startingHealth = EditorGUILayout.IntField("Starting Health", data.startingHealth);
+                break;
+            case BlockType.Start:
+                break;
+            case BlockType.End:
+                break;
+            default:
+                break;
+        }
+        //DrawDefaultInspector();
 
-        //if (GUILayout.Button("Create From Scriptable Object"))
-        //{
-        //    level.GenerateLevelFromLevelData(level.storedLevels[0]);
-        //}
-
-        //if (GUILayout.Button("Save Scriptable Object"))
-        //{
-        //    level.SaveAsScriptableObject();
-        //}
-
-
-        // base.OnInspectorGUI();
+       
     }
 }
 #endif
