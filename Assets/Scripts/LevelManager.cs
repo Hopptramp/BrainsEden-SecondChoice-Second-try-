@@ -23,6 +23,8 @@ public struct StoredBlockData
     public Vector3 localPosition;
     public BlockType type;
     public GameObject block;
+    public int blockHealth;
+    public BlockConnection[] connectedBlocks;
 }
 
 [System.Serializable]
@@ -187,6 +189,8 @@ public class LevelManager : GameActors
             blockObject.transform.localPosition = block.localPosition;
             block.blockType = storedData.type;
             block.ID = storedData.ID;
+            block.startingHealth = storedData.blockHealth;
+            block.connectedBlockIds = storedData.connectedBlocks;
             block.Initialise();
         }
     }
