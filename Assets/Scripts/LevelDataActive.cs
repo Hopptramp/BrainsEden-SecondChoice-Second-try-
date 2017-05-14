@@ -30,7 +30,7 @@ public class LevelDataActive : MonoBehaviour
         foreach (BlockData data in datas)
         {
             StoredBlockData storedBlock = new StoredBlockData();
-            storedBlock.ID = ++temp;
+            storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
             storedBlock.block = data.gameObject;

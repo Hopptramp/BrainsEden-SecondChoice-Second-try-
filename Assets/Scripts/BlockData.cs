@@ -46,7 +46,7 @@ public class BlockData : GameActors
                 currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Front));
                 break;
             case BlockType.Moving:
-                
+                StartCoroutine(MoveBlock());
                 break;
             case BlockType.Falling:
                 gameObject.SetActive(true);
@@ -119,6 +119,8 @@ public class BlockData : GameActors
                 }
                 break;
             case BlockType.Moving:
+                _player.transform.position = transform.position + Vector3.up;
+                _player.transform.parent = transform;
                 break;
             case BlockType.Falling:
                 currentHealth--;
