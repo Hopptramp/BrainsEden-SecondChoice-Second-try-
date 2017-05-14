@@ -34,6 +34,8 @@ public class LevelDataActive : MonoBehaviour
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
             storedBlock.block = data.gameObject;
+            storedBlock.blockHealth = data.startingHealth;
+            storedBlock.connectedBlocks = data.connectedBlockIds;
             storedBlocks.Add(storedBlock);
         }
     }

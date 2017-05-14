@@ -9,7 +9,7 @@ public class BlockData : GameActors
     public int ID;
         
     public int startingHealth = 3;
-    public int currentHealth;
+    private int currentHealth;
 
     #region Teleporting Variables
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
@@ -34,6 +34,7 @@ public class BlockData : GameActors
             case BlockType.Default:
                 break;
             case BlockType.Teleport:
+                currTargetBlock = GameManager.instance.levelManager.GetBlockByID(getTeleportTarget(CameraState.Front));
                 break;
             case BlockType.Moving:
                 break;
