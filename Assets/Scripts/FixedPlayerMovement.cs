@@ -217,7 +217,13 @@ public class FixedPlayerMovement : GameActors {
             else
             {
                 m_animator.SetTrigger("Falling");
+                if (!Physics.Raycast(transform.position, Vector3.down, 50, obstuctionObjects))
+                {
+                    GameManager.instance.PlayerFell();
+                }                
+                
                 StartCoroutine(Fall(new Vector3(0, -1, 0)));
+                   
             }
         }
         else
