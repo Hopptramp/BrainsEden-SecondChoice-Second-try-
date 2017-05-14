@@ -24,7 +24,7 @@ public class FixedPlayerMovement : GameActors {
     public bool jumping;
     private float childOffset;  
     public Vector3 jumpCamTarget { get { return jumping ? new Vector3(transform.position.x, m_animator.transform.localPosition.y, transform.position.z): transform.position; } }
-    
+    public bool onParent { get { return transform.root != transform; } }
 
 	// Use this for initialization
 	void Start () {
@@ -50,6 +50,10 @@ public class FixedPlayerMovement : GameActors {
         ObstructionType temp =(CheckObstruction(_direction));
         if (!moving)
         {
+            if (onParent)
+            {
+                transform.SetParent(null);
+            }
             switch (temp)
             {
                 case ObstructionType.None:
