@@ -48,12 +48,12 @@ public class LevelDataActive : MonoBehaviour
 
 
         AssetDatabase.CreateAsset(asset, "Assets/Resources/" + "Level-" + _id + ".asset");
-        AssetDatabase.SaveAssets();
+
 
         // APPLY VARIABLES HERE
         asset.levelID = _id;
         asset.storedBlocks = _stored;
-
+        AssetDatabase.SaveAssets();
         return asset;
     }
 
