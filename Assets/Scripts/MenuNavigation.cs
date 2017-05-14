@@ -148,17 +148,8 @@ public class MenuNavigation : MonoBehaviour {
         {
             FinishedRotating();
         }
-        //cameraParent.transform.position = target.transform.position;
     }
 
-    //IEnumerator CorrectRotation()
-    //{
-    //    TriggeriTween()
-    //    //correct the camera rotation
-    //    iTween.RotateTo(origin, iTween.Hash("z", 0f, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "ClearToRotate"));
-
-    //    yield return null;
-    //}
 
     void FinishedRotating()
     {

@@ -41,6 +41,7 @@ public class InGameMenuController : GameActors, IPointerDownHandler
 
     protected override void PreRotationLogic(RotationData _rotationData)
     {
+        //if leaving pause 
         if (_rotationData.currentState == CameraState.Below)
             ActivateMenu(false);
     }
@@ -54,7 +55,14 @@ public class InGameMenuController : GameActors, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         Debug.Log("The cursor entered the selectable UI element.");
-        if(GameManager.gameState == GameState.Pause)
+        if (GameManager.gameState == GameState.Pause)
+        {
             cameraRotate.TriggerRotation(Direction.Up);
+        }
+        else if (GameManager.gameState == GameState.CompleteLevel)
+        {
+            cameraRotate.TriggerRotation(Direction.Up);
+            GameManager.instance.BeginLevel();
+        }
     }
 }

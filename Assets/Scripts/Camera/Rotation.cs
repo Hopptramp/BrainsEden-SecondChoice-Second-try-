@@ -345,6 +345,11 @@ public class Rotation : MonoBehaviour
 
     #region Rotation Logic
 
+    /// <summary>
+    /// Trigger rotation in _axis to _angle
+    /// </summary>
+    /// <param name="_angle"></param>
+    /// <param name="_axis"></param>
     public void TriggerRotation(float _angle, string _axis)
     {
         if (isRotating)
@@ -353,6 +358,10 @@ public class Rotation : MonoBehaviour
         RotateTo(_angle, _axis);   
     }
 
+    /// <summary>
+    /// Trigger rotation 90 degrees in direction
+    /// </summary>
+    /// <param name="_direction"></param>
     public void TriggerRotation(Direction _direction)
     {
         if (isRotating)

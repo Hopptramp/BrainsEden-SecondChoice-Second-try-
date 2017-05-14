@@ -99,6 +99,10 @@ public class PlayerController : GameActors {
         AnimateCorrectButtons(_rotationData.intendedState);
 
 
+        if (_rotationData.intendedState == CameraState.Below)
+        {
+            // trigger removal animation
+        }
     }
     /// <summary>
     /// Use for any logic required after rotation completion

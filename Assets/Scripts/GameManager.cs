@@ -62,6 +62,7 @@ public enum GameState
     Idle,
     Play,
     Pause,
+    CompleteLevel,
 }
 
 #endregion
@@ -75,6 +76,7 @@ public struct RotationData
     public CameraState intendedState;
     public TransitionState transitionState;
     public GameObject target;
+    public GameState gameState;
 }
 
 public class GameManager : MonoBehaviour
@@ -133,13 +135,14 @@ public class GameManager : MonoBehaviour
         rotationData.intendedState = cameraState;
         rotationData.transitionState = TransitionState.None;
         rotationData.target = player;
+        rotationData.gameState = gameState;
     }
 
     // Use this for initialization
     void Start ()
     {
         InitGame();
-        BeginLevel();
+        //BeginLevel();
     }
 
     // Update is called once per frame
@@ -170,8 +173,8 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         UpdateRotationData(true);
-        levelManager.SwitchLevels(0);
-        
+        rotation.TriggerRotation(-90, "x");
+        currentLevelID = PersistantManager.instance.ReturnLevelID();
     }
 
     /// <summary>
@@ -179,6 +182,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void BeginLevel()
     {
+        levelManager.SwitchLevels(currentLevelID);
         onPlayStart(rotationData);
     }
 
@@ -208,7 +212,8 @@ public class GameManager : MonoBehaviour
         levelManager.RemoveLevel();
         levelManager.SwitchLevels(++currentLevelID);
         // onPlayPause(rotationData);
-
+        gameState = GameState.CompleteLevel;
+        rotationData.gameState = gameState;
         rotation.TriggerRotation(-90, "x");
     }
 
@@ -259,8 +264,9 @@ public class GameManager : MonoBehaviour
 
         //update rotation data and set out
         rotationData.currentState = cameraState;
+        rotationData.gameState = gameState;
         postRotation(rotationData, isInit);
-        //print("transition: " + rotationData.transitionState + "  - new State: " + rotationData.currentState);
+
 
         if (cameraState == CameraState.Below) // entering pause
         {
@@ -303,6 +309,7 @@ public class GameManager : MonoBehaviour
             instance.onPlayStart(rotationData);
         }
         rotationData = _rotationData;
+        rotationData.gameState = gameState;
     }
 
     /// <summary>

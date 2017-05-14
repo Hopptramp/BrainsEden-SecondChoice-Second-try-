@@ -123,6 +123,15 @@ public class SwipeCameraController : GameActors, IPointerEnterHandler
         //base.OnPlayStart(_rotationData);
     }
 
+    protected override void PreRotationLogic(RotationData _rotationData)
+    {
+        if(_rotationData.intendedState == CameraState.Below)
+        {
+            // trigger removal animation
+        }
+        base.PreRotationLogic(_rotationData);
+    }
+
     #endregion
 
     void TriggerAnimation(Direction _direction)
