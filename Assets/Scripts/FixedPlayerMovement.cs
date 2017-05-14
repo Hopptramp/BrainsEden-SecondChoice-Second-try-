@@ -91,6 +91,8 @@ public class FixedPlayerMovement : GameActors {
     {
         StopAllCoroutines();
         dying = false;
+        moving = false;
+        jumping = false;
         m_animator.Play("Idle");
     }
 
