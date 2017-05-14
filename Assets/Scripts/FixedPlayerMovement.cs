@@ -25,6 +25,7 @@ public class FixedPlayerMovement : GameActors {
     private float childOffset;  
     public Vector3 jumpCamTarget { get { return jumping ? new Vector3(transform.position.x, m_animator.transform.localPosition.y, transform.position.z): transform.position; } }
     public bool onParent { get { return transform.root != transform; } }
+    public bool dying { get; private set; }
 
 	// Use this for initialization
 	void Start () {
@@ -89,6 +90,7 @@ public class FixedPlayerMovement : GameActors {
     public void Reset()
     {
         StopAllCoroutines();
+        dying = false;
         m_animator.Play("Idle");
     }
 
@@ -223,9 +225,10 @@ public class FixedPlayerMovement : GameActors {
             else
             {
                 m_animator.SetTrigger("Falling");
-                if (!Physics.Raycast(transform.position, Vector3.down, 50, obstuctionObjects))
+                if (!Physics.Raycast(transform.position, Vector3.down, 50, obstuctionObjects) && !dying)
                 {
                     GameManager.instance.PlayerFell();
+                    dying = true; 
                 }                
                 
                 StartCoroutine(Fall(new Vector3(0, -1, 0)));
