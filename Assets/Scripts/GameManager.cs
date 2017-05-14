@@ -62,7 +62,8 @@ public enum GameState
     Idle,
     Play,
     Pause,
-    InBetweenLevels,
+    BeforeLevel,
+    AfterLevel,
 }
 
 #endregion
@@ -90,12 +91,13 @@ public class GameManager : MonoBehaviour
     public GameObject mainCamera;
     public Rotation rotation;
     [SerializeField] public LevelManager levelManager;
+    public LevelDataScriptable loadedLevel;
     private int currentLevelID = 0;
 
     // scoring - Need scoring criteria for 1/2/3 stars
     private float timerValue = 0;
     private int stepsValue = 0;
-    private int flipValue = 0;
+    private int flipValue = -1; // workaround
     private int levelValue = 0;
 
 
@@ -106,11 +108,13 @@ public class GameManager : MonoBehaviour
 
 
 
+
+
     private float playTime = 0;
 
     //public float killHeight = -5;
     //[SerializeField] bool ResetLevel = true;
-    [SerializeField] private Transform belowMenu;
+    [SerializeField] private InGameMenuController belowMenu;
 
     [SerializeField] GameObject pauseMenu;
 
@@ -141,7 +145,8 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        InitGame();
+        rotation.TriggerRotation(-90, "x", 0);
+        InitLevel();
         //BeginLevel();
     }
 
@@ -170,12 +175,28 @@ public class GameManager : MonoBehaviour
 
     #region Game Management
 
-    void InitGame()
+    public void NextLevel()
     {
-        gameState = GameState.InBetweenLevels;
-        UpdateRotationData(true);
-        rotation.TriggerRotation(-90, "x");
+        int nextLevel = PersistantManager.instance.ReturnNextLevelID();
+
+        // returns -1 when you complete last level
+        if (nextLevel == -1)
+        {
+            QuitToMenu();
+            return;
+        }
+
+        InitLevel();
+        belowMenu.ActivateMenu(true, gameState);
+    }
+
+    void InitLevel()
+    {
+        gameState = GameState.BeforeLevel;
+        UpdateRotationData(true);     
         currentLevelID = PersistantManager.instance == null ? 0 : PersistantManager.instance.ReturnLevelID();
+        loadedLevel = levelManager.storedLevels[currentLevelID];
+        belowMenu.UpdateMenuContent(loadedLevel, gameState);
     }
 
     /// <summary>
@@ -186,6 +207,16 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Play;
         levelManager.SwitchLevels(currentLevelID);
         onPlayStart(rotationData);
+    }
+
+    public void ResumePlay()
+    {
+        OnPlayStart(rotationData);
+    }
+
+    public void QuitToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     /// <summary>
@@ -214,9 +245,10 @@ public class GameManager : MonoBehaviour
         levelManager.RemoveLevel();
         levelManager.SwitchLevels(++currentLevelID);
         // onPlayPause(rotationData);
-        gameState = GameState.InBetweenLevels;
+        gameState = GameState.AfterLevel;
         rotationData.gameState = gameState;
         rotation.TriggerRotation(-90, "x");
+        --flipValue; 
     }
 
     #endregion
@@ -265,6 +297,9 @@ public class GameManager : MonoBehaviour
 
 
         //update rotation data and set out
+        bool wasPaused = false;
+        if (rotationData.currentState == CameraState.Below)
+            wasPaused = true;
         rotationData.currentState = cameraState;
         rotationData.gameState = gameState;
         postRotation(rotationData, isInit);
@@ -272,10 +307,12 @@ public class GameManager : MonoBehaviour
 
         if (cameraState == CameraState.Below) // entering pause
         {
-            gameState = gameState == GameState.InBetweenLevels ? GameState.InBetweenLevels : GameState.Pause;
+
+            gameState = gameState == GameState.Play ? GameState.Pause : gameState;
+            rotationData.gameState = gameState;
             onPlayPause(rotationData);
         }
-        else if (gameState == GameState.Pause) // leaving pause
+        else if (wasPaused) // leaving pause
         {
 
         }

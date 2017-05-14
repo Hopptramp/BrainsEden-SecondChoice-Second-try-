@@ -98,7 +98,8 @@ public class LevelManager : GameActors
     {
         //currentLoadedLevel.completionData = _data;
         storedLevels[activeLevelID].completionData = _data;
-        PersistantManager.instance.UpdateChangesToCompletionData(storedLevels);
+        if(PersistantManager.instance != null)
+            PersistantManager.instance.UpdateChangesToCompletionData(storedLevels);
     }
 
     #endregion

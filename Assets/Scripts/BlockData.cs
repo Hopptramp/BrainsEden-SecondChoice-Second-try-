@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.Collections;
 
 [System.Serializable]
@@ -9,20 +11,20 @@ public class BlockData : GameActors
     public Vector3 localPosition;
     public int ID;
 
-    #region Falling Block Variables
+#region Falling Block Variables
     public int startingHealth = 3;
     private int currentHealth;
-    #endregion
+#endregion
 
-    #region Teleporting Variables
+#region Teleporting Variables
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
     private StoredBlockData currTargetBlock;
-    #endregion
+#endregion
 
-    #region Moving Variables
+#region Moving Variables
     public Vector3 destination;
     public float moveSpeed = 1;
-    #endregion
+#endregion
 
     public LevelDataActive level;
 
@@ -66,7 +68,7 @@ public class BlockData : GameActors
     }
 
 
-    #region Delegates
+#region Delegates
 
     /// <summary>
     /// Override to recieve the post rotation event;
@@ -98,7 +100,7 @@ public class BlockData : GameActors
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Called from player when player has moved onto a block.
@@ -134,7 +136,7 @@ public class BlockData : GameActors
         }
     }
 
-    #region Block Type Functions
+#region Block Type Functions
 
     int GetTeleportTarget(CameraState _state)
     {
@@ -182,7 +184,7 @@ public class BlockData : GameActors
 
     }
 
-    #endregion
+#endregion
 }
 
 #if UNITY_EDITOR

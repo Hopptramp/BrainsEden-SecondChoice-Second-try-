@@ -93,6 +93,14 @@ public class PersistantManager : MonoBehaviour
         return levelSelectedID;
     }
 
+    public int ReturnNextLevelID()
+    {
+        ++levelSelectedID;
+        if (levelSelectedID == storedLevels.Count)
+            return -1;
+        return levelSelectedID;
+    }
+
     #region Button Input
 
     public void SetMenuStateToMain()

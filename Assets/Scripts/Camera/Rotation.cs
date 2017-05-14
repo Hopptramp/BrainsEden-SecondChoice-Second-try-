@@ -30,11 +30,11 @@ public class Rotation : MonoBehaviour
         //sanity check for origin
         if (!origin)
         {
-            origin = new GameObject();
-            origin.transform.position = Vector3.zero;
-            origin.transform.rotation.eulerAngles.Set(0f, 0f, 0f);
+            origin = new GameObject();        
         }
 
+        origin.transform.position = Vector3.zero;
+        origin.transform.rotation.eulerAngles.Set(-90f, 0f, 0f);
         transform.parent = origin.transform;
         transform.position = transform.parent.position - new Vector3(0f, 0f, cameraDist);
         
@@ -359,6 +359,19 @@ public class Rotation : MonoBehaviour
     }
 
     /// <summary>
+    /// Trigger rotation in _axis to _angle, over _rotationDuration
+    /// </summary>
+    /// <param name="_angle"></param>
+    /// <param name="_axis"></param>
+    public void TriggerRotation(float _angle, string _axis, float _rotationDuration)
+    {
+        if (isRotating)
+            return;
+
+        RotateTo(_angle, _axis, _rotationDuration);
+    }
+
+    /// <summary>
     /// Trigger rotation 90 degrees in direction
     /// </summary>
     /// <param name="_direction"></param>
@@ -400,6 +413,12 @@ public class Rotation : MonoBehaviour
     {
         isRotating = true;
         iTween.RotateTo(origin, iTween.Hash(_axis, _angle, "time", rotateTime, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "InitPostRotation"));
+    }
+
+    void RotateTo(float _angle, string _axis, float _rotateDuration)
+    {
+        isRotating = true;
+        iTween.RotateTo(origin, iTween.Hash(_axis, _angle, "time", _rotateDuration, "easetype", iTween.EaseType.easeInOutCirc, "oncompletetarget", gameObject, "oncomplete", "InitPostRotation"));
     }
 
     /// <summary>
