@@ -16,12 +16,8 @@ public class BlockData : GameActors
     private int currentHealth;
 #endregion
 
-<<<<<<< HEAD
 #region Teleporting Variables
-=======
-    #region Teleporting Variables
     [SerializeField]
->>>>>>> origin/master
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
     private StoredBlockData currTargetBlock;
 #endregion
