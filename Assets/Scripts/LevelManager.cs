@@ -25,6 +25,8 @@ public struct StoredBlockData
     public GameObject block;
     public int blockHealth;
     public BlockConnection[] connectedBlocks;
+    public Vector3 destination;
+    public float moveSpeed;
 }
 
 [System.Serializable]
@@ -191,6 +193,8 @@ public class LevelManager : GameActors
             block.ID = storedData.ID;
             block.startingHealth = storedData.blockHealth;
             block.connectedBlockIds = storedData.connectedBlocks;
+            block.destination = storedData.destination;
+            block.moveSpeed = storedData.moveSpeed;
             block.Initialise();
         }
     }

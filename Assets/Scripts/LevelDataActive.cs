@@ -36,6 +36,8 @@ public class LevelDataActive : MonoBehaviour
             storedBlock.block = data.gameObject;
             storedBlock.blockHealth = data.startingHealth;
             storedBlock.connectedBlocks = data.connectedBlockIds;
+            storedBlock.moveSpeed = data.moveSpeed;
+            storedBlock.destination = data.destination;
             storedBlocks.Add(storedBlock);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 
 [System.Serializable]
@@ -7,13 +8,20 @@ public class BlockData : GameActors
     public BlockType blockType;
     public Vector3 localPosition;
     public int ID;
-        
+
+    #region Falling Block Variables
     public int startingHealth = 3;
     private int currentHealth;
+    #endregion
 
     #region Teleporting Variables
     public BlockConnection [] connectedBlockIds = new BlockConnection[5];    
     private StoredBlockData currTargetBlock;
+    #endregion
+
+    #region Moving Variables
+    public Vector3 destination;
+    public float moveSpeed = 1;
     #endregion
 
     public LevelDataActive level;
@@ -34,11 +42,13 @@ public class BlockData : GameActors
             case BlockType.Default:
                 break;
             case BlockType.Teleport:
-                currTargetBlock = GameManager.instance.levelManager.GetBlockByID(getTeleportTarget(CameraState.Front));
+                currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Front));
                 break;
             case BlockType.Moving:
+                
                 break;
             case BlockType.Falling:
+                gameObject.SetActive(true);
                 currentHealth = startingHealth;
                 break;
             case BlockType.Start:
@@ -72,7 +82,7 @@ public class BlockData : GameActors
                 break;
             case BlockType.Teleport:       
                 //This isnt working properly yet;                       
-                    currTargetBlock = GameManager.instance.levelManager.GetBlockByID(getTeleportTarget(_rotationData.intendedState));
+                    currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(_rotationData.intendedState));
                 break;
             case BlockType.Moving:
                 break;
@@ -102,11 +112,9 @@ public class BlockData : GameActors
                 break;
             case BlockType.Teleport:
                 if (currTargetBlock.ID != ID)
-                {
-                    //temporary, will make a function in player to call from here.      
+                {                    
                     Debug.Log(""+ currTargetBlock.ID + "__" + currTargetBlock.localPosition);
-                    _player.TeleportTo(currTargetBlock.localPosition + Vector3.up);
-                    //_player.transform.position = currTargetBlock.localPosition + Vector3.up;
+                    _player.TeleportTo(currTargetBlock.localPosition + Vector3.up);                  
                 }
                 break;
             case BlockType.Moving:
@@ -114,7 +122,7 @@ public class BlockData : GameActors
             case BlockType.Falling:
                 currentHealth--;
                 if (currentHealth <= 0)
-                    gameObject.SetActive(false);
+                    StartCoroutine( RemoveBlock(_player, 1.5f));
                 break;
             case BlockType.Start:
                 break;
@@ -126,7 +134,9 @@ public class BlockData : GameActors
         }
     }
 
-    int getTeleportTarget(CameraState _state)
+    #region Block Type Functions
+
+    int GetTeleportTarget(CameraState _state)
     {
         for (int i = 0; i < connectedBlockIds.Length; i ++)
         {
@@ -138,7 +148,75 @@ public class BlockData : GameActors
         return ID;
     }
 
+    IEnumerator RemoveBlock(FixedPlayerMovement _player, float _length)
+    {
+       
+        float t = 0;
+        while (t <= _length)
+        {
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+        yield return null;
+        gameObject.SetActive(false);
+        _player.OnMovementComplete();
+    }
+
+    IEnumerator MoveBlock()
+    {
+        transform.position = localPosition;
+        while (transform.position != destination)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.5f);
+        while (transform.position != localPosition)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, localPosition, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        yield return new WaitForSeconds(1.5f);
+        StartCoroutine(MoveBlock());
+
+    }
+
+    #endregion
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(BlockData))]
+public class BlockDataCustomInspector : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        BlockData data = (BlockData)target;
+
+        DrawDefaultInspector();
+
+        //if (GUILayout.Button("Create Empty Level"))
+        //{
+        //    level.CreateNewLevel();
+        //}
+
+        //if (GUILayout.Button("Create From Scriptable Object"))
+        //{
+        //    level.GenerateLevelFromLevelData(level.storedLevels[0]);
+        //}
+
+        //if (GUILayout.Button("Save Scriptable Object"))
+        //{
+        //    level.SaveAsScriptableObject();
+        //}
+
+
+        // base.OnInspectorGUI();
+    }
+}
+#endif
+
+
 
 
 [System.Serializable]
