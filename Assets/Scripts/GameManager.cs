@@ -228,6 +228,18 @@ public class GameManager : MonoBehaviour
         player.transform.position = _position;
     }
 
+    public void PlayerFell()
+    {
+        StartCoroutine(ResetPlayer());
+    }
+
+    IEnumerator ResetPlayer()
+    {
+        yield return new WaitForSeconds(2);
+        ResetScoreTracking();
+        InitLevel();
+    }
+
     /// <summary>
     /// called when the player steps on the end tile
     /// </summary>
@@ -242,7 +254,6 @@ public class GameManager : MonoBehaviour
 
         // inform levelmanager
         levelManager.OnLevelComplete(data);
-        levelManager.RemoveLevel();
         
         // onPlayPause(rotationData);
         gameState = GameState.AfterLevel;
@@ -261,6 +272,13 @@ public class GameManager : MonoBehaviour
         flipText.text = "Flips\n" + flipValue.ToString();
         stepsText.text = "Steps\n" + stepsValue.ToString();
         levelText.text = "Level\n" + levelValue.ToString();
+    }
+
+    void ResetScoreTracking()
+    {
+        flipValue = 0;
+        stepsValue = 0;
+        timerValue = 0;
     }
 
     public void IncrementSteps()
@@ -303,6 +321,9 @@ public class GameManager : MonoBehaviour
         rotationData.currentState = cameraState;
         rotationData.gameState = gameState;
         postRotation(rotationData, isInit);
+
+        if(gameState == GameState.AfterLevel)
+            levelManager.RemoveLevel();
 
 
         if (cameraState == CameraState.Below) // entering pause
