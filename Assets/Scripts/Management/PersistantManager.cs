@@ -26,11 +26,13 @@ public class PersistantManager : MonoBehaviour
     [SerializeField] Text levelStats;
     MenuState menuState;
     private int levelSelectedID;
+    private int levelPageActive = 0;
     public int levelReachedID { get; private set; }
 
     [SerializeField] string gameScene = "MainGame";
 
     [SerializeField] StoredCompletionData levelData;
+    [SerializeField] MainMenuContent menuContent;
     
 
     void LoadLevels()
@@ -52,7 +54,8 @@ public class PersistantManager : MonoBehaviour
         DontDestroyOnLoad(this);
         LoadLevels();
         LoadCompletionData();
-        DisplayLevel();
+        //DisplayLevel();
+        menuContent.GenerateLevelPages(storedLevels);
     }
 	
     public List<LevelDataScriptable> ReturnStoredLevels()
@@ -90,7 +93,6 @@ public class PersistantManager : MonoBehaviour
                 }
             }
         }
-
     }
 
     public int ReturnLevelID()
@@ -119,29 +121,40 @@ public class PersistantManager : MonoBehaviour
     public void SetMenuStateToLevels()
     {
         menuState = MenuState.Levels;
+        menuContent.FillLevelPage(levelPageActive);
     }
     public void Quit()
     {
         Application.Quit();
     }
 
-    public void ChangeLevel(bool _isNext)
+    public void ChangeLevelPage(bool _isNext)
     {
         // iterate through levels  
-        levelSelectedID += _isNext ? 1 : -1;
+        levelPageActive += _isNext ? 1 : -1;
 
         // clamp value
-        levelSelectedID = Mathf.Clamp(levelSelectedID, 0, storedLevels.Count - 1);
-        DisplayLevel();
+        levelPageActive = Mathf.Clamp(levelPageActive, 0, menuContent.maxPageNumber);
+
+        menuContent.FillLevelPage(levelPageActive);
     }
 
-    void DisplayLevel()
+    public void SelectLevel(int _level)
     {
-        levelName.text = storedLevels[levelSelectedID].name;
+        print(_level);
+        LevelThumbnailData levelData = menuContent.GetLevelDataFromCurrentPage(levelPageActive, _level);
+        menuContent.FillSelectedLevelData(levelPageActive, _level);
+        levelSelectedID = levelData.levelID;
 
-        LevelCompletionData data = storedLevels[levelSelectedID].completionData;
-        levelStats.text = "flips: " + data.totalFlips + "\n" + "steps: " + data.totalSteps + "\n" + "time: " + data.timeTaken.ToString("00:00") + "\n";
     }
+
+    //void DisplayLevel()
+    //{
+    //    levelName.text = storedLevels[levelSelectedID].name;
+
+    //    LevelCompletionData data = storedLevels[levelSelectedID].completionData;
+    //    levelStats.text = "flips: " + data.totalFlips + "\n" + "steps: " + data.totalSteps + "\n" + "time: " + data.timeTaken.ToString("00:00") + "\n";
+    //}
 
     public void PlayLevel()
     {
