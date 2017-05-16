@@ -4,6 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public enum MenuState
 {
     Main,
@@ -25,9 +29,9 @@ public class PersistantManager : MonoBehaviour
     [SerializeField] Text levelName;
     [SerializeField] Text levelStats;
     MenuState menuState;
-    private int levelSelectedID;
+    [SerializeField] private int levelSelectedID;
     private int levelPageActive = 0;
-    public int levelReachedID { get; private set; }
+    public int levelReachedID; /*{ get; private set; }*/
 
     [SerializeField] string gameScene = "MainGame";
 
@@ -45,10 +49,29 @@ public class PersistantManager : MonoBehaviour
         }
 
         //sort them in order of ID
+        SortLevels();
     }
 
-	// Use this for initialization
-	void Awake ()
+    void SortLevels()
+    {
+        LevelDataScriptable[] temp = new LevelDataScriptable[storedLevels.Count];
+
+        for(int i = 0; i < temp.Length; ++i)
+        {
+            temp[i] = storedLevels[i];
+        }
+
+        System.Array.Sort(temp, delegate (LevelDataScriptable x, LevelDataScriptable y) { return x.levelID.CompareTo(y.levelID); });
+
+        for (int i = 0; i < temp.Length; ++i)
+        {
+            storedLevels[i] = temp[i];
+        }
+
+    }
+
+    // Use this for initialization
+    void Awake ()
     {
         instance = this;
         DontDestroyOnLoad(this);
@@ -74,6 +97,7 @@ public class PersistantManager : MonoBehaviour
         }
         levelData.storedCompletionData = completion;
         levelData.levelReachedID = _levelReachedID == -1 ? levelData.levelReachedID : _levelReachedID;
+        levelReachedID = levelData.levelReachedID;
         PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
     }
 
@@ -83,7 +107,7 @@ public class PersistantManager : MonoBehaviour
         if (PlayerPrefs.HasKey("StoredLevelData"))
         {
             levelData = JsonUtility.FromJson<StoredCompletionData>(PlayerPrefs.GetString("StoredLevelData"));
-
+            levelReachedID = levelData.levelReachedID;
 
             for (int i = 0; i < storedLevels.Count; ++i)
             {
@@ -108,7 +132,7 @@ public class PersistantManager : MonoBehaviour
         return levelSelectedID;
     }
 
-    #region Button Input
+#region Button Input
 
     public void SetMenuStateToMain()
     {
@@ -144,7 +168,7 @@ public class PersistantManager : MonoBehaviour
         print(_level);
         LevelThumbnailData levelData = menuContent.GetLevelDataFromCurrentPage(levelPageActive, _level);
         menuContent.FillSelectedLevelData(levelPageActive, _level);
-        levelSelectedID = levelData.levelID;
+        levelSelectedID = _level;
 
     }
 
@@ -158,11 +182,56 @@ public class PersistantManager : MonoBehaviour
 
     public void PlayLevel()
     {
-        SceneManager.LoadScene(gameScene);
-
+        if(levelSelectedID <= levelReachedID + 1)
+          SceneManager.LoadScene(gameScene);
     }
 
+    public void ResetSavedData()
+    {
+        levelData.levelReachedID = 0;
+
+        Object[] levels = AssetDatabase.LoadAllAssetsAtPath("");
+        for(int i = 0; i < levelData.storedCompletionData.Length; ++i)
+        {
+            levelData.storedCompletionData[i] = new LevelCompletionData();
+            LevelDataScriptable scriptable = (LevelDataScriptable)levels[i];
+            scriptable.completionData = new LevelCompletionData();
+            AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(scriptable);
+        }
+        
+
+        PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
+    }
+
+    //AssetDatabase.CreateAsset(asset, "Assets/Resources/" + _fileName + ".asset");
+
+    //    // APPLY VARIABLES HERE
+    //    //asset.levelID = _id;
+    //    asset.storedBlocks = _stored;
+    //    AssetDatabase.SaveAssets();
+    //    EditorUtility.SetDirty(asset);
 
 
-    #endregion
+#endregion
 }
+
+#if UNITY_EDITOR
+
+[CustomEditor(typeof(PersistantManager))]
+public class PersistantManagerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        PersistantManager level = (PersistantManager)target;
+
+        DrawDefaultInspector();
+
+        if (GUILayout.Button("Reset level completion data"))
+        {
+            level.ResetSavedData();
+        }
+    }
+}
+
+#endif

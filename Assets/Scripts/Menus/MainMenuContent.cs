@@ -9,6 +9,7 @@ public struct LevelThumbnailData
     public string levelName;
     public string levelStats; // to be changed to "Star scoring" system
     public int levelID;
+    public bool isComplete;
     public bool hasContent;
 }
 
@@ -17,6 +18,7 @@ public struct LevelThumbnailPhysical
 {
     public Text levelName;
     public Text levelStats;
+    
     public GameObject icon;
 }
 
@@ -61,6 +63,7 @@ public class MainMenuContent : MonoBehaviour
                 LevelCompletionData data = storedLevels[levelCount].completionData;
                 levelPages[j].levelThumbnails[i].levelName = storedLevels[levelCount].name;
                 levelPages[j].levelThumbnails[i].levelStats = "flips: " + data.totalFlips + "\n" + "steps: " + data.totalSteps + "\n" + "time: " + data.timeTaken.ToString("00:00") + "\n";
+                levelPages[j].levelThumbnails[i].isComplete = data.hasCompleted;
                 levelPages[j].levelThumbnails[i].hasContent = true;
             }
         }
@@ -85,6 +88,8 @@ public class MainMenuContent : MonoBehaviour
         }
     }
 
+   
+
     /// <summary>
     /// fill the physical thumbnail of the selected level (top side of the cube)
     /// </summary>
@@ -92,8 +97,8 @@ public class MainMenuContent : MonoBehaviour
     /// <param name="_level"></param>
     public void FillSelectedLevelData(int _pageNumber, int _level)
     {
-        selectedThumbnail.levelName.text = levelPages[_pageNumber].levelThumbnails[_pageNumber].levelName;
-        selectedThumbnail.levelStats.text = levelPages[_pageNumber].levelThumbnails[_pageNumber].levelStats;
+        selectedThumbnail.levelName.text = levelPages[_pageNumber].levelThumbnails[_level].levelName;
+        selectedThumbnail.levelStats.text = levelPages[_pageNumber].levelThumbnails[_level].levelStats;
 
     }
 
