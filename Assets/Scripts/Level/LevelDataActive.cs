@@ -25,8 +25,6 @@ public class LevelDataActive : MonoBehaviour
             storedBlocks.Clear();
 
         BlockData[] datas = GetComponentsInChildren<BlockData>();
-
-        int temp = -1;
         foreach (BlockData data in datas)
         {
             StoredBlockData storedBlock = new StoredBlockData();

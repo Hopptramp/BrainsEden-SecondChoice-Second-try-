@@ -37,6 +37,10 @@ public class MainMenuContent : MonoBehaviour
 
     [SerializeField] LevelThumbnailPhysical selectedThumbnail;
 
+    private void Start()
+    {
+        PersistantManager.instance.MenuInit(this);
+    }
 
     /// <summary>
     /// Generate the total number of levels + assign content
@@ -44,6 +48,9 @@ public class MainMenuContent : MonoBehaviour
     /// <param name="_levelCount"></param>
     public void GenerateLevelPages(List<LevelDataScriptable> storedLevels)
     {
+        if (levelPages.Length > 0)
+            return;
+
         levelPages = new LevelPage[Mathf.FloorToInt((storedLevels.Count / 9) + 1)]; // probably wrong
         maxPageNumber = levelPages.Length - 1;
 

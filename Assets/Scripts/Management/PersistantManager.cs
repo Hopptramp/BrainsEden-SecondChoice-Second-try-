@@ -29,14 +29,14 @@ public class PersistantManager : MonoBehaviour
     [SerializeField] Text levelName;
     [SerializeField] Text levelStats;
     MenuState menuState;
-    [SerializeField] private int levelSelectedID;
-    private int levelPageActive = 0;
-    public int levelReachedID; /*{ get; private set; }*/
+    [SerializeField] private int levelSelectedID = 0;
+    public int levelPageActive = 0;
+    public int levelReachedID = 0; /*{ get; private set; }*/
 
     [SerializeField] string gameScene = "MainGame";
 
     [SerializeField] StoredCompletionData levelData;
-    [SerializeField] MainMenuContent menuContent;
+    [HideInInspector] public MainMenuContent menuContent;
     
 
     void LoadLevels()
@@ -73,14 +73,32 @@ public class PersistantManager : MonoBehaviour
     // Use this for initialization
     void Awake ()
     {
-        instance = this;
+        if (instance)
+        {
+            if (instance != this)
+            {
+                Destroy(this);
+            }
+            return;
+        }
+        else
+            instance = this;
+
         DontDestroyOnLoad(this);
         LoadLevels();
         LoadCompletionData();
         //DisplayLevel();
         menuContent.GenerateLevelPages(storedLevels);
     }
-	
+
+    public void MenuInit(MainMenuContent _content)
+    {
+        menuContent = _content;
+        menuContent.GenerateLevelPages(storedLevels);
+    }
+
+    #region loading/saving
+
     public List<LevelDataScriptable> ReturnStoredLevels()
     {
         return storedLevels;
@@ -97,7 +115,6 @@ public class PersistantManager : MonoBehaviour
         }
         levelData.storedCompletionData = completion;
         levelData.levelReachedID = _levelReachedID == -1 ? levelData.levelReachedID : _levelReachedID;
-        levelReachedID = levelData.levelReachedID;
         PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
     }
 
@@ -119,6 +136,10 @@ public class PersistantManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Level
+
     public int ReturnLevelID()
     {
         return levelSelectedID;
@@ -127,16 +148,34 @@ public class PersistantManager : MonoBehaviour
     public int ReturnNextLevelID()
     {
         ++levelSelectedID;
+        if (levelReachedID < levelSelectedID)
+            levelReachedID = levelSelectedID;
         if (levelSelectedID == storedLevels.Count)
             return -1;
         return levelSelectedID;
     }
 
-#region Button Input
+
+
+    #endregion
+
+    #region Button Input
+
+
+    public void SelectLevel(int _level)
+    {
+        print(_level);
+        LevelThumbnailData levelData = menuContent.GetLevelDataFromCurrentPage(levelPageActive, _level);
+        menuContent.FillSelectedLevelData(levelPageActive, _level);
+        levelSelectedID = _level; 
+
+    }
 
     public void SetMenuStateToMain()
     {
         menuState = MenuState.Main;
+        levelPageActive = 0;
+        menuContent.GenerateLevelPages(storedLevels);
     }
     public void SetMenuStateToOptions()
     {
@@ -160,50 +199,47 @@ public class PersistantManager : MonoBehaviour
         // clamp value
         levelPageActive = Mathf.Clamp(levelPageActive, 0, menuContent.maxPageNumber);
 
-        menuContent.FillLevelPage(levelPageActive);
-    }
-
-    public void SelectLevel(int _level)
-    {
-        print(_level);
-        LevelThumbnailData levelData = menuContent.GetLevelDataFromCurrentPage(levelPageActive, _level);
-        menuContent.FillSelectedLevelData(levelPageActive, _level);
-        levelSelectedID = _level;
+        menuContent.FillLevelPage(levelPageActive); 
 
     }
 
-    //void DisplayLevel()
-    //{
-    //    levelName.text = storedLevels[levelSelectedID].name;
 
-    //    LevelCompletionData data = storedLevels[levelSelectedID].completionData;
-    //    levelStats.text = "flips: " + data.totalFlips + "\n" + "steps: " + data.totalSteps + "\n" + "time: " + data.timeTaken.ToString("00:00") + "\n";
-    //}
 
     public void PlayLevel()
     {
-        if(levelSelectedID <= levelReachedID + 1)
+        if(levelSelectedID <= levelReachedID)
           SceneManager.LoadScene(gameScene);
     }
 
+    public void ResetMobileSavedData()
+    {
+        levelData.storedCompletionData = new LevelCompletionData[storedLevels.Count];
+        levelData.levelReachedID = 0;
+        PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
+        menuContent.GenerateLevelPages(storedLevels);
+        storedLevels.Clear();
+        Resources.UnloadUnusedAssets();
+        LoadLevels();
+    }
+
+#if UNITY_EDITOR
     public void ResetSavedData()
     {
         levelData.levelReachedID = 0;
 
-        Object[] levels = AssetDatabase.LoadAllAssetsAtPath("");
-        for(int i = 0; i < levelData.storedCompletionData.Length; ++i)
+        LevelDataScriptable[] levels = (LevelDataScriptable[])Resources.LoadAll<LevelDataScriptable>("");
+        for(int i = 0; i < levels.Length; ++i)
         {
-            levelData.storedCompletionData[i] = new LevelCompletionData();
-            LevelDataScriptable scriptable = (LevelDataScriptable)levels[i];
-            scriptable.completionData = new LevelCompletionData();
+            levels[i].completionData = new LevelCompletionData();
+            levels[i].completionData = new LevelCompletionData();
             AssetDatabase.SaveAssets();
-            EditorUtility.SetDirty(scriptable);
+            EditorUtility.SetDirty(levels[i]);
         }
         
 
         PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
     }
-
+#endif
     //AssetDatabase.CreateAsset(asset, "Assets/Resources/" + _fileName + ".asset");
 
     //    // APPLY VARIABLES HERE

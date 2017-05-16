@@ -221,6 +221,7 @@ public class GameManager : MonoBehaviour
 
     public void QuitToMenu()
     {
+        PersistantManager.instance.SetMenuStateToMain();
         SceneManager.LoadScene(0);
     }
 
@@ -267,7 +268,7 @@ public class GameManager : MonoBehaviour
         data.totalSteps = stepsValue;
 
         // inform levelmanager
-        levelManager.OnLevelComplete(data, levelReachedID);
+        levelManager.OnLevelComplete(data, PersistantManager.instance.ReturnNextLevelID());
         
         // onPlayPause(rotationData);
         gameState = GameState.AfterLevel;
