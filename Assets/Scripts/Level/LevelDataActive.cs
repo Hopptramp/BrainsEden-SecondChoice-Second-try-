@@ -36,9 +36,11 @@ public class LevelDataActive : MonoBehaviour
                 case BlockType.Default:
                     break;
                 case BlockType.Teleport:
-                    storedBlock.connectedBlocks = (data as TeleportBlock).connectedBlockIds;
+                    storedBlock.connectedBlocks = (data as Block_Teleport).connectedBlockIds;
                     break;
                 case BlockType.Moving:
+                    storedBlock.destination = (data as Block_Moving).destination;
+                    storedBlock.moveSpeed = (data as Block_Moving).moveSpeed;
                     break;
                 case BlockType.Falling:
                     break;
@@ -51,8 +53,8 @@ public class LevelDataActive : MonoBehaviour
             }
             storedBlock.block = data.gameObject;
             storedBlock.blockHealth = data.startingHealth;            
-            storedBlock.moveSpeed = data.moveSpeed;
-            storedBlock.destination = data.destination;
+            //storedBlock.moveSpeed = data.moveSpeed;
+            //storedBlock.destination = data.destination;
             storedBlocks.Add(storedBlock);
         }
     }

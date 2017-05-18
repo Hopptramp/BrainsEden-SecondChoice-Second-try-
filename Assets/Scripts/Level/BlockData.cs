@@ -22,10 +22,10 @@ public class BlockData : GameActors
 //    //private StoredBlockData currTargetBlock;
 //#endregion
 
-#region Moving Variables
-    public Vector3 destination;
-    public float moveSpeed = 1;
-#endregion
+//#region Moving Variables
+//    public Vector3 destination;
+//    public float moveSpeed = 1;
+//#endregion
 
     public LevelDataActive level;
 
@@ -48,7 +48,7 @@ public class BlockData : GameActors
                 //currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Front));
                 break;
             case BlockType.Moving:
-                StartCoroutine(MoveBlock());
+                //StartCoroutine(MoveBlock());
                 break;
             case BlockType.Falling:
                 gameObject.SetActive(true);
@@ -125,7 +125,7 @@ public class BlockData : GameActors
                 break;
             case BlockType.Moving:
                 //_player.transform.position = transform.position + Vector3.up;
-                _player.transform.parent = transform;
+                //_player.transform.parent = transform;
                 break;
             case BlockType.Falling:
                 currentHealth--;
@@ -171,24 +171,24 @@ public class BlockData : GameActors
         _player.OnMovementComplete();
     }
 
-    IEnumerator MoveBlock()
-    {
-        transform.position = localPosition;
-        while (transform.position != destination)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-        yield return new WaitForSeconds(1.5f);
-        while (transform.position != localPosition)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, localPosition, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-        yield return new WaitForSeconds(1.5f);
-        StartCoroutine(MoveBlock());
+    //IEnumerator MoveBlock()
+    //{
+    //    transform.position = localPosition;
+    //    while (transform.position != destination)
+    //    {
+    //        transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
+    //        yield return null;
+    //    }
+    //    yield return new WaitForSeconds(1.5f);
+    //    while (transform.position != localPosition)
+    //    {
+    //        transform.position = Vector3.MoveTowards(transform.position, localPosition, moveSpeed * Time.deltaTime);
+    //        yield return null;
+    //    }
+    //    yield return new WaitForSeconds(1.5f);
+    //    StartCoroutine(MoveBlock());
 
-    }
+    //}
 
 #endregion
 }
@@ -216,8 +216,8 @@ public class BlockDataCustomInspector : Editor
                 //serializedObject.ApplyModifiedProperties();                
                 break;
             case BlockType.Moving:
-                data.destination = EditorGUILayout.Vector3Field("Move To", data.destination);
-                data.moveSpeed = EditorGUILayout.Slider(data.moveSpeed, 0, 10);
+                //data.destination = EditorGUILayout.Vector3Field("Move To", data.destination);
+                //data.moveSpeed = EditorGUILayout.Slider(data.moveSpeed, 0, 10);
                 break;
             case BlockType.Falling:
                 data.startingHealth = EditorGUILayout.IntField("Starting Health", data.startingHealth);

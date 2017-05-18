@@ -2,7 +2,7 @@
 using System.Collections;
 
 [System.Serializable]
-public class TeleportBlock : BlockData {
+public class Block_Teleport : BlockData {
 
     [SerializeField]
     public BlockConnection[] connectedBlockIds = new BlockConnection[5];

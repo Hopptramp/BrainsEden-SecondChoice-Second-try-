@@ -201,20 +201,22 @@ public class LevelManager : GameActors
         foreach (StoredBlockData storedData in _levelData.storedBlocks)
         {
             GameObject blockObject = Instantiate(defaultCube, currentLoadedLevel.transform) as GameObject;
-            BlockData block = blockObject.GetComponent<BlockData>();
-            block.level = currentLoadedLevel;
-            block.localPosition = storedData.localPosition;
-            blockObject.transform.localPosition = block.localPosition;
-            block.blockType = storedData.type;
+            BlockData block = blockObject.GetComponent<BlockData>();            
 
-            switch (block.blockType)
+            switch (storedData.type)
             {
                 case BlockType.Default:
                     break;
                 case BlockType.Teleport:
-                    (block as TeleportBlock).connectedBlockIds = storedData.connectedBlocks;
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Teleport>();
+                    (block as Block_Teleport).connectedBlockIds = storedData.connectedBlocks;
                     break;
                 case BlockType.Moving:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Teleport>();
+                    (block as Block_Moving).destination = storedData.destination;
+                    (block as Block_Moving).moveSpeed = storedData.moveSpeed;
                     break;
                 case BlockType.Falling:
                     break;
@@ -225,11 +227,12 @@ public class LevelManager : GameActors
                 default:
                     break;
             }
+            block.level = currentLoadedLevel;
+            block.localPosition = storedData.localPosition;
+            blockObject.transform.localPosition = block.localPosition;
+            block.blockType = storedData.type;
             block.ID = storedData.ID;
-            block.startingHealth = storedData.blockHealth;
-            block.destination = storedData.destination;
-            block.moveSpeed = storedData.moveSpeed;
-           
+            block.startingHealth = storedData.blockHealth;       
             
 
             block.Initialise();
