@@ -214,11 +214,14 @@ public class LevelManager : GameActors
                     break;
                 case BlockType.Moving:
                     DestroyImmediate(block);
-                    block = blockObject.AddComponent<Block_Teleport>();
+                    block = blockObject.AddComponent<Block_Moving>();
                     (block as Block_Moving).destination = storedData.destination;
                     (block as Block_Moving).moveSpeed = storedData.moveSpeed;
                     break;
                 case BlockType.Falling:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Falling>();
+                    (block as Block_Falling).startingHealth = storedData.blockHealth;
                     break;
                 case BlockType.Start:
                     break;
@@ -231,8 +234,7 @@ public class LevelManager : GameActors
             block.localPosition = storedData.localPosition;
             blockObject.transform.localPosition = block.localPosition;
             block.blockType = storedData.type;
-            block.ID = storedData.ID;
-            block.startingHealth = storedData.blockHealth;       
+            block.ID = storedData.ID;  
             
 
             block.Initialise();

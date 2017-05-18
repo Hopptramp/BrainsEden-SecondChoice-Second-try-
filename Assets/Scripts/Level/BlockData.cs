@@ -11,10 +11,10 @@ public class BlockData : GameActors
     public Vector3 localPosition;
     public int ID;
 
-#region Falling Block Variables
-    public int startingHealth = 3;
-    private int currentHealth;
-#endregion
+//#region Falling Block Variables
+//    public int startingHealth = 3;
+//    private int currentHealth;
+//#endregion
 
 //#region Teleporting Variables
 //    //[SerializeField]
@@ -51,8 +51,8 @@ public class BlockData : GameActors
                 //StartCoroutine(MoveBlock());
                 break;
             case BlockType.Falling:
-                gameObject.SetActive(true);
-                currentHealth = startingHealth;
+                //gameObject.SetActive(true);
+                //currentHealth = startingHealth;
                 break;
             case BlockType.Start:
                 GameManager.instance.PlacePlayer(transform.position + Vector3.up);
@@ -128,9 +128,9 @@ public class BlockData : GameActors
                 //_player.transform.parent = transform;
                 break;
             case BlockType.Falling:
-                currentHealth--;
-                if (currentHealth <= 0)
-                    StartCoroutine( RemoveBlock(_player, 1.5f));
+                //currentHealth--;
+                //if (currentHealth <= 0)
+                //    StartCoroutine( RemoveBlock(_player, 1.5f));
                 break;
             case BlockType.Start:
                 break;
@@ -156,20 +156,20 @@ public class BlockData : GameActors
     //    return ID;
     //}
 
-    IEnumerator RemoveBlock(FixedPlayerMovement _player, float _length)
-    {
+    //IEnumerator RemoveBlock(FixedPlayerMovement _player, float _length)
+    //{
        
-        float t = 0;
-        while (t <= _length)
-        {
+    //    float t = 0;
+    //    while (t <= _length)
+    //    {
 
-            t += Time.deltaTime;
-            yield return null;
-        }
-        yield return null;
-        gameObject.SetActive(false);
-        _player.OnMovementComplete();
-    }
+    //        t += Time.deltaTime;
+    //        yield return null;
+    //    }
+    //    yield return null;
+    //    gameObject.SetActive(false);
+    //    _player.OnMovementComplete();
+    //}
 
     //IEnumerator MoveBlock()
     //{
@@ -220,7 +220,7 @@ public class BlockDataCustomInspector : Editor
                 //data.moveSpeed = EditorGUILayout.Slider(data.moveSpeed, 0, 10);
                 break;
             case BlockType.Falling:
-                data.startingHealth = EditorGUILayout.IntField("Starting Health", data.startingHealth);
+                //data.startingHealth = EditorGUILayout.IntField("Starting Health", data.startingHealth);
                 break;
             case BlockType.Start:
                 break;
