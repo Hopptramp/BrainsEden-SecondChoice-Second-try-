@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class LevelDataScriptable : ScriptableObject
 {
     [SerializeField] public int levelID;
+    [SerializeField] public ScoreRequirements scoreRequirements;
     [SerializeField] public LevelCompletionData completionData;
     [SerializeField] public List<StoredBlockData> storedBlocks;
 }

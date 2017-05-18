@@ -118,9 +118,6 @@ public class GameManager : MonoBehaviour
     //[SerializeField] bool ResetLevel = true;
     [SerializeField] private InGameMenuController belowMenu;
 
-    [SerializeField] GameObject pauseMenu;
-
-
     // delegate events
     public delegate void PostRotation(RotationData _rotationData, bool _isInit);
     public delegate void DataDelegate(RotationData _rotationData);
@@ -197,6 +194,7 @@ public class GameManager : MonoBehaviour
     void InitLevel()
     {
         gameState = GameState.BeforeLevel;
+        ResetScoreTracking();
         UpdateRotationData(true);     
         currentLevelID = PersistantManager.instance == null ? 0 : PersistantManager.instance.ReturnLevelID();
         levelReachedID = currentLevelID > levelReachedID ? currentLevelID : levelReachedID;
@@ -251,7 +249,6 @@ public class GameManager : MonoBehaviour
         rotation.TriggerRotation(-90, "x");
         player.GetComponent<FixedPlayerMovement>().Reset();
         PlacePlayer(currentLevelStartPos);
-        ResetScoreTracking();
         InitLevel();
     }
 
@@ -267,11 +264,15 @@ public class GameManager : MonoBehaviour
         data.totalFlips = flipValue;
         data.totalSteps = stepsValue;
 
+        CalculateScore(ref data);
         // inform levelmanager
-        levelManager.OnLevelComplete(data, PersistantManager.instance.ReturnNextLevelID());
+        levelManager.OnLevelComplete(data, PersistantManager.instance != null ? PersistantManager.instance.ReturnNextLevelID() : ++currentLevelID);
         
+
         // onPlayPause(rotationData);
         gameState = GameState.AfterLevel;
+        belowMenu.UpdateMenuContent(loadedLevel, gameState);
+
         rotationData.gameState = gameState;
         rotation.TriggerRotation(-90, "x");
         --flipValue; 
@@ -287,6 +288,20 @@ public class GameManager : MonoBehaviour
         flipText.text = "Flips\n" + flipValue.ToString();
         stepsText.text = "Steps\n" + stepsValue.ToString();
         levelText.text = "Level\n" + levelValue.ToString();
+    }
+
+    void CalculateScore(ref LevelCompletionData _data)
+    { 
+        ScoreRequirements required = levelManager.storedLevels[currentLevelID].scoreRequirements;
+        int stars = 0;
+        if (_data.timeTaken < required.maxTime)
+            ++stars;
+        if (_data.totalFlips < required.maxFlips)
+            ++stars;
+        if (_data.totalSteps < required.maxSteps)
+            ++stars;
+
+        _data.stars = stars;
     }
 
     void ResetScoreTracking()

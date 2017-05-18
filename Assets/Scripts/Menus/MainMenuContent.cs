@@ -69,7 +69,7 @@ public class MainMenuContent : MonoBehaviour
 
                 LevelCompletionData data = storedLevels[levelCount].completionData;
                 levelPages[j].levelThumbnails[i].levelName = storedLevels[levelCount].name;
-                levelPages[j].levelThumbnails[i].levelStats = "flips: " + data.totalFlips + "\n" + "steps: " + data.totalSteps + "\n" + "time: " + data.timeTaken.ToString("00:00") + "\n";
+                levelPages[j].levelThumbnails[i].levelStats = data.stars + " / 3";
                 levelPages[j].levelThumbnails[i].isComplete = data.hasCompleted;
                 levelPages[j].levelThumbnails[i].hasContent = true;
             }

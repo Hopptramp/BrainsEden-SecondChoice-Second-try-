@@ -32,10 +32,19 @@ public class StoredBlockData
 [System.Serializable]
 public class LevelCompletionData
 {
+    public int stars; // out of 3.
     public bool hasCompleted;
     public float timeTaken;
     public int totalFlips;
     public int totalSteps;
+}
+
+[System.Serializable]
+public class ScoreRequirements
+{
+    public float maxTime;
+    public int maxFlips;
+    public int maxSteps;
 }
 
 public class LevelManager : GameActors
