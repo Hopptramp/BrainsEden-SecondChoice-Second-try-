@@ -206,11 +206,32 @@ public class LevelManager : GameActors
             block.localPosition = storedData.localPosition;
             blockObject.transform.localPosition = block.localPosition;
             block.blockType = storedData.type;
+
+            switch (block.blockType)
+            {
+                case BlockType.Default:
+                    break;
+                case BlockType.Teleport:
+                    (block as TeleportBlock).connectedBlockIds = storedData.connectedBlocks;
+                    break;
+                case BlockType.Moving:
+                    break;
+                case BlockType.Falling:
+                    break;
+                case BlockType.Start:
+                    break;
+                case BlockType.End:
+                    break;
+                default:
+                    break;
+            }
             block.ID = storedData.ID;
             block.startingHealth = storedData.blockHealth;
-            block.connectedBlockIds = storedData.connectedBlocks;
             block.destination = storedData.destination;
             block.moveSpeed = storedData.moveSpeed;
+           
+            
+
             block.Initialise();
         }
     }

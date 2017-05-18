@@ -31,9 +31,26 @@ public class LevelDataActive : MonoBehaviour
             storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
+            switch (storedBlock.type)
+            {
+                case BlockType.Default:
+                    break;
+                case BlockType.Teleport:
+                    storedBlock.connectedBlocks = (data as TeleportBlock).connectedBlockIds;
+                    break;
+                case BlockType.Moving:
+                    break;
+                case BlockType.Falling:
+                    break;
+                case BlockType.Start:
+                    break;
+                case BlockType.End:
+                    break;
+                default:
+                    break;
+            }
             storedBlock.block = data.gameObject;
-            storedBlock.blockHealth = data.startingHealth;
-            storedBlock.connectedBlocks = data.connectedBlockIds;
+            storedBlock.blockHealth = data.startingHealth;            
             storedBlock.moveSpeed = data.moveSpeed;
             storedBlock.destination = data.destination;
             storedBlocks.Add(storedBlock);
