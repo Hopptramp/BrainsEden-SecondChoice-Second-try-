@@ -12,6 +12,7 @@ public enum BlockType
     Teleport,
     Moving,
     Falling,
+    Pushable,
     Start,
     End
 }
@@ -223,9 +224,17 @@ public class LevelManager : GameActors
                     block = blockObject.AddComponent<Block_Falling>();
                     (block as Block_Falling).startingHealth = storedData.blockHealth;
                     break;
+                case BlockType.Pushable:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Pushable>();
+                    break;
                 case BlockType.Start:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Start>();
                     break;
                 case BlockType.End:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_End>();
                     break;
                 default:
                     break;

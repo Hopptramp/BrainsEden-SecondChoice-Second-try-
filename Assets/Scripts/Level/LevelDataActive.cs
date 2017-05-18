@@ -45,6 +45,8 @@ public class LevelDataActive : MonoBehaviour
                 case BlockType.Falling:
                     storedBlock.blockHealth = (data as Block_Falling).startingHealth;
                     break;
+                case BlockType.Pushable:
+                    break;
                 case BlockType.Start:
                     break;
                 case BlockType.End:
@@ -53,9 +55,6 @@ public class LevelDataActive : MonoBehaviour
                     break;
             }
             storedBlock.block = data.gameObject;
-            //storedBlock.blockHealth = data.startingHealth;            
-            //storedBlock.moveSpeed = data.moveSpeed;
-            //storedBlock.destination = data.destination;
             storedBlocks.Add(storedBlock);
         }
     }

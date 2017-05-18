@@ -25,6 +25,10 @@ public class Block_Moving: BlockData {
         base.BlockLandedOn(_player);
     }
 
+    /// <summary>
+    /// Recursive function that moves from initial position to a target position and back.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveBlock()
     {
         transform.position = localPosition;
