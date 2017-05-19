@@ -11,10 +11,10 @@ public enum BlockType
     Default,
     Teleport,
     Moving,
-    Falling,
-    Pushable,
+    Falling,    
     Start,
-    End
+    End,
+    Pushable,
 }
 
 [System.Serializable]
@@ -28,6 +28,7 @@ public class StoredBlockData
     public BlockConnection[] connectedBlocks;
     public Vector3 destination;
     public float moveSpeed;
+    public CameraState [] inactivePerspectives;
 }
 
 [System.Serializable]
@@ -243,6 +244,7 @@ public class LevelManager : GameActors
             block.localPosition = storedData.localPosition;
             blockObject.transform.localPosition = block.localPosition;
             block.blockType = storedData.type;
+            block.inactivePerspectives = storedData.inactivePerspectives;
             block.ID = storedData.ID;  
             
 

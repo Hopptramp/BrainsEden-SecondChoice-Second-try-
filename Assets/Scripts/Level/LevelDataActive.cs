@@ -31,6 +31,7 @@ public class LevelDataActive : MonoBehaviour
             storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
+            storedBlock.inactivePerspectives = data.inactivePerspectives;
             switch (storedBlock.type)
             {
                 case BlockType.Default:

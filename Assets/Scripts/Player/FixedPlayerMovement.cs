@@ -243,6 +243,8 @@ public class FixedPlayerMovement : GameActors {
         }
     }
 
+    #region Button Inputs
+
     /// <summary>
     /// button input for move up
     /// </summary>
@@ -274,6 +276,8 @@ public class FixedPlayerMovement : GameActors {
     {
         DefineTranslation(Direction.Right);
     }
+
+    #endregion
 
     /// <summary>
     /// Define the translation direction, using the camera vectors

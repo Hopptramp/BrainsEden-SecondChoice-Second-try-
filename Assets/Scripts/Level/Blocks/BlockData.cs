@@ -10,6 +10,7 @@ public class BlockData : GameActors
     public BlockType blockType;
     public Vector3 localPosition;
     public int ID;
+    public CameraState [] inactivePerspectives;
 
     public LevelDataActive level;
 
@@ -53,6 +54,17 @@ public class BlockData : GameActors
         _player.transform.position = transform.position + Vector3.up;
         
     }    
+
+    protected bool ActiveInPerspective(CameraState _state)
+    {
+        for (int i = 0; i < inactivePerspectives.Length; i++)
+        {
+            if (inactivePerspectives[i] == _state)
+                return false;
+        }
+        return true;
+    }
+
 }
 
 #if UNITY_EDITOR
