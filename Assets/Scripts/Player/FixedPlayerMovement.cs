@@ -6,6 +6,7 @@ public enum Direction
     Up, Down, Left, Right,
 }
 
+
 public class FixedPlayerMovement : GameActors {
 
     [SerializeField] float movementDuration = 1;
@@ -14,7 +15,7 @@ public class FixedPlayerMovement : GameActors {
     CameraState camState;
     Transform cameraParent;
     [SerializeField] LayerMask obstuctionObjects;
-    enum ObstructionType { None, Drop, CanJump, Obstruction }
+    enum ObstructionType { None, Drop, CanJump, Obstruction, Pushable }
     [SerializeField]
     private AnimationCurve LinearMovement, JumpLinear, DropLinear;
     private Animator m_animator;
@@ -73,6 +74,9 @@ public class FixedPlayerMovement : GameActors {
                     break;
                 case ObstructionType.Obstruction:
                     break;
+                case ObstructionType.Pushable:
+                    StartCoroutine(Push(_direction));
+                    break;
                 default:
                     break;
             }            
@@ -103,10 +107,15 @@ public class FixedPlayerMovement : GameActors {
     /// <returns></returns>
     ObstructionType CheckObstruction(Vector3 _direction)
     {
-        if (Physics.Raycast(transform.position, _direction, 1, obstuctionObjects))
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, _direction,out hit, 1, obstuctionObjects))
         {
+           if (hit.collider.GetComponent<BlockData>().blockType == BlockType.Pushable)
+                    if (hit.collider.GetComponent<Block_Pushable>().CanBePushed(_direction, obstuctionObjects))
+                        return ObstructionType.Pushable;
+
             if (!Physics.Raycast(transform.position + _direction, Vector3.up, 1, obstuctionObjects))
-            {
+            {     
                 return ObstructionType.CanJump;
             }
             return ObstructionType.Obstruction;
@@ -114,7 +123,7 @@ public class FixedPlayerMovement : GameActors {
         if (!Physics.Raycast(transform.position + _direction, Vector3.down, 1, obstuctionObjects))
             return ObstructionType.Drop;
 
-            return ObstructionType.None;
+        return ObstructionType.None;
     }
 
     /// <summary>
@@ -199,6 +208,23 @@ public class FixedPlayerMovement : GameActors {
         moving = false;
         
     }    
+
+    IEnumerator Push(Vector3 _direction)
+    {
+        moving = true;
+        transform.LookAt(transform.position + _direction);
+        m_animator.SetTrigger("Push");
+        float t = 0;
+        while(t < 1)
+        {            
+            yield return null;
+            t += Time.deltaTime;
+        }
+        yield return null;
+        moving = false;
+        ///Uncomment next line once block movement is implemented.
+        //MoveCharacter(_direction);
+    }
 
     public void EndJump()
     {
