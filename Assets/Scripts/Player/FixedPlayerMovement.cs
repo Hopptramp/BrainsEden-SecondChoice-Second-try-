@@ -48,10 +48,10 @@ public class FixedPlayerMovement : GameActors {
     /// </summary>
     /// <param name="_direction"></param>
     void MoveCharacter(Vector3 _direction)
-    {
-        ObstructionType temp =(CheckObstruction(_direction));
+    {        
         if (!moving)
         {
+            ObstructionType temp =(CheckObstruction(_direction));
             if (onParent)
             {
                 transform.SetParent(null);
@@ -110,10 +110,13 @@ public class FixedPlayerMovement : GameActors {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, _direction,out hit, 1, obstuctionObjects))
         {
-           if (hit.collider.GetComponent<BlockData>().blockType == BlockType.Pushable)
-                    if (hit.collider.GetComponent<Block_Pushable>().CanBePushed(_direction, obstuctionObjects))
-                        return ObstructionType.Pushable;
-
+            if (hit.collider.GetComponent<BlockData>().blockType == BlockType.Pushable)
+            {
+                if (hit.collider.GetComponent<Block_Pushable>().CanBePushed(_direction, obstuctionObjects))
+                {
+                    return ObstructionType.Pushable;
+                }
+            }      
             if (!Physics.Raycast(transform.position + _direction, Vector3.up, 1, obstuctionObjects))
             {     
                 return ObstructionType.CanJump;
@@ -212,18 +215,25 @@ public class FixedPlayerMovement : GameActors {
     IEnumerator Push(Vector3 _direction)
     {
         moving = true;
+        RaycastHit hit;
+        Physics.Raycast(transform.position, _direction, out hit, 1, obstuctionObjects);
+        Block_Pushable block = hit.collider.GetComponent<Block_Pushable>();
         transform.LookAt(transform.position + _direction);
         m_animator.SetTrigger("Push");
         float t = 0;
-        while(t < 1)
-        {            
+        while(t < 1.25f)
+        {
+            if (t > 0.5f && !block.isMoving)
+            {
+                block.MoveBlock(_direction);
+            }
             yield return null;
             t += Time.deltaTime;
         }
         yield return null;
         moving = false;
         ///Uncomment next line once block movement is implemented.
-        //MoveCharacter(_direction);
+        MoveCharacter(_direction);
     }
 
     public void EndJump()
