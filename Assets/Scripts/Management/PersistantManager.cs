@@ -28,6 +28,7 @@ public class PersistantManager : MonoBehaviour
     public List<LevelDataScriptable> storedLevels;
     [SerializeField] Text levelName;
     [SerializeField] Text levelStats;
+    [SerializeField] Text fpsText;
     MenuState menuState;
     [SerializeField] private int levelSelectedID = 0;
     public int levelPageActive = 0;
@@ -91,10 +92,16 @@ public class PersistantManager : MonoBehaviour
         menuContent.GenerateLevelPages(storedLevels);
     }
 
+    private void Update()
+    {
+        fpsText.text = "PFS : " + (1 / Time.deltaTime).ToString("f1");
+    }
+
     public void MenuInit(MainMenuContent _content)
     {
         menuContent = _content;
         menuContent.GenerateLevelPages(storedLevels);
+        menuContent.FillLevelPage(levelPageActive);
     }
 
     #region loading/saving
@@ -184,7 +191,7 @@ public class PersistantManager : MonoBehaviour
     public void SetMenuStateToLevels()
     {
         menuState = MenuState.Levels;
-        menuContent.FillLevelPage(levelPageActive);
+        
     }
     public void Quit()
     {

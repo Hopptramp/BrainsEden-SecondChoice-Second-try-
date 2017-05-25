@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour
 
         CalculateScore(ref data);
         // inform levelmanager
-        levelManager.OnLevelComplete(data, PersistantManager.instance != null ? PersistantManager.instance.ReturnNextLevelID() : ++currentLevelID);
+        levelManager.OnLevelComplete(data, PersistantManager.instance != null ? PersistantManager.instance.ReturnLevelID() : ++currentLevelID);
         
 
         // onPlayPause(rotationData);
