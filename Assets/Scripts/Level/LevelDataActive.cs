@@ -24,10 +24,18 @@ public class LevelDataActive : MonoBehaviour
         else
             storedBlocks.Clear();
 
+        int highestID = -1;
         BlockData[] datas = GetComponentsInChildren<BlockData>();
+        for(int i = 0; i <datas.Length; i++)
+        {
+            if (datas[i].ID > highestID)
+                highestID = datas[i].ID;
+        }
         foreach (BlockData data in datas)
         {
             StoredBlockData storedBlock = new StoredBlockData();
+            if (data.ID < 0)
+                data.ID = ++highestID;
             storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;

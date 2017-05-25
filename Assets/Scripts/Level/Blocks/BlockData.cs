@@ -9,7 +9,7 @@ public class BlockData : GameActors
 {
     public BlockType blockType;
     public Vector3 localPosition;
-    public int ID;
+    public int ID = -1;
     public CameraState [] inactivePerspectives;
 
     public LevelDataActive level;
