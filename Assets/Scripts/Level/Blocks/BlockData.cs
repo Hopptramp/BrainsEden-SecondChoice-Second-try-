@@ -24,8 +24,9 @@ public class BlockData : GameActors
     /// initialise the block after being created
     /// </summary>
     public virtual void Initialise()
-    { 
-        StoredBlockData data = level.storedBlocks[ID];
+    {
+
+        StoredBlockData data = level.GetBlockDatabyID(ID);//  level.storedBlocks[ID];
         data.block = gameObject;
         level.storedBlocks[ID] = data;
     }

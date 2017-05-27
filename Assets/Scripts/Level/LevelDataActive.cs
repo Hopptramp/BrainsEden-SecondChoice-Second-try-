@@ -68,6 +68,16 @@ public class LevelDataActive : MonoBehaviour
         }
     }
 
+    public StoredBlockData GetBlockDatabyID( int _ID)
+    {
+        for (int i = 0; i < storedBlocks.Count; i++)
+        {
+            if (storedBlocks[i].ID == _ID)
+                return storedBlocks[i]; 
+        }
+        return storedBlocks[0];
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/Level Scriptable Object")]
     public static LevelDataScriptable CreateLevelDataScriptable(List<StoredBlockData> _stored, string _fileName)

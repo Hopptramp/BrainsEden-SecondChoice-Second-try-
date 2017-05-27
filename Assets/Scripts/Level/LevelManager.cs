@@ -104,7 +104,7 @@ public class LevelManager : GameActors
             if (currentLoadedLevel.storedBlocks[i].ID == _id)
                 return currentLoadedLevel.storedBlocks[i];
         }
-        return currentLoadedLevel.storedBlocks[_id];
+        return currentLoadedLevel.storedBlocks[0];
     }
 
     /// <summary>
