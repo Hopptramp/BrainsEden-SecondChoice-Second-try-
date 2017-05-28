@@ -49,8 +49,20 @@ public class ScoreRequirements
     public int maxSteps;
 }
 
+/// <summary>
+/// Contains any design based components needed on the block
+/// </summary>
+[System.Serializable]
+public class BlockComponents
+{
+    public Material material;
+    public Animator animator;
+    public ParticleSystem particles;
+}
+
 public class LevelManager : GameActors
 {
+    [Header("Level Creating/Loading/Saving")]
     public LevelDataActive unsavedLevel;
     public List<LevelDataScriptable> storedLevels;
     [SerializeField] private int activeLevelID = 0;
@@ -59,6 +71,14 @@ public class LevelManager : GameActors
     public LevelDataScriptable levelToLoad;
     [SerializeField] private GameObject defaultCube;
     [SerializeField] string newFileName;
+
+    [Space(5)]
+    [Header("Block Design Components")]
+    [SerializeField] private Material inactiveMaterial;
+    [SerializeField] private BlockComponents[] designHolders;
+
+
+
     
     private void Awake()
     {
@@ -100,11 +120,6 @@ public class LevelManager : GameActors
     /// <returns></returns>
     public StoredBlockData GetBlockByID(int _id)
     {
-        //for(int i = 0; i < currentLoadedLevel.storedBlocks.Count; i++)
-        //{
-        //    if (currentLoadedLevel.storedBlocks[i].ID == _id)
-        //        return currentLoadedLevel.storedBlocks[i];
-        //}
         return currentLoadedLevel.storedBlocks[_id];
     }
 
@@ -118,6 +133,25 @@ public class LevelManager : GameActors
         storedLevels[activeLevelID].completionData = _data;
         if(PersistantManager.instance != null)
             PersistantManager.instance.UpdateChangesToCompletionData(storedLevels, _levelReachedID);
+    }
+
+    /// <summary>
+    /// get the correct material for the block
+    /// </summary>
+    /// <param name="_id"></param>
+    /// <returns></returns>
+    public BlockComponents GetBlockMaterial(int _id)
+    {
+        return designHolders[_id];
+    }
+
+    /// <summary>
+    /// get the inactive block material
+    /// </summary>
+    /// <returns></returns>
+    public Material GetInactiveBlockMaterial()
+    {
+        return inactiveMaterial;
     }
 
     #endregion

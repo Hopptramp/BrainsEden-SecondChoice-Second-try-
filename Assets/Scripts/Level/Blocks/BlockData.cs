@@ -11,6 +11,7 @@ public class BlockData : GameActors
     public Vector3 localPosition;
     public int ID = -1;
     public CameraState [] inactivePerspectives;
+    BlockComponents designHolder;
 
     public LevelDataActive level;
 
@@ -18,6 +19,7 @@ public class BlockData : GameActors
     {
         // needs to be runtime (i think)
         InitDelegates();
+        
     }
 
     /// <summary>
@@ -28,6 +30,10 @@ public class BlockData : GameActors
         StoredBlockData data = level.GetBlockDatabyID(ID);
         data.block = gameObject;
         level.storedBlocks[ID] = data;
+
+        //initialise design components
+        designHolder = GameManager.instance.levelManager.GetBlockMaterial((int)blockType);
+        GetComponent<MeshRenderer>().material = designHolder.material;
     }
 
 
@@ -69,6 +75,7 @@ public class BlockData : GameActors
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(BlockData))]
+[CanEditMultipleObjects]
 public class BlockDataCustomInspector : Editor
 {
     public override void OnInspectorGUI()
