@@ -23,19 +23,15 @@ public class LevelDataActive : MonoBehaviour
             storedBlocks = new List<StoredBlockData>();
         else
             storedBlocks.Clear();
-
-        int highestID = -1;
+       
         BlockData[] datas = GetComponentsInChildren<BlockData>();
         for(int i = 0; i <datas.Length; i++)
         {
-            if (datas[i].ID > highestID)
-                highestID = datas[i].ID;
+            datas[i].ID = i;
         }
         foreach (BlockData data in datas)
         {
-            StoredBlockData storedBlock = new StoredBlockData();
-            if (data.ID < 0)
-                data.ID = ++highestID;
+            StoredBlockData storedBlock = new StoredBlockData();            
             storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
@@ -45,6 +41,11 @@ public class LevelDataActive : MonoBehaviour
                 case BlockType.Default:
                     break;
                 case BlockType.Teleport:
+                    Block_Teleport asTP = (data as Block_Teleport);
+                    foreach (BlockConnection connect in asTP.connectedBlockIds)
+                    {
+                        connect.connectedBlockID = connect.blockD.ID;
+                    }
                     storedBlock.connectedBlocks = (data as Block_Teleport).connectedBlockIds;
                     break;
                 case BlockType.Moving:
@@ -70,12 +71,12 @@ public class LevelDataActive : MonoBehaviour
 
     public StoredBlockData GetBlockDatabyID( int _ID)
     {
-        for (int i = 0; i < storedBlocks.Count; i++)
-        {
-            if (storedBlocks[i].ID == _ID)
-                return storedBlocks[i]; 
-        }
-        return storedBlocks[0];
+        //for (int i = 0; i < storedBlocks.Count; i++)
+        //{
+        //    if (storedBlocks[i].ID == _ID)
+        //        return storedBlocks[i]; 
+        //}
+        return storedBlocks[_ID];
     }
 
 #if UNITY_EDITOR

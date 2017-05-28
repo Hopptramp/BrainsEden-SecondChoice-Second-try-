@@ -6,7 +6,8 @@ public class Block_Teleport : BlockData {
 
     [SerializeField]
     public BlockConnection[] connectedBlockIds = new BlockConnection[5];
-    private StoredBlockData currTargetBlock;    
+    private StoredBlockData currTargetBlock;  
+
 
     public override void Initialise()
     {
@@ -37,7 +38,7 @@ public class Block_Teleport : BlockData {
         {
             if (connectedBlockIds[i].cameraView == _state)
             {
-                return connectedBlockIds[i].connectedBlock;
+                return connectedBlockIds[i].connectedBlockID;
             }
         }
         return ID;
@@ -50,5 +51,6 @@ public class Block_Teleport : BlockData {
 public class BlockConnection
 {
     public CameraState cameraView = CameraState.None;
-    public int connectedBlock = -1;
+    public int connectedBlockID = -1;
+    public BlockData blockD;
 }
