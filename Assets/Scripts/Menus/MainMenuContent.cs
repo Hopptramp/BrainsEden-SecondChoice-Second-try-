@@ -34,6 +34,7 @@ public class MainMenuContent : MonoBehaviour
     [SerializeField] LevelPage[] levelPages;
     [SerializeField] LevelThumbnailPhysical[] physicalThumbnails;
     public int maxPageNumber = 0;
+    [SerializeField] Color[] activeStateColour;
 
     [SerializeField] LevelThumbnailPhysical selectedThumbnail;
 
@@ -89,9 +90,16 @@ public class MainMenuContent : MonoBehaviour
                 physicalThumbnails[i].levelName.text = levelPages[_pageNumber].levelThumbnails[i].levelName;
                 physicalThumbnails[i].levelStats.text = levelPages[_pageNumber].levelThumbnails[i].levelStats;
                 physicalThumbnails[i].icon.SetActive(true);
+
+                if(levelPages[_pageNumber].levelThumbnails[i].levelID <= PersistantManager.instance.levelReachedID)
+                    physicalThumbnails[i].icon.GetComponentInChildren<Image>().color = activeStateColour[0];
+                else
+                    physicalThumbnails[i].icon.GetComponentInChildren<Image>().color = activeStateColour[1];                
+
             }
             else
                 physicalThumbnails[i].icon.SetActive(false);
+            
         }
     }
 

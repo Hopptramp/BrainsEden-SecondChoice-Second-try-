@@ -23,11 +23,15 @@ public class LevelDataActive : MonoBehaviour
             storedBlocks = new List<StoredBlockData>();
         else
             storedBlocks.Clear();
-
+       
         BlockData[] datas = GetComponentsInChildren<BlockData>();
+        for(int i = 0; i <datas.Length; i++)
+        {
+            datas[i].ID = i;
+        }
         foreach (BlockData data in datas)
         {
-            StoredBlockData storedBlock = new StoredBlockData();
+            StoredBlockData storedBlock = new StoredBlockData();            
             storedBlock.ID = data.ID;
             storedBlock.localPosition = data.transform.localPosition;
             storedBlock.type = data.blockType;
@@ -37,6 +41,11 @@ public class LevelDataActive : MonoBehaviour
                 case BlockType.Default:
                     break;
                 case BlockType.Teleport:
+                    Block_Teleport asTP = (data as Block_Teleport);
+                    foreach (BlockConnection connect in asTP.connectedBlockIds)
+                    {
+                        connect.connectedBlockID = connect.blockD.ID;
+                    }
                     storedBlock.connectedBlocks = (data as Block_Teleport).connectedBlockIds;
                     break;
                 case BlockType.Moving:
@@ -58,6 +67,16 @@ public class LevelDataActive : MonoBehaviour
             storedBlock.block = data.gameObject;
             storedBlocks.Add(storedBlock);
         }
+    }
+
+    public StoredBlockData GetBlockDatabyID( int _ID)
+    {
+        //for (int i = 0; i < storedBlocks.Count; i++)
+        //{
+        //    if (storedBlocks[i].ID == _ID)
+        //        return storedBlocks[i]; 
+        //}
+        return storedBlocks[_ID];
     }
 
 #if UNITY_EDITOR

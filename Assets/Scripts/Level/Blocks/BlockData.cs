@@ -9,7 +9,7 @@ public class BlockData : GameActors
 {
     public BlockType blockType;
     public Vector3 localPosition;
-    public int ID;
+    public int ID = -1;
     public CameraState [] inactivePerspectives;
 
     public LevelDataActive level;
@@ -24,8 +24,8 @@ public class BlockData : GameActors
     /// initialise the block after being created
     /// </summary>
     public virtual void Initialise()
-    { 
-        StoredBlockData data = level.storedBlocks[ID];
+    {
+        StoredBlockData data = level.GetBlockDatabyID(ID);
         data.block = gameObject;
         level.storedBlocks[ID] = data;
     }

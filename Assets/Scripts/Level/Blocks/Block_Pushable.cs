@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Block_Pushable : BlockData {
 
+    private Coroutine moving = null;
+    public bool isMoving { get { return moving != null; } }
+
     public override void Initialise()
     {
         base.Initialise();
@@ -27,4 +30,31 @@ public class Block_Pushable : BlockData {
         //No obstruction
         return true;
     }
+    
+    public void MoveBlock(Vector3 _direction)
+    {
+        if (moving == null)
+        {
+            moving = StartCoroutine(Move(_direction, 1));
+        }
+    }
+     
+    IEnumerator Move(Vector3 _direction, float _duration)
+    {
+
+        Vector3 newPos = transform.position + _direction;
+        Vector3 origin = transform.position;
+        float t = 0;
+
+        while (t< _duration)
+        {
+            transform.position = Vector3.Lerp(origin, newPos, t / _duration);
+            yield return null;
+            t += Time.deltaTime;
+        }
+        transform.position = newPos;
+        moving = null;
+        yield return null;
+    }
+
 }

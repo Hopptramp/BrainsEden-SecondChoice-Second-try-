@@ -99,11 +99,11 @@ public class LevelManager : GameActors
     /// <returns></returns>
     public StoredBlockData GetBlockByID(int _id)
     {
-        for(int i = 0; i < currentLoadedLevel.storedBlocks.Count; i++)
-        {
-            if (currentLoadedLevel.storedBlocks[i].ID == _id)
-                return currentLoadedLevel.storedBlocks[i];
-        }
+        //for(int i = 0; i < currentLoadedLevel.storedBlocks.Count; i++)
+        //{
+        //    if (currentLoadedLevel.storedBlocks[i].ID == _id)
+        //        return currentLoadedLevel.storedBlocks[i];
+        //}
         return currentLoadedLevel.storedBlocks[_id];
     }
 

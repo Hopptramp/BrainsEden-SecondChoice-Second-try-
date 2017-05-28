@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel()
     {
-        int nextLevel = PersistantManager.instance.ReturnNextLevelID();
+        int nextLevel = PersistantManager.instance.ReturnLevelID();
 
         // returns -1 when you complete last level
         if (nextLevel == -1)
