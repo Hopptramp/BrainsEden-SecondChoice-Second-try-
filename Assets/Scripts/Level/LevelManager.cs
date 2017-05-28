@@ -56,6 +56,7 @@ public class LevelManager : GameActors
     [SerializeField] private int activeLevelID = 0;
     [SerializeField] private LevelDataActive currentLoadedLevel;
 
+    public LevelDataScriptable levelToLoad;
     [SerializeField] private GameObject defaultCube;
     [SerializeField] string newFileName;
     
@@ -247,8 +248,8 @@ public class LevelManager : GameActors
             block.inactivePerspectives = storedData.inactivePerspectives;
             block.ID = storedData.ID;  
             
-
-            block.Initialise();
+            if(Application.isPlaying)
+                block.Initialise();
         }
     }
 
@@ -297,7 +298,7 @@ public class LevelManagerCustomInspector : Editor
 
         if (GUILayout.Button("Create From Scriptable Object"))
         {
-            level.GenerateLevelFromLevelData(level.storedLevels[0]);
+            level.GenerateLevelFromLevelData(level.levelToLoad);
         }
 
         if (GUILayout.Button("Save Scriptable Object"))
