@@ -300,6 +300,7 @@ public class LevelManager : GameActors
         GameObject levelObject = new GameObject("Unsaved Level " + storedLevels.Count);
         unsavedLevel = levelObject.AddComponent<LevelDataActive>();
         levelObject.transform.SetParent(transform);
+        unsavedLevel.defaultCube = defaultCube;
     }
 
     /// <summary>

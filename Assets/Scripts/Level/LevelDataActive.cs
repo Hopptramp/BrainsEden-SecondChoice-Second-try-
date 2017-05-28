@@ -13,6 +13,8 @@ public class LevelDataActive : MonoBehaviour
     public LevelCompletionData completionData;
     public LevelDataScriptable scriptableObject;
 
+    public GameObject defaultCube;
+
 
     /// <summary>
     /// Find all references to block data in children
@@ -69,13 +71,51 @@ public class LevelDataActive : MonoBehaviour
         }
     }
 
+    public void CreateBlock(BlockType _type)
+    {
+        GameObject blockObject = Instantiate(defaultCube, transform) as GameObject;
+        blockObject.name = _type.ToString();
+        BlockData block = blockObject.GetComponent<BlockData>();
+
+        switch (_type)
+        {
+            case BlockType.Default:
+                break;
+            case BlockType.Teleport:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Teleport>();
+                //(block as Block_Teleport).connectedBlockIds = storedData.connectedBlocks;
+                break;
+            case BlockType.Moving:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Moving>();
+                //(block as Block_Moving).destination = storedData.destination;
+               // (block as Block_Moving).moveSpeed = storedData.moveSpeed;
+                break;
+            case BlockType.Falling:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Falling>();
+               // (block as Block_Falling).startingHealth = storedData.blockHealth;
+                break;
+            case BlockType.Pushable:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Pushable>();
+                break;
+            case BlockType.Start:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Start>();
+                break;
+            case BlockType.End:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_End>();
+                break;
+            default:
+                break;
+        }
+    }
+
     public StoredBlockData GetBlockDatabyID( int _ID)
     {
-        //for (int i = 0; i < storedBlocks.Count; i++)
-        //{
-        //    if (storedBlocks[i].ID == _ID)
-        //        return storedBlocks[i]; 
-        //}
         return storedBlocks[_ID];
     }
 
@@ -130,6 +170,33 @@ public class LevelCustomInspector : Editor
         if (GUILayout.Button("Collect Blocks"))
         {
             level.CollectBlocks();
+        }
+
+        GUILayout.Space(5);
+
+        if (GUILayout.Button("Create Start"))
+        {
+            level.CreateBlock(BlockType.Start);
+        }
+        if (GUILayout.Button("Create Teleport"))
+        {
+            level.CreateBlock(BlockType.Teleport);
+        }
+        if (GUILayout.Button("Create Pushable"))
+        {
+            level.CreateBlock(BlockType.Pushable);
+        }
+        if (GUILayout.Button("Create Moving"))
+        {
+            level.CreateBlock(BlockType.Moving);
+        }
+        if (GUILayout.Button("Create Falling"))
+        {
+            level.CreateBlock(BlockType.Falling);
+        }
+        if (GUILayout.Button("Create End"))
+        {
+            level.CreateBlock(BlockType.End);
         }
 
         //if (GUILayout.Button("Save Scriptable Object"))
