@@ -243,6 +243,8 @@ public class LevelManager : GameActors
             switch (storedData.type)
             {
                 case BlockType.Default:
+                    DestroyImmediate(block);
+                    block = blockObject.AddComponent<Block_Default>();
                     break;
                 case BlockType.Teleport:
                     DestroyImmediate(block);

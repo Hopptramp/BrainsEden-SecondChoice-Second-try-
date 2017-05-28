@@ -80,6 +80,8 @@ public class LevelDataActive : MonoBehaviour
         switch (_type)
         {
             case BlockType.Default:
+                DestroyImmediate(block);
+                block = blockObject.AddComponent<Block_Default>();
                 break;
             case BlockType.Teleport:
                 DestroyImmediate(block);
@@ -112,6 +114,7 @@ public class LevelDataActive : MonoBehaviour
             default:
                 break;
         }
+        block.blockType = _type;
     }
 
     public StoredBlockData GetBlockDatabyID( int _ID)
@@ -177,6 +180,10 @@ public class LevelCustomInspector : Editor
         if (GUILayout.Button("Create Start"))
         {
             level.CreateBlock(BlockType.Start);
+        }
+        if (GUILayout.Button("Create Deafault"))
+        {
+            level.CreateBlock(BlockType.Default);
         }
         if (GUILayout.Button("Create Teleport"))
         {
