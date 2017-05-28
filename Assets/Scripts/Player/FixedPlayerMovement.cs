@@ -129,6 +129,8 @@ public class FixedPlayerMovement : GameActors {
         return ObstructionType.None;
     }
 
+    #region Movement Coroutines
+
     /// <summary>
     /// smooth movement of the character (possibly to be replaced with root animation)
     /// </summary>
@@ -235,6 +237,8 @@ public class FixedPlayerMovement : GameActors {
         ///Uncomment next line once block movement is implemented.
         MoveCharacter(_direction);
     }
+
+    #endregion
 
     public void EndJump()
     {
