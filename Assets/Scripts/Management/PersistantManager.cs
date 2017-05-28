@@ -94,7 +94,7 @@ public class PersistantManager : MonoBehaviour
 
     private void Update()
     {
-        fpsText.text = "PFS : " + (1 / Time.deltaTime).ToString("f1");
+        //fpsText.text = "PFS : " + (1 / Time.deltaTime).ToString("f1");
     }
 
     public void MenuInit(MainMenuContent _content)
