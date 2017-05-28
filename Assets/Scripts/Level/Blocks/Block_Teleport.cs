@@ -26,7 +26,7 @@ public class Block_Teleport : BlockData {
     {
         if (currTargetBlock.ID != ID)
         {
-            if (Physics.Raycast(currTargetBlock.localPosition, Vector3.up, 1))
+            if (!Physics.Raycast(currTargetBlock.localPosition, Vector3.up, 1))
                 _player.TeleportTo(currTargetBlock.localPosition + Vector3.up);
         }
         base.BlockLandedOn(_player);
