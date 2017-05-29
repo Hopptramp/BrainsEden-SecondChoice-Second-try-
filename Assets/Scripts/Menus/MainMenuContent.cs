@@ -7,7 +7,8 @@ using System.Collections.Generic;
 public struct LevelThumbnailData
 {
     public string levelName;
-    public string levelStats; // to be changed to "Star scoring" system
+    //public string levelStats; // to be changed to "Star scoring" system
+    public Sprite[] stars;
     public int levelID;
     public bool isComplete;
     public bool hasContent;
@@ -17,10 +18,12 @@ public struct LevelThumbnailData
 public struct LevelThumbnailPhysical
 {
     public Text levelName;
-    public Text levelStats;
-    
+    //public Text levelStats;
+    public Image[] stars;
     public GameObject icon;
 }
+
+
 
 
 [System.Serializable] // for debugging
@@ -35,6 +38,7 @@ public class MainMenuContent : MonoBehaviour
     [SerializeField] LevelThumbnailPhysical[] physicalThumbnails;
     public int maxPageNumber = 0;
     [SerializeField] Color[] activeStateColour;
+    [SerializeField] Sprite[] starState;
 
     [SerializeField] LevelThumbnailPhysical selectedThumbnail;
 
@@ -58,6 +62,7 @@ public class MainMenuContent : MonoBehaviour
         for(int j = 0; j < levelPages.Length; ++j)
         {
             levelPages[j].levelThumbnails = new LevelThumbnailData[9];
+
             for(int i = 0; i < levelPages[j].levelThumbnails.Length; ++i)
             {
                 int levelCount = j * 9 + i;
@@ -70,12 +75,19 @@ public class MainMenuContent : MonoBehaviour
 
                 LevelCompletionData data = storedLevels[levelCount].completionData;
                 levelPages[j].levelThumbnails[i].levelName = storedLevels[levelCount].name;
-                levelPages[j].levelThumbnails[i].levelStats = data.stars + " / 3";
                 levelPages[j].levelThumbnails[i].isComplete = data.hasCompleted;
                 levelPages[j].levelThumbnails[i].hasContent = true;
+
+                levelPages[j].levelThumbnails[i].stars = new Sprite[3];
+                for(int k = 1; k < 4; ++k)
+                {
+                    levelPages[j].levelThumbnails[i].stars[k - 1] = starState[data.stars >= k ? 0 : 1];
+                }
             }
         }
     }
+
+ 
 
     /// <summary>
     /// Fill the physical thumnails with the content of the levelpage passed in
@@ -88,7 +100,10 @@ public class MainMenuContent : MonoBehaviour
             if (levelPages[_pageNumber].levelThumbnails[i].hasContent)
             {
                 physicalThumbnails[i].levelName.text = levelPages[_pageNumber].levelThumbnails[i].levelName;
-                physicalThumbnails[i].levelStats.text = levelPages[_pageNumber].levelThumbnails[i].levelStats;
+                for (int k = 0; k < 3; ++k)
+                {
+                    physicalThumbnails[i].stars[k].sprite = levelPages[_pageNumber].levelThumbnails[i].stars[k];
+                }
                 physicalThumbnails[i].icon.SetActive(true);
 
                 if(levelPages[_pageNumber].levelThumbnails[i].levelID <= PersistantManager.instance.levelReachedID)
@@ -113,8 +128,10 @@ public class MainMenuContent : MonoBehaviour
     public void FillSelectedLevelData(int _pageNumber, int _level)
     {
         selectedThumbnail.levelName.text = levelPages[_pageNumber].levelThumbnails[_level].levelName;
-        selectedThumbnail.levelStats.text = levelPages[_pageNumber].levelThumbnails[_level].levelStats;
-
+        for (int k = 0; k < 3; ++k)
+        {
+            selectedThumbnail.stars[k].sprite = levelPages[_pageNumber].levelThumbnails[_level].stars[k];
+        }
     }
 
     /// <summary>
