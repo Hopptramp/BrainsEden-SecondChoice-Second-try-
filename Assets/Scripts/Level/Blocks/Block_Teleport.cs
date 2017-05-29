@@ -14,6 +14,9 @@ public class Block_Teleport : BlockData {
         currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Front));
         blockType = BlockType.Teleport;
         base.Initialise();
+
+        ParticleSystem particles = Instantiate(designHolder.particles, transform) as ParticleSystem;
+        particles.transform.localPosition = new Vector3(0, 0.5f, 0);
     }
 
     protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)

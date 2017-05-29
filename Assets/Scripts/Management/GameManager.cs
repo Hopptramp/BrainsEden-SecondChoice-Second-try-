@@ -200,6 +200,9 @@ public class GameManager : MonoBehaviour
         levelReachedID = currentLevelID > levelReachedID ? currentLevelID : levelReachedID;
         loadedLevel = levelManager.storedLevels[currentLevelID];
         belowMenu.UpdateMenuContent(loadedLevel, gameState);
+
+        rotation.TriggerRotation(0, "y");
+        rotation.TriggerRotation(0, "z");
     }
 
     /// <summary>
