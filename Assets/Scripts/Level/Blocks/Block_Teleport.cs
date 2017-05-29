@@ -11,7 +11,7 @@ public class Block_Teleport : BlockData {
 
     public override void Initialise()
     {
-        currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Front));
+        currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(CameraState.Behind));
         blockType = BlockType.Teleport;
         base.Initialise();
 
@@ -21,7 +21,8 @@ public class Block_Teleport : BlockData {
 
     protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
     {
-        currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(_rotationData.intendedState));
+        if (GetTeleportTarget(_rotationData.intendedState) != ID)
+            currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(_rotationData.intendedState));
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
@@ -39,7 +40,7 @@ public class Block_Teleport : BlockData {
     {
         for (int i = 0; i < connectedBlockIds.Length; i++)
         {
-            if (connectedBlockIds[i].cameraView == _state)
+            if (connectedBlockIds[i].cameraView == _state && connectedBlockIds[i].connectedBlockID != -1)
             {
                 return connectedBlockIds[i].connectedBlockID;
             }
