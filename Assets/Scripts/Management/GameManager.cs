@@ -73,6 +73,7 @@ public enum GameState
 /// </summary>
 public struct RotationData
 {
+    public CameraState fromState;
     public CameraState currentState;
     public CameraState intendedState;
     public TransitionState transitionState;

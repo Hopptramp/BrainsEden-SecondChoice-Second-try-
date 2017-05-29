@@ -7,17 +7,30 @@ public class Block_Default : BlockData {
 
     public override void Initialise()
     {
-
-        col = GetComponent<BoxCollider>();
-        col.enabled = ActiveInPerspective(CameraState.Front);
         base.Initialise();
+        rend = GetComponent<MeshRenderer>();
+        col = GetComponent<BoxCollider>();
+        ToggleActive(ActiveInPerspective(CameraState.Front));
+        
+    }
+
+    protected override void PreRotationLogic(RotationData _rotationData)
+    {
+        base.PreRotationLogic(_rotationData);
     }
 
     protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
     {
-        GetComponent<BoxCollider>().enabled = ActiveInPerspective(_rotationData.intendedState);
-
+        if (ActiveInPerspective(_rotationData.fromState) != ActiveInPerspective(_rotationData.intendedState))
+            ToggleActive(ActiveInPerspective(_rotationData.intendedState));   
         base.PostRotationLogic(_rotationData, _isInit);
+    }
+
+
+    void ToggleActive( bool _active)
+    {
+        col.enabled = _active;
+        rend.material = _active? designHolder.material: GameManager.instance.levelManager.GetInactiveBlockMaterial();
     }
 
     // Update is called once per frame

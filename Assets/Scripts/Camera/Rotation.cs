@@ -85,6 +85,7 @@ public class Rotation : MonoBehaviour
         KeyValuePair<int, int> states = PredictCameraAndTransitionStates(_direction);
         rotationData.intendedState = (CameraState)states.Key;
         rotationData.transitionState = (TransitionState)states.Value;
+        rotationData.fromState = GameManager.cameraState;
 
         // trigger any pre rotation logic via delegates
         GameManager.instance.preRotation(rotationData);

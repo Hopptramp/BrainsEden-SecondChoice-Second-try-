@@ -12,6 +12,7 @@ public class BlockData : GameActors
     public int ID = -1;
     public CameraState [] inactivePerspectives;
     protected BlockComponents designHolder;
+    protected  MeshRenderer rend;
 
     public LevelDataActive level;
 
