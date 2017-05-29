@@ -46,7 +46,8 @@ public class LevelDataActive : MonoBehaviour
                     Block_Teleport asTP = (data as Block_Teleport);
                     foreach (BlockConnection connect in asTP.connectedBlockIds)
                     {
-                        connect.connectedBlockID = connect.blockD.ID;
+                        if (connect.blockD)
+                            connect.connectedBlockID = connect.blockD.ID;
                     }
                     storedBlock.connectedBlocks = (data as Block_Teleport).connectedBlockIds;
                     break;
