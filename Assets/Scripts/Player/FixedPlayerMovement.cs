@@ -34,11 +34,24 @@ public class FixedPlayerMovement : GameActors {
         m_animator = GetComponentInChildren<Animator>();
         m_animator.Play("Idle");
         childOffset = child.transform.localPosition.y;
+        InitDelegates();
        
 	}
 	
-	// Update is called once per frame
-	void Update ()
+    void OnDestroy()
+    {
+        RemoveDelegates();
+    }
+
+    protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
+    {
+        if (_rotationData.gameState == GameState.Play)
+            OnMovementComplete();
+        base.PostRotationLogic(_rotationData, _isInit);
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
 
     }

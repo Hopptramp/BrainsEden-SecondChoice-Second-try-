@@ -16,13 +16,13 @@ public class Block_Default : BlockData {
 
     protected override void PreRotationLogic(RotationData _rotationData)
     {
+        if (ActiveInPerspective(_rotationData.fromState) != ActiveInPerspective(_rotationData.intendedState))
+            ToggleActive(ActiveInPerspective(_rotationData.intendedState));   
         base.PreRotationLogic(_rotationData);
     }
 
     protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
-    {
-        if (ActiveInPerspective(_rotationData.fromState) != ActiveInPerspective(_rotationData.intendedState))
-            ToggleActive(ActiveInPerspective(_rotationData.intendedState));   
+    {       
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
