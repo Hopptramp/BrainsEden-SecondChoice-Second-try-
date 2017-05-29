@@ -193,6 +193,8 @@ public class GameManager : MonoBehaviour
 
     void InitLevel()
     {
+        rotation.TriggerRotation(0, "y");
+        rotation.TriggerRotation(0, "z");
         gameState = GameState.BeforeLevel;
         ResetScoreTracking();
         UpdateRotationData(true);     
@@ -201,8 +203,7 @@ public class GameManager : MonoBehaviour
         loadedLevel = levelManager.storedLevels[currentLevelID];
         belowMenu.UpdateMenuContent(loadedLevel, gameState);
 
-        rotation.TriggerRotation(0, "y");
-        rotation.TriggerRotation(0, "z");
+        
     }
 
     /// <summary>
@@ -210,6 +211,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void BeginLevel()
     {
+        
         gameState = GameState.Play;
         levelManager.SwitchLevels(currentLevelID);
         onPlayStart(rotationData);
@@ -361,7 +363,6 @@ public class GameManager : MonoBehaviour
 
         if (cameraState == CameraState.Below) // entering pause
         {
-
             gameState = gameState == GameState.Play ? GameState.Pause : gameState;
             rotationData.gameState = gameState;
             onPlayPause(rotationData);

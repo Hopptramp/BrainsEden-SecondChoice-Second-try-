@@ -167,6 +167,9 @@ public class InGameMenuController : GameActors
 
     public void BeginGame()
     {
+        if (GameManager.instance.rotation.isRotating)
+            return;
+
         ActivateMenu(false, GameState.BeforeLevel);
 
         // begin the game
