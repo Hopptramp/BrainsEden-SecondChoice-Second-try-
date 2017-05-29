@@ -11,7 +11,7 @@ public class BlockData : GameActors
     public Vector3 localPosition;
     public int ID = -1;
     public CameraState [] inactivePerspectives;
-    BlockComponents designHolder;
+    protected BlockComponents designHolder;
 
     public LevelDataActive level;
 
@@ -20,6 +20,16 @@ public class BlockData : GameActors
         // needs to be runtime (i think)
         InitDelegates();
         
+    }
+
+    private void OnDisable()
+    {
+        RemoveDelegates();
+    }
+
+    private void OnDestroy()
+    {
+        RemoveDelegates();
     }
 
     /// <summary>

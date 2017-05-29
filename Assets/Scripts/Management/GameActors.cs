@@ -17,6 +17,14 @@ public class GameActors : MonoBehaviour {
         GameManager.instance.postRotation += PostRotationLogic;
     }
 
+    protected void RemoveDelegates()
+    {
+        GameManager.instance.onPlayStart -= OnPlayStart;
+        GameManager.instance.onPlayPause -= OnPlayPause;
+        GameManager.instance.preRotation -= PreRotationLogic;
+        GameManager.instance.postRotation -= PostRotationLogic;
+    }
+
     /// <summary>
     /// Delegate that triggers play start logic in other scripts
     /// </summary>
