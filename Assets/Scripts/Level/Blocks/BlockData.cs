@@ -24,7 +24,7 @@ public class BlockData : GameActors
 
     private void OnDisable()
     {
-        RemoveDelegates();
+        //RemoveDelegates();
     }
 
     private void OnDestroy()
