@@ -10,7 +10,7 @@ public class Block_End : BlockData {
         base.Initialise();
 
         ParticleSystem particles = Instantiate(designHolder.particles, transform) as ParticleSystem;
-        particles.transform.localPosition = new Vector3(0,.5f,0);
+        particles.transform.localPosition = new Vector3(0,1.5f,0);
     }
 
     public override void BlockLandedOn(FixedPlayerMovement _player)
