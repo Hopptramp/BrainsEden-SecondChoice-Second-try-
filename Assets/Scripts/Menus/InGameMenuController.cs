@@ -19,7 +19,7 @@ public struct PauseCanvasContent
 public struct AfterLevelCanvasContent
 {
     public Text levelName;
-    public Text score;
+    public Image[] stars;
 }
 
 public class InGameMenuController : GameActors
@@ -35,6 +35,8 @@ public class InGameMenuController : GameActors
     [SerializeField] InitialiseCanvasContent initCanvasContent;
     [SerializeField] PauseCanvasContent pauseCanvasContent;
     [SerializeField] AfterLevelCanvasContent afterLevelContent;
+
+    [SerializeField] Sprite[] starState;
 
     private void Awake()
     {
@@ -67,7 +69,14 @@ public class InGameMenuController : GameActors
         else if (_gameState == GameState.AfterLevel)
         {
             afterLevelContent.levelName.text = _level.name;
-            afterLevelContent.score.text = "Score: " + _level.completionData.timeTaken.ToString("00:00");
+           //afterLevelContent.score.text = "Score: " + _level.completionData.timeTaken.ToString("00:00");
+
+            afterLevelContent.levelName.text = _level.name;
+
+            for (int i = 0; i < 3; ++i)
+            {
+                afterLevelContent.stars[i].sprite = starState[_level.completionData.stars >= (i + 1) ? 0 : 1];
+            }
         }
 
     }
