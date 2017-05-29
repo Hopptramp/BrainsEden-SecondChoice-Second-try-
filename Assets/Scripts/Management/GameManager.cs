@@ -372,7 +372,7 @@ public class GameManager : MonoBehaviour
         {
 
         }
-        else // normal flip
+        else if (gameState == GameState.Play) // normal flip
         {
             ++flipValue; 
         }

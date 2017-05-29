@@ -130,6 +130,8 @@ public class LevelManager : GameActors
     /// <param name="_data"></param>
     public void OnLevelComplete(LevelCompletionData _data, int _levelReachedID)
     {
+        if (storedLevels[activeLevelID].completionData.stars >= _data.stars)
+            return;
         //currentLoadedLevel.completionData = _data;
         storedLevels[activeLevelID].completionData = _data;
         if(PersistantManager.instance != null)
