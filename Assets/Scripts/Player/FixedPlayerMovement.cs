@@ -236,7 +236,7 @@ public class FixedPlayerMovement : GameActors {
         transform.LookAt(transform.position + _direction);
         m_animator.SetTrigger("Push");
         float t = 0;
-        while(t < 1.25f)
+        while(t < 1.0f)
         {
             if (t > 0.5f && !block.isMoving)
             {
@@ -248,7 +248,7 @@ public class FixedPlayerMovement : GameActors {
         yield return null;
         moving = false;
         ///Uncomment next line once block movement is implemented.
-        MoveCharacter(_direction);
+        //MoveCharacter(_direction);
     }
 
     #endregion

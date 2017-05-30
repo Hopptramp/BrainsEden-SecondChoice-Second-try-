@@ -35,7 +35,7 @@ public class Block_Pushable : BlockData {
     {
         if (moving == null)
         {
-            moving = StartCoroutine(Move(_direction, 1));
+            moving = StartCoroutine(Move(_direction, 0.5f));
         }
     }
      
