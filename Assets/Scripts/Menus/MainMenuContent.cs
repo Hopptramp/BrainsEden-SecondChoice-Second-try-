@@ -42,9 +42,13 @@ public class MainMenuContent : MonoBehaviour
 
     [SerializeField] LevelThumbnailPhysical selectedThumbnail;
 
+    public static bool persepectiveView = true;
+    public static bool fancyFast = true;
+
     private void Start()
     {
         PersistantManager.instance.MenuInit(this);
+        persepectiveView = true;
     }
 
     /// <summary>
