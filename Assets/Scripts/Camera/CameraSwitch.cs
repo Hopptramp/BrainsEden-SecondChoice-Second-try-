@@ -11,6 +11,12 @@ public class CameraSwitch : MonoBehaviour {
 
     private Vector3 startScale;
 
+    public GameObject orthoHud, perspHud;
+
+    public bool fancy, perspective;
+
+    
+
 	// Use this for initialization
 	void Start () {
         _cam = Camera.main;
@@ -40,12 +46,14 @@ public class CameraSwitch : MonoBehaviour {
 
     void Perspective()
     {
-       // skybox.transform.localScale = startScale;
+        // skybox.transform.localScale = startScale;
+        perspective = true;
     }
 
     void Orthographic()
     {
         _cam.orthographicSize = 2;
+        perspective = false;
        // skybox.transform.localScale = new Vector3 (10,10,10);
     }
 
@@ -56,12 +64,46 @@ public class CameraSwitch : MonoBehaviour {
         if (MainMenuContent.fancyFast == true)
         {
             particles.SetActive(true);
+            fancy = true;
+
             button.text = "Fancy";
         }
         else
         {
             particles.SetActive(false);
             button.text = "Fast";
+            fancy = false;
+        }
+    }
+
+    public void LoadLevelCheck()
+    {
+        
+        _cam = Camera.main;
+
+        orthoHud = GetComponent<GameManager>()._orthoHud;
+        perspHud = GetComponent<GameManager>()._perspHud;
+
+        if (perspective == true)
+        {
+            _cam.orthographic = false;
+            orthoHud.SetActive(false);
+            perspHud.SetActive(true);
+        }
+        else
+        {
+            _cam.orthographic = true;
+            orthoHud.SetActive(true);
+            perspHud.SetActive(false);
+        }
+
+        if (fancy == true)
+        {
+            particles.SetActive(true);
+        }
+        else
+        {
+            particles.SetActive(false);
         }
     }
 }
