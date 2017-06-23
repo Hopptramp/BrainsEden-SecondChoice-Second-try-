@@ -34,7 +34,7 @@ public class PersistantManager : MonoBehaviour
     public int levelPageActive = 0;
     public int levelReachedID = 0; /*{ get; private set; }*/
 
-    [SerializeField] string gameScene = "MainGame";
+    public string gameScene = "MainGame";
 
     [SerializeField] StoredCompletionData levelData;
     [HideInInspector] public MainMenuContent menuContent;
@@ -104,6 +104,11 @@ public class PersistantManager : MonoBehaviour
         menuContent.FillLevelPage(levelPageActive);
     }
 
+    public bool IsMainScene()
+    {
+        return SceneManager.GetActiveScene().name == gameScene;
+    }
+
     #region loading/saving
 
     public List<LevelDataScriptable> ReturnStoredLevels()
@@ -112,7 +117,7 @@ public class PersistantManager : MonoBehaviour
     }
 
 
-    public void UpdateChangesToCompletionData(List<LevelDataScriptable> _storedLevels, int _levelReachedID)
+    public void UpdateChangesToCompletionData(List<LevelDataScriptable> _storedLevels)
     {
         LevelCompletionData[] completion = new LevelCompletionData[_storedLevels.Count];
 
@@ -121,7 +126,7 @@ public class PersistantManager : MonoBehaviour
             completion[i] = _storedLevels[i].completionData;
         }
         levelData.storedCompletionData = completion;
-        levelData.levelReachedID = _levelReachedID == -1 ? levelData.levelReachedID : _levelReachedID;
+        levelData.levelReachedID = levelReachedID == -1 ? levelData.levelReachedID : levelReachedID;
         PlayerPrefs.SetString("StoredLevelData", JsonUtility.ToJson(levelData));
     }
 

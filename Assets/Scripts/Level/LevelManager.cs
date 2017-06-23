@@ -135,7 +135,7 @@ public class LevelManager : GameActors
         //currentLoadedLevel.completionData = _data;
         storedLevels[activeLevelID].completionData = _data;
         if(PersistantManager.instance != null)
-            PersistantManager.instance.UpdateChangesToCompletionData(storedLevels, _levelReachedID);
+            PersistantManager.instance.UpdateChangesToCompletionData(storedLevels);
     }
 
     /// <summary>

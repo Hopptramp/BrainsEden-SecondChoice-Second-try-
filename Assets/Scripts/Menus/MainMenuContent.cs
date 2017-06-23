@@ -45,6 +45,8 @@ public class MainMenuContent : MonoBehaviour
     public static bool persepectiveView = true;
     public static bool fancyFast = true;
 
+    public GameObject ambient;
+
     private void Start()
     {
         PersistantManager.instance.MenuInit(this);

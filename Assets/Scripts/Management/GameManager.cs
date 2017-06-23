@@ -109,7 +109,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text flipText;
     [SerializeField] private Text levelText;
 
-    public GameObject _orthoHud, _perspHud;
+    public GameObject _orthoHud, _perspHud, ambient;
+
 
 
 

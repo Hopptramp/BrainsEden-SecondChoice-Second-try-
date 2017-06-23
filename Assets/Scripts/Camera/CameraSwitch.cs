@@ -7,7 +7,7 @@ public class CameraSwitch : MonoBehaviour {
 
     private Camera _cam;
 
-    public GameObject particles, skybox;
+    public GameObject ambient, skybox;
 
     private Vector3 startScale;
 
@@ -63,14 +63,14 @@ public class CameraSwitch : MonoBehaviour {
         MainMenuContent.fancyFast = !MainMenuContent.fancyFast;
         if (MainMenuContent.fancyFast == true)
         {
-            particles.SetActive(true);
+            ambient.SetActive(true);
             fancy = true;
 
             button.text = "Fancy";
         }
         else
         {
-            particles.SetActive(false);
+            ambient.SetActive(false);
             button.text = "Fast";
             fancy = false;
         }
@@ -81,29 +81,44 @@ public class CameraSwitch : MonoBehaviour {
         
         _cam = Camera.main;
 
-        orthoHud = GetComponent<GameManager>()._orthoHud;
-        perspHud = GetComponent<GameManager>()._perspHud;
+
+        bool isMainScene = PersistantManager.instance.IsMainScene();
+
+        if (isMainScene)
+        {
+            orthoHud = GameManager.instance._orthoHud;
+            perspHud = GameManager.instance._perspHud;
+            ambient = GameManager.instance.ambient;
+        }
+        else
+            ambient = PersistantManager.instance.menuContent.ambient;
 
         if (perspective == true)
         {
             _cam.orthographic = false;
-            orthoHud.SetActive(false);
-            perspHud.SetActive(true);
+            if (isMainScene)
+            {
+                orthoHud.SetActive(false);
+                perspHud.SetActive(true);
+            }
         }
         else
         {
             _cam.orthographic = true;
-            orthoHud.SetActive(true);
-            perspHud.SetActive(false);
+            if (isMainScene)
+            {
+                orthoHud.SetActive(true);
+                perspHud.SetActive(false);
+            }
         }
 
         if (fancy == true)
         {
-            particles.SetActive(true);
+            ambient.SetActive(true);
         }
         else
         {
-            particles.SetActive(false);
+            ambient.SetActive(false);
         }
     }
 }
