@@ -6,7 +6,9 @@ public class Block_Teleport : BlockData {
 
     [SerializeField]
     public BlockConnection[] connectedBlockIds = new BlockConnection[5];
-    private StoredBlockData currTargetBlock;  
+    private StoredBlockData currTargetBlock;
+    [SerializeField]
+    private ParticleSystem destinationParticles;
 
 
     public override void Initialise()
@@ -17,12 +19,17 @@ public class Block_Teleport : BlockData {
 
         ParticleSystem particles = Instantiate(designHolder.particles, transform) as ParticleSystem;
         particles.transform.localPosition = new Vector3(0, 0.5f, 0);
+        destinationParticles = Instantiate(designHolder.secondParticles, transform) as ParticleSystem;
+        destinationParticles.transform.localPosition = new Vector3(0, 0.5f, 0);
+        SetDestinationParticles(CameraState.Behind);
+        
     }
 
     protected override void PostRotationLogic(RotationData _rotationData, bool _isInit)
     {
         if (GetTeleportTarget(_rotationData.intendedState) != ID)
             currTargetBlock = GameManager.instance.levelManager.GetBlockByID(GetTeleportTarget(_rotationData.intendedState));
+        SetDestinationParticles(_rotationData.intendedState);
         base.PostRotationLogic(_rotationData, _isInit);
     }
 
@@ -46,6 +53,18 @@ public class Block_Teleport : BlockData {
             }
         }
         return ID;
+    }
+
+    void SetDestinationParticles (CameraState _state)
+    {
+        if (currTargetBlock.ID != ID)
+        {
+            destinationParticles.gameObject.SetActive(true);
+            destinationParticles.transform.position = currTargetBlock.localPosition + (Vector3.up * 1.5f);
+        }
+        else
+            destinationParticles.gameObject.SetActive(false);
+
     }
 
 }

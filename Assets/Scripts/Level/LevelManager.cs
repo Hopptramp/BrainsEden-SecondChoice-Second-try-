@@ -57,8 +57,10 @@ public class BlockComponents
 {
     public Material material;
     public Animator animator;
-    public ParticleSystem particles;
+    public ParticleSystem particles;    
     public GameObject particleHolder;
+    public ParticleSystem secondParticles;
+    public GameObject secondParticleHolder;
 }
 
 public class LevelManager : GameActors
