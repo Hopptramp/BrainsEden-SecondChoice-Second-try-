@@ -9,6 +9,11 @@ public class PersistentButtonListener : MonoBehaviour {
         persistentManager = PersistantManager.instance;
 	}
 
+    //public void ActivateGraphicRaycasters(int _id)
+    //{
+    //    persistentManager.ActivateGraphicRaycasters(_id);
+    //}
+
     public void SetMenuStateToMain()
     {
         persistentManager.SetMenuStateToMain();

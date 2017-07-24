@@ -38,6 +38,8 @@ public class PersistantManager : MonoBehaviour
 
     [SerializeField] StoredCompletionData levelData;
     [HideInInspector] public MainMenuContent menuContent;
+
+    private GameObject[] canvases;
     
 
     void LoadLevels()
@@ -176,11 +178,10 @@ public class PersistantManager : MonoBehaviour
 
     public void SelectLevel(int _level)
     {
-        print(_level);
         LevelThumbnailData levelData = menuContent.GetLevelDataFromCurrentPage(levelPageActive, _level);
         menuContent.FillSelectedLevelData(levelPageActive, _level);
-        levelSelectedID = _level; 
-
+        levelSelectedID = _level;
+        ActivateGraphicRaycasters(3);
     }
 
     public void SetMenuStateToMain()
@@ -188,15 +189,17 @@ public class PersistantManager : MonoBehaviour
         menuState = MenuState.Main;
         levelPageActive = 0;
         menuContent.GenerateLevelPages(storedLevels);
+        ActivateGraphicRaycasters(0);
     }
     public void SetMenuStateToOptions()
     {
         menuState = MenuState.Options;
+        ActivateGraphicRaycasters(1);
     }
     public void SetMenuStateToLevels()
     {
         menuState = MenuState.Levels;
-        
+        ActivateGraphicRaycasters(2);
     }
     public void Quit()
     {
@@ -215,7 +218,24 @@ public class PersistantManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Activate/Deactivate graphics raycaster components on world space
+    /// canvases. This will improve frame rate during event system use (buttons)
+    /// </summary>
+    /// <param name="_id"> 0 = Main, 1 = Options, 2 = Levels, 3 = Selected Level </param>
+    public void ActivateGraphicRaycasters(int _id)
+    {
+        if (canvases == null)
+            canvases = menuContent.canvases;
 
+        for(int i = 0; i < canvases.Length; ++i)
+        {
+            if(i == _id)
+                canvases[i].SetActive(true);
+            else
+                canvases[i].SetActive(false);
+        }
+    }
 
     public void PlayLevel()
     {

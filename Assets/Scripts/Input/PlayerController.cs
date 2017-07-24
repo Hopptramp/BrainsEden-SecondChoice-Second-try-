@@ -144,32 +144,37 @@ public class PlayerController : GameActors {
     /// <param name="_intendedState"></param>
     void AnimateCorrectButtons(CameraState _intendedState)
     {
-        if(_intendedState == CameraState.Above || _intendedState == CameraState.Below)
+        string animSTR = "";
+        if(_intendedState == CameraState.Above || _intendedState == CameraState.Below) // IF ROTATION ENDS ABOVE/BELOW
         {
-            if (target.forward == Vector3.right || target.forward == -Vector3.right)
+            if (target.forward == Vector3.right || target.forward == -Vector3.right) // COME FROM LEFT/RIGHT
             {
-                animator.SetTrigger("ShowAllLeft");
+               animSTR = "ShowAllLeft";
             }
-            else if (target.forward == Vector3.forward || target.forward == -Vector3.forward)
+            else if (target.forward == Vector3.forward || target.forward == -Vector3.forward) // COME FROM FRONT/BEHIND
             {
-                animator.SetTrigger("ShowAllFront");
+                animSTR = "ShowAllFront";
             }
-            return;
         }
-        if (_intendedState == CameraState.Left || _intendedState == CameraState.Right)
+        else if (_intendedState == CameraState.Left || _intendedState == CameraState.Right) // IF ROTATION ENDS LEFT/
         {
-            if(cameraState == CameraState.Above || cameraState == CameraState.Below)
-                animator.SetTrigger("ShowFrontAbove");
+            if(cameraState == CameraState.Above || cameraState == CameraState.Below) // COME FROM ABOVE/BELOW
+                animSTR = "ShowFrontAbove";
             else
-                animator.SetTrigger("ShowFront");
+                animSTR = "ShowFront"; // COME FROM FRONT/BACK
         }
-        else
+        else                                                                            // IF ROTATION ENDS FRONT/BEHIND
         {
             if (cameraState == CameraState.Above || cameraState == CameraState.Below)
-                animator.SetTrigger("ShowLeftAbove");
-            else 
-                animator.SetTrigger("ShowLeft");
+            {
+                animSTR = "ShowLeftAbove";
+            }
+            else
+                animSTR = "ShowLeft";
         }
+
+        print(animSTR);
+        animator.SetTrigger(animSTR);
     }
 
         #endregion

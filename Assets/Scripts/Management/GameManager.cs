@@ -406,6 +406,8 @@ public class GameManager : MonoBehaviour
         }
         rotationData = _rotationData;
         rotationData.gameState = gameState;
+
+       // print(rotationData.transitionState);
     }
 
     /// <summary>

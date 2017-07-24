@@ -34,6 +34,7 @@ public struct LevelPage
 
 public class MainMenuContent : MonoBehaviour
 {
+    public GameObject[] canvases;
     [SerializeField] LevelPage[] levelPages;
     [SerializeField] LevelThumbnailPhysical[] physicalThumbnails;
     public int maxPageNumber = 0;
